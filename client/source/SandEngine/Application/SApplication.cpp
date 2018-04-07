@@ -59,11 +59,6 @@ SApplication::SApplication()
 	m_pWindow = nullptr;
 }
 
-SApplication::~SApplication()
-{
-	Shutdown();
-}
-
 bool SApplication::Init()
 {
 	SVector2f winSize( 1600 , 900 );
@@ -77,6 +72,7 @@ bool SApplication::Init()
 void SApplication::Shutdown()
 {
 	SAFE_DELETE( m_pWindow );
+	SRenderer::Get().Shutdown();
 }
 
 void SApplication::Update()

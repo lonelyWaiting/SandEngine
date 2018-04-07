@@ -8,7 +8,6 @@ class SAND_API SApplication
 {
 public:
 	SApplication();
-	~SApplication();
 
 public:
 	bool Init();

@@ -325,8 +325,8 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 	DXGI_SWAP_CHAIN_DESC scd;
 	ZeroMemory( &scd , sizeof( scd ) );
 	scd.BufferCount                        = 2;
-	scd.BufferDesc.Width                   = 0;
-	scd.BufferDesc.Height                  = 0;
+	scd.BufferDesc.Width                   = ( const uint32 )winSize.x;
+	scd.BufferDesc.Height                  = ( const uint32 )winSize.y;
 	scd.BufferDesc.Format                  = DXGI_FORMAT_R8G8B8A8_UNORM;
 	scd.BufferDesc.RefreshRate.Numerator   = 60;
 	scd.BufferDesc.RefreshRate.Denominator = 1;
@@ -429,17 +429,6 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 	vp.TopLeftY = 0;
 	m_pImmediateContext->RSSetViewports( 1 , &vp );
 
-#ifdef _DEBUG
-	// ref: http://masterkenth.com/directx-leak-debugging/
-	ID3D11Debug* pDebugDevice = nullptr;
-	HRESULT hr = m_pDevice->QueryInterface( __uuidof( ID3D11Debug ) , ( void** )&pDebugDevice );
-	if( hr == S_OK )
-	{
-		hr = pDebugDevice->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
-		SAFE_RELEASE( pDebugDevice );
-	}
-#endif
-
 	return true;
 }
 
@@ -531,11 +520,22 @@ void SRenderer::ClearColor( const SVector4f & color )
 
 void SRenderer::Shutdown()
 {
-	SAFE_RELEASE( m_pDevice );
 	SAFE_RELEASE( m_pSwapChain );
 	SAFE_RELEASE( m_pRenderTargetView );
 	SAFE_RELEASE( m_pDepthStencilView );
 	SAFE_RELEASE( m_pImmediateContext );
+
+#ifdef _DEBUG
+	// ref: http://masterkenth.com/directx-leak-debugging/
+	ID3D11Debug* pDebugDevice = nullptr;
+	HRESULT hr = m_pDevice->QueryInterface( __uuidof( ID3D11Debug ) , ( void** )&pDebugDevice );
+	if( hr == S_OK )
+	{
+		hr = pDebugDevice->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
+		SAFE_RELEASE( pDebugDevice );
+	}
+#endif
+	SAFE_RELEASE( m_pDevice );
 }
 
 void SRenderer::Present( uint32 syncInterval /*= 0*/, uint32 presentFlag /*= 0*/ )
