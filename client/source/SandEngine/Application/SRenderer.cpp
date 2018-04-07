@@ -421,6 +421,8 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 		SAFE_RELEASE( pDebugDevice );
 	}
 #endif
+
+	return true;
 }
 
 void SRenderer::Resize( const SVector2f& size )
