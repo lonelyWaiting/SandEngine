@@ -3,13 +3,13 @@
 namespace SMath
 {
 	template<typename T>
-	T min(const T& A, const T& B)
+	T Min(const T& A, const T& B)
 	{
 		return A < B ? A : B;
 	}
 
 	template<typename T>
-	T max(const T& A, const T& B)
+	T Max(const T& A, const T& B)
 	{
 		return A > B ? A : B;
 	}
@@ -17,13 +17,13 @@ namespace SMath
 	template<typename T>
 	void clamp( T& value , const T& a , const T& b )
 	{
-		T min = a;
-		T max = b;
+		T _min = a;
+		T _max = b;
 
-		if( min > max ) { T& temp = max; max = min; min = temp; }
+		if( _min > _max ) { T& temp = _max; _max = _min; _min = temp; }
 
-		if( value > max )	value = max;
-		if( value < min )	value = min;
+		if( value > _max )	value = _max;
+		if( value < _min )	value = _min;
 	}
 
 	template<typename T>

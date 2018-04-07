@@ -61,7 +61,7 @@ SVector3f SVector3f::Perpendicular()
 	float yAbs = ( float )fabs( y );
 	float zAbs = ( float )fabs( z );
 
-	float minVal = SMath::min<float>(SMath::min<float>(xAbs, yAbs), zAbs);
+	float minVal = SMath::Min<float>(SMath::Min<float>(xAbs, yAbs), zAbs);
 
 	// 若xAbs为最小值，则要么xAbs为0.0f
 	// 要么xAbs比0.0f大，但比其他两个大

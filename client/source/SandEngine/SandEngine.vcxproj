@@ -34,11 +34,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SandBase\SandBase.vcxproj">
-      <Project>{43cc06e6-9863-40d8-9162-52df7378de6b}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{9910B59E-065D-4CB4-8DF1-54D283AA538B}</ProjectGuid>
