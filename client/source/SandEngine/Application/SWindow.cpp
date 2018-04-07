@@ -24,10 +24,8 @@ SWindow::SWindow( const char * caption , WNDPROC proc , const SVector2f& size , 
 	wc.lpszClassName = caption;
 	wc.hIconSm       = LoadIcon( NULL , IDI_APPLICATION );
 
-	// ע����
 	RegisterClassEx( &wc );
 
-	// ��������ʵ��
 	m_hWnd = CreateWindowEx( NULL ,
 							 wc.lpszClassName ,
 							 caption ,
@@ -40,6 +38,10 @@ SWindow::SWindow( const char * caption , WNDPROC proc , const SVector2f& size , 
 							 NULL ,
 							 NULL ,
 							 NULL );
+
+	ShowWindow( m_hWnd , SW_NORMAL );
+	UpdateWindow( m_hWnd );
+
 	/*
 		http://lonelywaiting.github.io/Win32-Application%E5%BC%80%E5%90%AFConsole%E7%AA%97%E5%8F%A3/
 	*/
