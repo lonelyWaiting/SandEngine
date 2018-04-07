@@ -282,23 +282,41 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 	
 	for( uint32 i = 0 , numAdapter = vAdapter.GetSize(); i < numAdapter; i++ )
 	{
-		if( FAILED( pAdapter->EnumOutputs( 0 , &pOutput ) ) )	continue;
+		pAdapter = vAdapter[i];
 
-		uint32 numMode               = 0;
-		DXGI_MODE_DESC* displayModes = NULL;
-		DXGI_FORMAT format           = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		std::cout << "Adapter:" << i << std::endl;
 
-		if( FAILED( pOutput->GetDisplayModeList( format , 0 , &numMode , NULL ) ) )	continue;
-
-		displayModes = new DXGI_MODE_DESC[numMode];
-
-		if( FAILED( pOutput->GetDisplayModeList( format , 0 , &numMode , displayModes ) ) )	continue;
-
-		for( uint32 k = 0; k < numMode; k++ )
+		SArray<IDXGIOutput*> outputList;
+		uint32			outputIdx = 0;
+		IDXGIOutput*	pOutput   = nullptr;
+		while( pAdapter->EnumOutputs( outputIdx , &pOutput ) != DXGI_ERROR_NOT_FOUND )
 		{
-			const DXGI_MODE_DESC& desc = displayModes[k];
+			outputList.PushBack( pOutput );
+			outputIdx++;
+		}
 
-			std::cout << "Format:" << outputDXGIFormat( desc.Format ) << "width:" << desc.Width << "height:" << desc.Height << "refreshRate:" << desc.RefreshRate.Numerator << "," << desc.RefreshRate.Denominator << std::endl;
+		for( uint32 j = 0 , outputNum = outputList.GetSize(); j < outputNum; j++ )
+		{
+			std::cout << "Adapter Output:" << j << std::endl;
+
+			pOutput = outputList[j];
+			
+			uint32 numMode               = 0;
+			DXGI_MODE_DESC* displayModes = NULL;
+			DXGI_FORMAT format           = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+			if( FAILED( pOutput->GetDisplayModeList( format , 0 , &numMode , NULL ) ) )	continue;
+
+			displayModes = new DXGI_MODE_DESC[numMode];
+
+			if( FAILED( pOutput->GetDisplayModeList( format , 0 , &numMode , displayModes ) ) )	continue;
+
+			for( uint32 k = 0; k < numMode; k++ )
+			{
+				const DXGI_MODE_DESC& desc = displayModes[k];
+
+				std::cout << "Format:" << outputDXGIFormat( desc.Format ) << "width:" << desc.Width << "height:" << desc.Height << "refreshRate:" << desc.RefreshRate.Numerator << "," << desc.RefreshRate.Denominator << std::endl;
+			}
 		}
 	}
 #endif
@@ -306,9 +324,9 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 	// create a device and immediate context: https://msdn.microsoft.com/en-us/library/windows/desktop/ff476879(v=vs.85).aspx
 	DXGI_SWAP_CHAIN_DESC scd;
 	ZeroMemory( &scd , sizeof( scd ) );
-	scd.BufferCount                        = 1;
-	scd.BufferDesc.Width                   = ( const uint32 )winSize.x;
-	scd.BufferDesc.Height                  = ( const uint32 )winSize.y;
+	scd.BufferCount                        = 2;
+	scd.BufferDesc.Width                   = 0;
+	scd.BufferDesc.Height                  = 0;
 	scd.BufferDesc.Format                  = DXGI_FORMAT_R8G8B8A8_UNORM;
 	scd.BufferDesc.RefreshRate.Numerator   = 60;
 	scd.BufferDesc.RefreshRate.Denominator = 1;
@@ -339,7 +357,7 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 	for( uint32 i = 0, numAdapter = vAdapter.GetSize(); i < numAdapter; i++ )
 	{
 		HRESULT hr = D3D11CreateDeviceAndSwapChain( vAdapter[i] ,
-													D3D_DRIVER_TYPE_HARDWARE ,
+													D3D_DRIVER_TYPE_UNKNOWN ,
 													NULL ,
 													createDeviceFlags ,
 													FeatureLevelsRequested ,
@@ -354,7 +372,7 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 		if( hr == E_INVALIDARG )
 		{
 			hr = D3D11CreateDeviceAndSwapChain( vAdapter[i] ,
-												D3D_DRIVER_TYPE_HARDWARE ,
+												D3D_DRIVER_TYPE_UNKNOWN ,
 												NULL ,
 												createDeviceFlags ,
 												&FeatureLevelsRequested[1] ,
@@ -377,7 +395,7 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 	if( !success )	return false;
 
 	ID3D11Texture2D* pBackBuffer = nullptr;
-	if( FAILED( m_pSwapChain->GetBuffer( 0 , __uuidof( ID3D11Texture2D ) , ( LPVOID* )pBackBuffer ) ) )	return false;
+	if( FAILED( m_pSwapChain->GetBuffer( 0 , __uuidof( ID3D11Texture2D ) , ( LPVOID* )&pBackBuffer ) ) )	return false;
 	if( FAILED( m_pDevice->CreateRenderTargetView( pBackBuffer , NULL , &m_pRenderTargetView ) ) )	return false;
 	ULONG refCount = pBackBuffer->Release();
 
@@ -427,6 +445,8 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 
 void SRenderer::Resize( const SVector2f& size )
 {
+	if( !m_pImmediateContext || !m_pSwapChain )	return;
+
 	// d3d11 handle windows resize:
 	// https://msdn.microsoft.com/en-us/library/windows/desktop/bb205075%28v=vs.85%29.aspx#Handling_Window_Resizing
 

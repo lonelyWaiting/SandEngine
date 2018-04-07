@@ -1,8 +1,10 @@
 #pragma once
 
+#include "SandEngineModule.h"
+
 class SWindow;
 
-class SApplication
+class SAND_API SApplication
 {
 public:
 	SApplication();
