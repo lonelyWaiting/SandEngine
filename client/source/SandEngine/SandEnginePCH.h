@@ -32,6 +32,7 @@
 #include <d3dCompiler.h>
 
 #include <wrl.h>
+#include <windows.h>
 
 #ifndef SAFE_RELEASE
 #define SAFE_RELEASE(x) {if(x){(x)->Release(); (x) = nullptr;}}
