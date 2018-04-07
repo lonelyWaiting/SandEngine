@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Math">
+      <UniqueIdentifier>{a77b76d6-557d-4c48-982c-2e14121c38f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Vector">
+      <UniqueIdentifier>{fadad28a-c4cf-4bfe-92dd-6f4927918c0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Template">
+      <UniqueIdentifier>{cb1cc4f3-c657-4e12-a64e-ba2b6ad58465}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="String">
+      <UniqueIdentifier>{fe63e57f-4006-43f8-a7df-b0ece2380f77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sort">
+      <UniqueIdentifier>{32e03d36-279e-45d7-a173-842039ad216d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Template\IsPODType.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Template\IsTriviallyDestructible.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Template\RemoveReference.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Template\TemplateBase.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Template\TEnableIf.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Template\TIsArithmetic.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Template\TIsPointer.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SMath.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SMatrix3f.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SMatrix4f.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SQuaternion.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SVector2f.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SVector3f.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\SVector4f.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Vector\SArray.h">
+      <Filter>Vector</Filter>
+    </ClInclude>
+    <ClInclude Include="Template\TIsTriviallyCopyConstructible.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Template\AndOrNot.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Template\utils.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\Sort.h">
+      <Filter>Sort</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBasePCH.h" />
+    <ClInclude Include="String\SString.h">
+      <Filter>String</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Math\SMath.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\SMatrix3f.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\SMatrix4f.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\SQuaternion.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\SVector2f.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\SVector3f.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Math\SVector4f.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBasePCH.cpp" />
+    <ClCompile Include="String\SString.cpp">
+      <Filter>String</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Vector\SArray.inl">
+      <Filter>Vector</Filter>
+    </None>
+  </ItemGroup>
+</Project>
