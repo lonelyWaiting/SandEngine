@@ -542,3 +542,13 @@ void SRenderer::Present( uint32 syncInterval /*= 0*/, uint32 presentFlag /*= 0*/
 {
 	if( m_pSwapChain )	m_pSwapChain->Present( syncInterval , presentFlag );
 }
+
+ID3D11Device* SRenderer::GetDevice()
+{
+	return m_pDevice;
+}
+
+ID3D11DeviceContext* SRenderer::GetDeviceContext()
+{
+	return m_pImmediateContext;
+}

@@ -19,16 +19,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\thirdparty\imgui\imgui.h" />
+    <ClInclude Include="..\..\thirdparty\imgui\imgui_internal.h" />
     <ClInclude Include="Application\SandEngineModule.h" />
     <ClInclude Include="Application\SApplication.h" />
     <ClInclude Include="Application\SRenderer.h" />
     <ClInclude Include="Application\SWindow.h" />
+    <ClInclude Include="GUI\SGui.h" />
     <ClInclude Include="SandEnginePCH.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_draw.cpp" />
     <ClCompile Include="Application\SApplication.cpp" />
     <ClCompile Include="Application\SRenderer.cpp" />
     <ClCompile Include="Application\SWindow.cpp" />
+    <ClCompile Include="GUI\SGui.cpp" />
     <ClCompile Include="SandEnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -90,7 +97,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)pub\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)pub\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDir)client\source\;$(ProjectDir);$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)client\source\;$(ProjectDir);$(SolutionDir)client\thirdparty\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>

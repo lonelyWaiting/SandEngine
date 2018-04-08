@@ -14,6 +14,10 @@ public:
 	void ClearColor( const SVector4f& color );
 	void Present( uint32 syncInterval = 0 , uint32 presentFlag = 0 );
 
+public:
+	ID3D11Device * GetDevice();
+	ID3D11DeviceContext* GetDeviceContext();
+
 private:
 	SRenderer() {}
 

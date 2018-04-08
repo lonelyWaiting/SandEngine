@@ -4,6 +4,12 @@
     <Filter Include="Application">
       <UniqueIdentifier>{624539a0-24b2-41c7-922e-2f0f2a4bea83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{cff7db02-c4bd-4fcc-8ac4-b12843da5d3e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui\sdk">
+      <UniqueIdentifier>{f5eb649e-4d30-440a-b8d8-9a4695d0561f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\SandEngineModule.h">
@@ -19,6 +25,15 @@
     <ClInclude Include="Application\SRenderer.h">
       <Filter>Application</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imgui.h">
+      <Filter>ImGui\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\thirdparty\imgui\imgui_internal.h">
+      <Filter>ImGui\sdk</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\SGui.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\SApplication.cpp">
@@ -30,6 +45,18 @@
     </ClCompile>
     <ClCompile Include="Application\SRenderer.cpp">
       <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp">
+      <Filter>ImGui\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\SGui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_demo.cpp">
+      <Filter>ImGui\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\imgui\imgui_draw.cpp">
+      <Filter>ImGui\sdk</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
