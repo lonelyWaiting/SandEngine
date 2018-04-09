@@ -136,7 +136,7 @@ void SApplication::Render()
 	GuiTest();
 
 	ImGuiEndRender();
-	SRenderer::Get().Present(1,0);
+	SRenderer::Get().Present(0,0);
 }
 
 void SApplication::Update()
