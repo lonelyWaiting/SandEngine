@@ -46,9 +46,14 @@ SWindow::SWindow( const char * caption , WNDPROC proc , const SVector2f& size , 
 		http://lonelywaiting.github.io/Win32-Application%E5%BC%80%E5%90%AFConsole%E7%AA%97%E5%8F%A3/
 	*/
 	AllocConsole();
-	*stdin  = *_fdopen( _open_osfhandle( ( intptr_t )GetStdHandle( STD_INPUT_HANDLE )  , _O_TEXT ) , "r" );
-	*stdout = *_fdopen( _open_osfhandle( ( intptr_t )GetStdHandle( STD_OUTPUT_HANDLE ) , _O_TEXT ) , "w" );
-	*stderr = *_fdopen( _open_osfhandle( ( intptr_t )GetStdHandle( STD_ERROR_HANDLE )  , _O_TEXT ) , "w" );
+	FILE* in = _fdopen( _open_osfhandle( ( intptr_t )GetStdHandle( STD_INPUT_HANDLE )  , _O_TEXT ) , "r" );
+	freopen_s(&in, "CONIN$", "r", stdin);
+
+	FILE* out = _fdopen( _open_osfhandle( ( intptr_t )GetStdHandle( STD_OUTPUT_HANDLE ) , _O_TEXT ) , "w" );
+	freopen_s(&out, "CONOUT$", "w", stdout);
+
+	FILE* err = _fdopen( _open_osfhandle( ( intptr_t )GetStdHandle( STD_ERROR_HANDLE )  , _O_TEXT ) , "w" );
+	freopen_s(&err, "CONOUT$", "w", stderr);
 }
 
 SWindow::~SWindow()
