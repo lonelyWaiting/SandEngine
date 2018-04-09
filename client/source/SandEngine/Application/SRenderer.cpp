@@ -335,7 +335,7 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 	scd.SampleDesc.Count                   = 1;
 	scd.SampleDesc.Quality                 = 0;
 	scd.Windowed                           = TRUE;
-	scd.SwapEffect                         = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+	scd.SwapEffect                         = DXGI_SWAP_EFFECT_DISCARD;
 	scd.Flags                              = 0;
 
 	D3D_FEATURE_LEVEL FeatureLevelsRequested[] = {	D3D_FEATURE_LEVEL_11_1 ,
