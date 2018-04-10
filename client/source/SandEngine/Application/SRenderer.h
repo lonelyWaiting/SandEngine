@@ -8,7 +8,7 @@ class SRenderer
 public:
 	static SRenderer& Get();
 
-	bool Init( HWND hwnd , const SVector2f& winSize );
+	bool Init( HWND hwnd );
 	void Shutdown();
 	void Resize( const SVector2f& size );
 	void ClearColor( const SVector4f& color );

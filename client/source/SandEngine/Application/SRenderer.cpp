@@ -257,7 +257,7 @@ SRenderer & SRenderer::Get()
 	return renderer;
 }
 
-bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
+bool SRenderer::Init( HWND hwnd )
 {
 	// enumerate adapters:https://msdn.microsoft.com/en-us/library/windows/desktop/ff476877(v=vs.85).aspx
 	IDXGIAdapter* pAdapter;
@@ -321,12 +321,18 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 	}
 #endif
 
+	RECT clientArea;
+	GetClientRect( hwnd , &clientArea );
+
+	int clientWidth  = clientArea.right - clientArea.left;
+	int clientHeight = clientArea.bottom - clientArea.top;
+
 	// create a device and immediate context: https://msdn.microsoft.com/en-us/library/windows/desktop/ff476879(v=vs.85).aspx
 	DXGI_SWAP_CHAIN_DESC scd;
 	ZeroMemory( &scd , sizeof( scd ) );
 	scd.BufferCount                        = 2;
-	scd.BufferDesc.Width                   = ( const uint32 )winSize.x;
-	scd.BufferDesc.Height                  = ( const uint32 )winSize.y;
+	scd.BufferDesc.Width                   = clientWidth;
+	scd.BufferDesc.Height                  = clientHeight;
 	scd.BufferDesc.Format                  = DXGI_FORMAT_R8G8B8A8_UNORM;
 	scd.BufferDesc.RefreshRate.Numerator   = 60;
 	scd.BufferDesc.RefreshRate.Denominator = 1;
@@ -400,8 +406,8 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 	ULONG refCount = pBackBuffer->Release();
 
 	D3D11_TEXTURE2D_DESC dsd;
-	dsd.Width              = ( const uint32 )winSize.x;
-	dsd.Height             = ( const uint32 )winSize.y;
+	dsd.Width              = clientWidth;
+	dsd.Height             = clientHeight;
 	dsd.MipLevels          = 1;
 	dsd.ArraySize          = 1;
 	dsd.Format             = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -421,8 +427,8 @@ bool SRenderer::Init( HWND hwnd , const SVector2f & winSize )
 	m_pImmediateContext->OMSetRenderTargets( 1 , &m_pRenderTargetView , m_pDepthStencilView );
 
 	D3D11_VIEWPORT vp;
-	vp.Width    = winSize.x;
-	vp.Height   = winSize.y;
+	vp.Width    = ( float )clientWidth;
+	vp.Height   = ( float )clientHeight;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0;
@@ -442,7 +448,7 @@ void SRenderer::Resize( const SVector2f& size )
 	m_pImmediateContext->OMSetRenderTargets( 0 , 0 , 0 );
 
 	// Release all outstanding references to the swap chain's buffers
-	m_pRenderTargetView->Release();
+	if( m_pRenderTargetView )	m_pRenderTargetView->Release();
 
 	// Preserve the existing buffer count and format
 	// Automatically choose the width and height to match the client rect for HWND
@@ -478,7 +484,7 @@ void SRenderer::Resize( const SVector2f& size )
 	// should i recreate the depth/stencil buffer too ?
 	// https://gamedev.stackexchange.com/questions/86164/idxgiswapchainresizebuffers-should-i-recreate-the-depth-stencil-buffer-too
 	// depth/stencil resize is just optional
-	m_pDepthStencilView->Release();
+	if( m_pDepthStencilView )	m_pDepthStencilView->Release();
 
 	D3D11_TEXTURE2D_DESC dsd;
 	dsd.Width              = ( const uint32 )size.x;

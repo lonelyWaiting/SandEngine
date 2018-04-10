@@ -67,11 +67,10 @@ SApplication::SApplication()
 
 bool SApplication::Init()
 {
-	SVector2f winSize( 1600 , 900 );
-	m_pWindow = new SWindow( "SandEngine" , WindowProc , winSize , SVector2f( 100 , 100 ) );
+	m_pWindow = new SWindow( "SandEngine" , WindowProc , SVector2f( 1600 , 900 ) , SVector2f( 100 , 100 ) );
 	if( !m_pWindow )	return false;
 
-	if( !SRenderer::Get().Init( m_pWindow->GetHandle() , winSize ) )	return false;
+	if( !SRenderer::Get().Init( m_pWindow->GetHandle() ) )	return false;
 
 	ImGuiInit( m_pWindow->GetHandle() , SRenderer::Get().GetDevice() , SRenderer::Get().GetDeviceContext() );
 
