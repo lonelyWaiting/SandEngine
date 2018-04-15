@@ -48,7 +48,7 @@ inline SArray<T>& SArray<T>::operator=( const SArray<T>& Other )
 	{
 		DestructItems( GetData() , m_iSize );
 
-		CopyToEmpty( Other.GetData() , Other.Size() );
+		CopyToEmpty( Other.GetData() , Other.GetSize() );
 	}
 
 	return *this;

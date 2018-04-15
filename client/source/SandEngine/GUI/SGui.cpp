@@ -596,8 +596,8 @@ bool ImGuiInit( void* hwnd , ID3D11Device* device , ID3D11DeviceContext* device_
 {
 	ImGui::CreateContext();
 
-	g_hWnd = ( HWND )hwnd;
-	g_pd3dDevice = device;
+	g_hWnd              = ( HWND )hwnd;
+	g_pd3dDevice        = device;
 	g_pd3dDeviceContext = device_context;
 
 	if( !QueryPerformanceFrequency( ( LARGE_INTEGER * )&g_TicksPerSecond ) )
@@ -838,4 +838,34 @@ void ImGuiEndResize()
 	}
 
 	ImGui_ImplDX11_CreateFontsTexture();
+}
+
+std::multimap<void* , void*> editorFunc;
+
+void GuiRegister( void* func , void* data /* = nullptr */ )
+{
+	editorFunc.insert( std::make_pair( func , data ) );
+}
+
+void GuiUnRegister( void* func , void* data /*= nullptr*/ )
+{
+	for( auto it = editorFunc.begin(); it != editorFunc.end(); it++ )
+	{
+		if( it->first == func && it->second == data )
+		{
+			editorFunc.erase( it );
+			break;
+		}
+	}
+}
+
+typedef void( *editor_func )( void* );
+
+void GuiUpdate()
+{
+	for( auto it : editorFunc )
+	{
+		editor_func func = ( editor_func )( it.first );
+		func( it.second );
+	}
 }

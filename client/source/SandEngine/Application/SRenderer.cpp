@@ -541,6 +541,7 @@ void SRenderer::Shutdown()
 		SAFE_RELEASE( pDebugDevice );
 	}
 #endif
+
 	SAFE_RELEASE( m_pDevice );
 }
 

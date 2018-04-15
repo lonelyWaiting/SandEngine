@@ -9,3 +9,9 @@ void ImGuiBeginRender();
 void ImGuiEndRender();
 void ImGuiBeginResize();
 void ImGuiEndResize();
+
+#include "SandEngine/Application/SandEngineModule.h"
+
+SAND_API void GuiRegister( void* func , void* data = nullptr );
+SAND_API void GuiUnRegister( void* func , void* data = nullptr );
+void GuiUpdate();

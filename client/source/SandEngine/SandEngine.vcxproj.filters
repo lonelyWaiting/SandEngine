@@ -10,6 +10,9 @@
     <Filter Include="ImGui\sdk">
       <UniqueIdentifier>{f5eb649e-4d30-440a-b8d8-9a4695d0561f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Callback">
+      <UniqueIdentifier>{774024c6-e2d9-47d0-aee9-81b7b320e65d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\SandEngineModule.h">
@@ -34,6 +37,9 @@
     <ClInclude Include="GUI\SGui.h">
       <Filter>ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Callback\SCallback.h">
+      <Filter>Callback</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\SApplication.cpp">
@@ -57,6 +63,12 @@
     </ClCompile>
     <ClCompile Include="..\..\thirdparty\imgui\imgui_draw.cpp">
       <Filter>ImGui\sdk</Filter>
+    </ClCompile>
+    <ClCompile Include="Callback\SCallback.cpp">
+      <Filter>Callback</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\SandEngineModule.cpp">
+      <Filter>Application</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

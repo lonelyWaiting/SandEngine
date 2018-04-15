@@ -5,3 +5,14 @@
 #else
 #define SAND_API __declspec(dllimport)
 #endif
+
+class SCallbackManager;
+
+class SandEngine
+{
+public:
+	SAND_API static SCallbackManager Callback;
+};
+
+void SandEngineInit();
+void SandEngineDeInit();

@@ -25,6 +25,7 @@
     <ClInclude Include="Application\SApplication.h" />
     <ClInclude Include="Application\SRenderer.h" />
     <ClInclude Include="Application\SWindow.h" />
+    <ClInclude Include="Callback\SCallback.h" />
     <ClInclude Include="GUI\SGui.h" />
     <ClInclude Include="SandEnginePCH.h" />
   </ItemGroup>
@@ -32,9 +33,11 @@
     <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp" />
     <ClCompile Include="..\..\thirdparty\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\..\thirdparty\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Application\SandEngineModule.cpp" />
     <ClCompile Include="Application\SApplication.cpp" />
     <ClCompile Include="Application\SRenderer.cpp" />
     <ClCompile Include="Application\SWindow.cpp" />
+    <ClCompile Include="Callback\SCallback.cpp" />
     <ClCompile Include="GUI\SGui.cpp" />
     <ClCompile Include="SandEnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -109,7 +112,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)pub\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)pub\$(Configuration)\$(ProjectName)\</IntDir>
-    <IncludePath>$(SolutionDir)client\source\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)client\source\;$(SolutionDir)client\thirdparty\;$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -117,7 +120,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;SAND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;SAND_EXPORT;IMGUI_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>SandEnginePCH.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -168,7 +171,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;SAND_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;SAND_EXPORT;IMGUI_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>SandEnginePCH.h</PrecompiledHeaderFile>
       <TreatWarningAsError>true</TreatWarningAsError>

@@ -15,7 +15,6 @@ public:
 
 private:
 	void Shutdown();
-	void Update();
 	void Render();
 
 private:

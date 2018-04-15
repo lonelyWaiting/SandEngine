@@ -42,6 +42,7 @@ SWindow::SWindow( const char * caption , WNDPROC proc , const SVector2f& size , 
 	ShowWindow( m_hWnd , SW_NORMAL );
 	UpdateWindow( m_hWnd );
 
+#ifdef _DEBUG
 	/*
 		http://lonelywaiting.github.io/Win32-Application%E5%BC%80%E5%90%AFConsole%E7%AA%97%E5%8F%A3/
 	*/
@@ -54,6 +55,7 @@ SWindow::SWindow( const char * caption , WNDPROC proc , const SVector2f& size , 
 
 	FILE* err = _fdopen( _open_osfhandle( ( intptr_t )GetStdHandle( STD_ERROR_HANDLE )  , _O_TEXT ) , "w" );
 	freopen_s(&err, "CONOUT$", "w", stderr);
+#endif
 }
 
 SWindow::~SWindow()
