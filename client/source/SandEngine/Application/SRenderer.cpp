@@ -534,7 +534,7 @@ void SRenderer::Shutdown()
 #ifdef _DEBUG
 	// ref: http://masterkenth.com/directx-leak-debugging/
 	ID3D11Debug* pDebugDevice = nullptr;
-	HRESULT hr = m_pDevice->QueryInterface( __uuidof( ID3D11Debug ) , ( void** )&pDebugDevice );
+	HRESULT hr = m_pDevice->QueryInterface( __uuidof( ID3D11Debug ) , reinterpret_cast< void** >( &pDebugDevice ) );
 	if( hr == S_OK )
 	{
 		hr = pDebugDevice->ReportLiveDeviceObjects( D3D11_RLDO_DETAIL );
