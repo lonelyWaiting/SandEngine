@@ -13,6 +13,9 @@
     <Filter Include="Callback">
       <UniqueIdentifier>{774024c6-e2d9-47d0-aee9-81b7b320e65d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Model">
+      <UniqueIdentifier>{9dc065e4-36dd-438f-9042-37b85a2111af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\SandEngineModule.h">
@@ -39,6 +42,9 @@
     </ClInclude>
     <ClInclude Include="Callback\SCallback.h">
       <Filter>Callback</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\FbxImporter.h">
+      <Filter>Model</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -69,6 +75,9 @@
     </ClCompile>
     <ClCompile Include="Application\SandEngineModule.cpp">
       <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\FbxImporter.cpp">
+      <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
