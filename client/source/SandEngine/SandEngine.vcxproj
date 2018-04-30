@@ -28,6 +28,15 @@
     <ClInclude Include="Callback\SCallback.h" />
     <ClInclude Include="GUI\SGui.h" />
     <ClInclude Include="Model\FbxImporter.h" />
+    <ClInclude Include="Model\SBuffer.h" />
+    <ClInclude Include="Model\SConstantBuffer.h" />
+    <ClInclude Include="Model\SIndexBuffer.h" />
+    <ClInclude Include="Model\SIScene.h" />
+    <ClInclude Include="Model\SMeshBuffer.h" />
+    <ClInclude Include="Model\SMeshLoader.h" />
+    <ClInclude Include="Model\SResource.h" />
+    <ClInclude Include="Model\SResourceManager.h" />
+    <ClInclude Include="Model\SVertexBuffer.h" />
     <ClInclude Include="SandEnginePCH.h" />
   </ItemGroup>
   <ItemGroup>
@@ -41,6 +50,15 @@
     <ClCompile Include="Callback\SCallback.cpp" />
     <ClCompile Include="GUI\SGui.cpp" />
     <ClCompile Include="Model\FbxImporter.cpp" />
+    <ClCompile Include="Model\SBuffer.cpp" />
+    <ClCompile Include="Model\SConstantBuffer.cpp" />
+    <ClCompile Include="Model\SIndexBuffer.cpp" />
+    <ClCompile Include="Model\SIScene.cpp" />
+    <ClCompile Include="Model\SMeshBuffer.cpp" />
+    <ClCompile Include="Model\SMeshLoader.cpp" />
+    <ClCompile Include="Model\SResource.cpp" />
+    <ClCompile Include="Model\SResourceManager.cpp" />
+    <ClCompile Include="Model\SVertexBuffer.cpp" />
     <ClCompile Include="SandEnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

@@ -83,6 +83,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Log\SLog.h" />
     <ClInclude Include="Math\SMath.h" />
     <ClInclude Include="Math\SMatrix3f.h" />
     <ClInclude Include="Math\SMatrix4f.h" />
@@ -90,6 +91,8 @@
     <ClInclude Include="Math\SVector2f.h" />
     <ClInclude Include="Math\SVector3f.h" />
     <ClInclude Include="Math\SVector4f.h" />
+    <ClInclude Include="Object\SRefCounter.h" />
+    <ClInclude Include="Object\SSmartPointer.h" />
     <ClInclude Include="SandBasePCH.h" />
     <ClInclude Include="Sort\Sort.h" />
     <ClInclude Include="String\SString.h" />
@@ -103,9 +106,11 @@
     <ClInclude Include="Template\TIsPointer.h" />
     <ClInclude Include="Template\TIsTriviallyCopyConstructible.h" />
     <ClInclude Include="Template\utils.h" />
+    <ClInclude Include="Timer\STimer.h" />
     <ClInclude Include="Vector\SArray.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Log\SLog.cpp" />
     <ClCompile Include="Math\SMath.cpp" />
     <ClCompile Include="Math\SMatrix3f.cpp" />
     <ClCompile Include="Math\SMatrix4f.cpp" />
@@ -113,11 +118,14 @@
     <ClCompile Include="Math\SVector2f.cpp" />
     <ClCompile Include="Math\SVector3f.cpp" />
     <ClCompile Include="Math\SVector4f.cpp" />
+    <ClCompile Include="Object\SRefCounter.cpp" />
+    <ClCompile Include="Object\SSmartPointer.cpp" />
     <ClCompile Include="SandBasePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="String\SString.cpp" />
+    <ClCompile Include="Timer\STimer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Vector\SArray.inl" />

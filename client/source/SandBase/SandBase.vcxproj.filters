@@ -16,6 +16,15 @@
     <Filter Include="Sort">
       <UniqueIdentifier>{32e03d36-279e-45d7-a173-842039ad216d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{3a64b9fd-1836-4257-b41f-601708337a5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Log">
+      <UniqueIdentifier>{342b60ee-e5ef-4027-8f38-0fb863001f21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="STimer">
+      <UniqueIdentifier>{eaf66f15-0de8-4799-a0f5-952077c29b83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Template\IsPODType.h">
@@ -79,6 +88,18 @@
     <ClInclude Include="String\SString.h">
       <Filter>String</Filter>
     </ClInclude>
+    <ClInclude Include="Object\SSmartPointer.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Object\SRefCounter.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Log\SLog.h">
+      <Filter>Log</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer\STimer.h">
+      <Filter>STimer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\SMath.cpp">
@@ -105,6 +126,18 @@
     <ClCompile Include="SandBasePCH.cpp" />
     <ClCompile Include="String\SString.cpp">
       <Filter>String</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SSmartPointer.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Object\SRefCounter.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer\STimer.cpp">
+      <Filter>STimer</Filter>
+    </ClCompile>
+    <ClCompile Include="Log\SLog.cpp">
+      <Filter>Log</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

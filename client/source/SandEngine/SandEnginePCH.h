@@ -187,3 +187,6 @@ typedef signed long long PTRINT;
 #ifndef RESTRICT
 #define RESTRICT	__restrict
 #endif
+
+#define SBIT(n)			(1 << n)
+#define Enum2Str(str)	#str

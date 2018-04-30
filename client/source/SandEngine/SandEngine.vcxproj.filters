@@ -16,6 +16,9 @@
     <Filter Include="Model">
       <UniqueIdentifier>{9dc065e4-36dd-438f-9042-37b85a2111af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Model\Importer">
+      <UniqueIdentifier>{89ecd511-11fb-4df6-903a-50a2d4b92a73}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\SandEngineModule.h">
@@ -44,6 +47,33 @@
       <Filter>Callback</Filter>
     </ClInclude>
     <ClInclude Include="Model\FbxImporter.h">
+      <Filter>Model\Importer</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\SIScene.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\SVertexBuffer.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\SIndexBuffer.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\SBuffer.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\SResource.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\SResourceManager.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\SConstantBuffer.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\SMeshBuffer.h">
+      <Filter>Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Model\SMeshLoader.h">
       <Filter>Model</Filter>
     </ClInclude>
   </ItemGroup>
@@ -77,6 +107,29 @@
       <Filter>Application</Filter>
     </ClCompile>
     <ClCompile Include="Model\FbxImporter.cpp">
+      <Filter>Model\Importer</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\SIScene.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\SVertexBuffer.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\SIndexBuffer.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\SBuffer.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\SResource.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\SResourceManager.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\SConstantBuffer.cpp" />
+    <ClCompile Include="Model\SMeshBuffer.cpp" />
+    <ClCompile Include="Model\SMeshLoader.cpp">
       <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>
