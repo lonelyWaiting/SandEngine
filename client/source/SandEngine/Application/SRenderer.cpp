@@ -3,6 +3,7 @@
 #include "SandBase/Vector/SArray.h"
 #include "SandBase/Math/SVector2f.h"
 #include "SandBase/Math/SVector4f.h"
+#include "SandBase/Log/SLog.h"
 
 SRenderer & SRenderer::Get()
 {
@@ -37,7 +38,7 @@ bool SRenderer::Init( HWND hwnd )
 	{
 		pAdapter = vAdapter[i];
 
-		std::cout << "Adapter:" << i << std::endl;
+		SLog::Info( "Adapter:%d" , i );
 
 		SArray<IDXGIOutput*> outputList;
 		uint32			outputIdx = 0;
@@ -50,7 +51,7 @@ bool SRenderer::Init( HWND hwnd )
 
 		for( uint32 j = 0 , outputNum = outputList.GetSize(); j < outputNum; j++ )
 		{
-			std::cout << "Adapter Output:" << j << std::endl;
+			SLog::Info( "Adapter Output:%d" , j );
 
 			pOutput = outputList[j];
 			
@@ -68,7 +69,7 @@ bool SRenderer::Init( HWND hwnd )
 			{
 				const DXGI_MODE_DESC& desc = displayModes[k];
 
-				std::cout << "Format:" << Enum2Str( desc.Format ) << "width:" << desc.Width << "height:" << desc.Height << "refreshRate:" << desc.RefreshRate.Numerator << "," << desc.RefreshRate.Denominator << std::endl;
+				SLog::Info( "Format:%s width:%d height:%d refreshRate:%d/%d" , Enum2Str( desc.Format ) , desc.Width , desc.Height , desc.RefreshRate.Numerator , desc.RefreshRate.Denominator );
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 #include <SandBase/SandBasePCH.h>
-#include <stdarg.h>
 #include <iostream>
+#include <windows.h>
 #include "SLog.h"
 
 template<int size>
@@ -13,11 +13,6 @@ inline void process( const char * format , va_list args , char( &errorBuf )[size
 #endif
 }
 
-#define RESET	"\x1B[0m"
-#define RED		"\x1B[31m"
-#define GREEN	"\x1B[32m"
-#define YELLOW	"\x1B[33m"
-
 void SLog::Error( const char * format , ... )
 {
 	char errorBuf[2048];
@@ -26,7 +21,8 @@ void SLog::Error( const char * format , ... )
 	process( format , args , errorBuf );
 	va_end( args );
 
-	std::cout << RED << errorBuf << RESET << std::endl;
+	SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ) , FOREGROUND_RED );
+	std::cout << errorBuf << std::endl;
 }
 
 void SLog::Warning( const char * format , ... )
@@ -37,7 +33,8 @@ void SLog::Warning( const char * format , ... )
 	process( format , args , warningBuf );
 	va_end( args );
 
-	std::cout << YELLOW << warningBuf << RESET << std::endl;
+	SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ) , FOREGROUND_RED | FOREGROUND_GREEN );
+	std::cout << warningBuf << std::endl;
 }
 
 void SLog::Info( const char * format , ... )
@@ -48,5 +45,6 @@ void SLog::Info( const char * format , ... )
 	process( format , args , infoBuf );
 	va_end( args );
 
-	std::cout << GREEN << infoBuf << RESET << std::endl;
+	SetConsoleTextAttribute( GetStdHandle( STD_OUTPUT_HANDLE ) , FOREGROUND_GREEN );
+	std::cout << infoBuf << std::endl;
 }
