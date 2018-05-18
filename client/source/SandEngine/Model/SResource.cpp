@@ -17,7 +17,6 @@ const SString & SResource::GetFilename()
 void SResource::SetFileName( const char * name )
 {
 	m_name = name;
-	SRenderer::Get().GetDevice()->SetPrivateData( WKPDID_D3DDebugObjectName , sizeof( name ) - 1 , name );
 }
 
 void SResource::SetResourceFlag( eResourceFlag flag )

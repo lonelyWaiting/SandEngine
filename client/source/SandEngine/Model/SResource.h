@@ -2,6 +2,7 @@
 
 #include "SandBase/Object/SRefCounter.h"
 #include "SandBase/String/SString.h"
+#include "SandEngine/SandEnginePCH.h"
 
 enum eResourceFlag
 {
@@ -13,7 +14,7 @@ enum eResourceFlag
 class SResource : public SRefCounter
 {
 public:
-	SResource( const char* name = nullptr );
+	SResource( const char* name = "" );
 	const SString& GetFilename();
 	void SetFileName( const char* name );
 	void SetResourceFlag( eResourceFlag flag );

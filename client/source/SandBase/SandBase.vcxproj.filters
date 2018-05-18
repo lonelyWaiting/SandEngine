@@ -127,22 +127,22 @@
     <ClCompile Include="String\SString.cpp">
       <Filter>String</Filter>
     </ClCompile>
-    <ClCompile Include="Object\SSmartPointer.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\SRefCounter.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
     <ClCompile Include="Timer\STimer.cpp">
       <Filter>STimer</Filter>
     </ClCompile>
     <ClCompile Include="Log\SLog.cpp">
       <Filter>Log</Filter>
     </ClCompile>
+    <ClCompile Include="Object\SRefCounter.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Vector\SArray.inl">
       <Filter>Vector</Filter>
+    </None>
+    <None Include="Object\SSmartPointer.inl">
+      <Filter>Object</Filter>
     </None>
   </ItemGroup>
 </Project>

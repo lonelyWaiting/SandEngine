@@ -1,12 +1,6 @@
 #include "SandEnginePCH.h"
 #include "FbxImporter.h"
 #include <fbxsdk.h>
-#include <fbxsdk/fileio/fbxiosettings.h>
-#include <fbxsdk/fileio/fbximporter.h>
-#include <fbxsdk/scene/fbxaxissystem.h>
-#include <fbxsdk/scene/geometry/fbxlayer.h>
-#include <fbxsdk/scene/geometry/fbxnode.h>
-#include <fbxsdk/scene/geometry/fbxmesh.h>
 #include "Model/SIScene.h"
 
 void import_mesh_node( FbxNode* pNode , SArray<FbxNode*> meshNodeList )
@@ -88,7 +82,7 @@ void import_material_info( const FbxMesh* pMesh , SIMesh& siMesh , const SArray<
 						case FbxGeometryElement::eIndexToDirect:
 						{
 							int matIdx = pMaterialLayer->GetIndexArray().GetAt( iControlPointIndex );
-							if( matIdx >= 0 && matIdx < MatIndexList.GetSize() )
+							if( matIdx >= 0 && matIdx < ( int )MatIndexList.GetSize() )
 							{
 								siMesh.SetMaterialIndex( iPolygonIndex , MatIndexList[matIdx] );
 							}
@@ -108,7 +102,7 @@ void import_material_info( const FbxMesh* pMesh , SIMesh& siMesh , const SArray<
 						case FbxGeometryElement::eIndexToDirect:
 						{
 							int matIdx = pMaterialLayer->GetIndexArray().GetAt( iPolygonIndex );
-							if( matIdx >= 0 && matIdx < MatIndexList.GetSize() )
+							if( matIdx >= 0 && matIdx < ( int )MatIndexList.GetSize() )
 							{
 								siMesh.SetMaterialIndex( iPolygonIndex , MatIndexList[matIdx] );
 							}
@@ -128,7 +122,7 @@ void import_material_info( const FbxMesh* pMesh , SIMesh& siMesh , const SArray<
 						case FbxGeometryElement::eIndexToDirect:
 						{
 							int matIndex = pMaterialLayer->GetIndexArray().GetAt( 0 );
-							if( matIndex >= 0 && matIndex < MatIndexList.GetSize() )
+							if( matIndex >= 0 && matIndex < ( int )MatIndexList.GetSize() )
 							{
 								siMesh.SetMaterialIndex( iPolygonIndex , MatIndexList[matIndex] );
 							}
@@ -154,7 +148,7 @@ void import_geometry_topology( FbxMesh* pMesh , SIMesh& siMesh )
 	{
 		const FbxVector4& p = pControlPoints[iControlPointIndex];
 		SIVertex& vertex = siMesh.AddVertex();
-		vertex.Pos = SVector3f( p[0] , p[1] , p[2] );
+		vertex.Pos = SVector3f( ( float )p[0] , ( float )p[1] , ( float )p[2] );
 	}
 
 	for( int iPolygonIndex = 0 , iPolygonCount = pMesh->GetPolygonCount(); iPolygonIndex < iPolygonCount; iPolygonIndex++ )
@@ -188,7 +182,7 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							case FbxGeometryElement::eDirect:
 							{
 								const auto& normal = pNormalLayer->GetDirectArray().GetAt( iControlPointIndex );
-								siMesh.SetVertexNormal( iControlPointIndex , SVector3f( normal[0] , normal[1] , normal[2] ) );
+								siMesh.SetVertexNormal( iControlPointIndex , SVector3f( ( float )normal[0] , ( float )normal[1] , ( float )normal[2] ) );
 								break;
 							}
 
@@ -196,7 +190,7 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							{
 								int normalIdx = pNormalLayer->GetIndexArray().GetAt( iControlPointIndex );
 								const auto& normal = pNormalLayer->GetDirectArray().GetAt( normalIdx );
-								siMesh.SetVertexNormal( iControlPointIndex , SVector3f( normal[0] , normal[1] , normal[2] ) );
+								siMesh.SetVertexNormal( iControlPointIndex , SVector3f( ( float )normal[0] , ( float )normal[1] , ( float )normal[2] ) );
 								break;
 							}
 
@@ -213,7 +207,7 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							case FbxGeometryElement::eDirect:
 							{
 								const auto& normal = pNormalLayer->GetDirectArray().GetAt( polygonVertexIdx );
-								siMesh.SetVertexNormal( iControlPointIndex , SVector3f( normal[0] , normal[1] , normal[2] ) );
+								siMesh.SetVertexNormal( iControlPointIndex , SVector3f( ( float )normal[0] , ( float )normal[1] , ( float )normal[2] ) );
 								break;
 							}
 
@@ -221,7 +215,7 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							{
 								int normalIdx = pNormalLayer->GetIndexArray().GetAt( polygonVertexIdx );
 								const auto& normal = pNormalLayer->GetDirectArray().GetAt( normalIdx );
-								siMesh.SetVertexNormal( iControlPointIndex , SVector3f( normal[0] , normal[1] , normal[2] ) );
+								siMesh.SetVertexNormal( iControlPointIndex , SVector3f( ( float )normal[0] , ( float )normal[1] , ( float )normal[2] ) );
 								break;
 							}
 
@@ -248,7 +242,7 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							case FbxGeometryElement::eDirect:
 							{
 								const auto& tangent = pTangentLayer->GetDirectArray().GetAt( iControlPointIndex );
-								siMesh.SetVertexTangent( iControlPointIndex , SVector4f( tangent[0] , tangent[1] , tangent[2] , tangent[3] ) );
+								siMesh.SetVertexTangent( iControlPointIndex , SVector4f( ( float )tangent[0] , ( float )tangent[1] , ( float )tangent[2] , ( float )tangent[3] ) );
 								break;
 							}
 
@@ -256,7 +250,7 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							{
 								int tangentIdx = pTangentLayer->GetIndexArray().GetAt( iControlPointIndex );
 								const auto& tangent = pTangentLayer->GetDirectArray().GetAt( tangentIdx );
-								siMesh.SetVertexTangent( iControlPointIndex , SVector4f( tangent[0] , tangent[1] , tangent[2] , tangent[3] ) );
+								siMesh.SetVertexTangent( iControlPointIndex , SVector4f( ( float )tangent[0] , ( float )tangent[1] , ( float )tangent[2] , ( float )tangent[3] ) );
 								break;
 							}
 
@@ -273,7 +267,7 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							case FbxGeometryElement::eDirect:
 							{
 								const auto& tangent = pTangentLayer->GetDirectArray().GetAt( polygonVertexIdx );
-								siMesh.SetVertexTangent( iControlPointIndex , SVector4f( tangent[0] , tangent[1] , tangent[2] , tangent[3] ) );
+								siMesh.SetVertexTangent( iControlPointIndex , SVector4f( ( float )tangent[0] , ( float )tangent[1] , ( float )tangent[2] , ( float )tangent[3] ) );
 								break;
 							}
 
@@ -281,7 +275,7 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							{
 								int tangentIdx = pTangentLayer->GetIndexArray().GetAt( polygonVertexIdx );
 								const auto& tangent = pTangentLayer->GetDirectArray().GetAt( tangentIdx );
-								siMesh.SetVertexTangent( iControlPointIndex , SVector4f( tangent[0] , tangent[1] , tangent[2] , tangent[3] ) );
+								siMesh.SetVertexTangent( iControlPointIndex , SVector4f( ( float )tangent[0] , ( float )tangent[1] , ( float )tangent[2] , ( float )tangent[3] ) );
 								break;
 							}
 
@@ -308,7 +302,7 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							case FbxGeometryElement::eDirect:
 							{
 								const auto& binormal = pBinormalLayer->GetDirectArray().GetAt( iControlPointIndex );
-								siMesh.SetVertexBinormal( iControlPointIndex , SVector3f( binormal[0] , binormal[1] , binormal[2] ) );
+								siMesh.SetVertexBinormal( iControlPointIndex , SVector3f( ( float )binormal[0] , ( float )binormal[1] , ( float )binormal[2] ) );
 								break;
 							}
 
@@ -316,7 +310,7 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							{
 								int binormalIdx = pBinormalLayer->GetIndexArray().GetAt( iControlPointIndex );
 								const auto& binormal = pBinormalLayer->GetDirectArray().GetAt( binormalIdx );
-								siMesh.SetVertexBinormal( iControlPointIndex , SVector3f( binormal[0] , binormal[1] , binormal[2] ) );
+								siMesh.SetVertexBinormal( iControlPointIndex , SVector3f( ( float )binormal[0] , ( float )binormal[1] , ( float )binormal[2] ) );
 								break;
 							}
 
@@ -333,7 +327,7 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							case FbxGeometryElement::eDirect:
 							{
 								const auto& binormal = pBinormalLayer->GetDirectArray().GetAt( polygonVertexIdx );
-								siMesh.SetVertexBinormal( iControlPointIndex , SVector3f( binormal[0] , binormal[1] , binormal[2] ) );
+								siMesh.SetVertexBinormal( iControlPointIndex , SVector3f( ( float )binormal[0] , ( float )binormal[1] , ( float )binormal[2] ) );
 								break;
 							}
 
@@ -341,7 +335,7 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							{
 								int binormalIdx = pBinormalLayer->GetIndexArray().GetAt( polygonVertexIdx );
 								const auto& binormal = pBinormalLayer->GetDirectArray().GetAt( binormalIdx );
-								siMesh.SetVertexBinormal( iControlPointIndex , SVector3f( binormal[0] , binormal[1] , binormal[2] ) );
+								siMesh.SetVertexBinormal( iControlPointIndex , SVector3f( ( float )binormal[0] , ( float )binormal[1] , ( float )binormal[2] ) );
 								break;
 								break;
 							}
@@ -370,14 +364,14 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							case FbxGeometryElement::eDirect:
 							{
 								const auto& color = pVertexColorLayer->GetDirectArray().GetAt( iControlPointIndex );
-								siMesh.SetVertexColor( iControlPointIndex , SVector3f( color[0] , color[1] , color[2] ) );
+								siMesh.SetVertexColor( iControlPointIndex , SVector3f( ( float )color[0] , ( float )color[1] , ( float )color[2] ) );
 								break;
 							}
 							case FbxGeometryElement::eIndexToDirect:
 							{
 								int idx = pVertexColorLayer->GetIndexArray().GetAt( iControlPointIndex );
 								const auto& color = pVertexColorLayer->GetDirectArray().GetAt( idx );
-								siMesh.SetVertexColor( iControlPointIndex , SVector3f( color[0] , color[1] , color[2] ) );
+								siMesh.SetVertexColor( iControlPointIndex , SVector3f( ( float )color[0] , ( float )color[1] , ( float )color[2] ) );
 								break;
 							}
 							default:
@@ -393,14 +387,14 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							case FbxGeometryElement::eDirect:
 							{
 								const auto& color = pVertexColorLayer->GetDirectArray().GetAt( polygonVertexIdx );
-								siMesh.SetVertexColor( iControlPointIndex , SVector3f( color[0] , color[1] , color[2] ) );
+								siMesh.SetVertexColor( iControlPointIndex , SVector3f( ( float )color[0] , ( float )color[1] , ( float )color[2] ) );
 								break;
 							}
 							case FbxGeometryElement::eIndexToDirect:
 							{
 								int idx = pVertexColorLayer->GetIndexArray().GetAt( polygonVertexIdx );
 								const auto& color = pVertexColorLayer->GetDirectArray().GetAt( idx );
-								siMesh.SetVertexColor( iControlPointIndex , SVector3f( color[0] , color[1] , color[2] ) );
+								siMesh.SetVertexColor( iControlPointIndex , SVector3f( ( float )color[0] , ( float )color[1] , ( float )color[2] ) );
 								break;
 							}
 						}
@@ -423,14 +417,14 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							case FbxGeometryElement::eDirect:
 							{
 								const auto& uv = pUVLayer->GetDirectArray().GetAt( iControlPointIndex );
-								siMesh.SetVertexUV( iControlPointIndex , SVector2f( uv[0] , uv[1] ) );
+								siMesh.SetVertexUV( iControlPointIndex , SVector2f( ( float )uv[0] , ( float )uv[1] ) );
 								break;
 							}
 							case FbxGeometryElement::eIndexToDirect:
 							{
 								int idx = pUVLayer->GetIndexArray().GetAt( iControlPointIndex );
 								const auto& uv = pUVLayer->GetDirectArray().GetAt( idx );
-								siMesh.SetVertexUV( iControlPointIndex , SVector2f( uv[0] , uv[1] ) );
+								siMesh.SetVertexUV( iControlPointIndex , SVector2f( ( float )uv[0] , ( float )uv[1] ) );
 								break;
 							}
 							default:
@@ -446,14 +440,14 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 							case FbxGeometryElement::eDirect:
 							{
 								const auto& uv = pUVLayer->GetDirectArray().GetAt( uvIndex );
-								siMesh.SetVertexUV( iControlPointIndex , SVector2f( uv[0] , uv[1] ) );
+								siMesh.SetVertexUV( iControlPointIndex , SVector2f( ( float )uv[0] , ( float )uv[1] ) );
 								break;
 							}
 							case FbxGeometryElement::eIndexToDirect:
 							{
 								int idx = pUVLayer->GetIndexArray().GetAt( uvIndex );
 								const auto& uv = pUVLayer->GetDirectArray().GetAt( idx );
-								siMesh.SetVertexUV( iControlPointIndex , SVector2f( uv[0] , uv[1] ) );
+								siMesh.SetVertexUV( iControlPointIndex , SVector2f( ( float )uv[0] , ( float )uv[1] ) );
 								break;
 							}
 							default:
@@ -499,7 +493,7 @@ void import_material( FbxNode* pNode , SArray<FbxSurfaceMaterial*>& FbxMaterial 
 		FbxSurfaceMaterial* pMaterial = pNode->GetMaterial( i );
 
 		bool existMaterial = false;
-		for( int k = 0; k < FbxMaterial.GetSize(); k++ )
+		for( int k = 0; k < ( int )FbxMaterial.GetSize(); k++ )
 		{
 			if( FbxMaterial[k] == pMaterial )
 			{
@@ -527,7 +521,7 @@ void import_material( FbxNode* pNode , SArray<FbxSurfaceMaterial*>& FbxMaterial 
 					if( pTexture )
 					{
 						FbxFileTexture* pFileTexture = FbxCast<FbxFileTexture>( pTexture );
-						const char* szRelativeName = pFileTexture->GetRelativeFileName;
+						const char* szRelativeName = pFileTexture->GetRelativeFileName();
 
 						switch( FbxGeometryElement::eTextureDiffuse + iLayerTextureIndex )
 						{
@@ -595,7 +589,7 @@ void import_material( FbxNode* pNode , SArray<FbxSurfaceMaterial*>& FbxMaterial 
 	}
 }
 
-bool fbx_importer( const char* filename )
+bool fbx_importer( const char* filename , SIScene& siScene )
 {
 	// Create the FBX SDK Manager
 	FbxManager* lSdkManager = FbxManager::Create();
@@ -618,7 +612,7 @@ bool fbx_importer( const char* filename )
 
 	if( !bImportStatus )
 	{
-		std::cout << "Call to FbxImporter::Initialize() Failed" << std::endl << "Error returned: %s" << pImporter->GetStatus().GetErrorString << std::endl;
+		std::cout << "Call to FbxImporter::Initialize() Failed" << std::endl << "Error returned: %s" << pImporter->GetStatus().GetErrorString() << std::endl;
 		return false;
 	}
 
@@ -636,7 +630,7 @@ bool fbx_importer( const char* filename )
 
 	FbxGeometryConverter geometryConverter( lSdkManager );
 
-	SIScene siScene;
+	siScene.SetFilename( filename );
 	SArray<FbxSurfaceMaterial*> fbxMaterials;
 	import_material( pScene->GetRootNode() , fbxMaterials , siScene );
 	import_geometry( pScene->GetRootNode() , fbxMaterials , geometryConverter , siScene );

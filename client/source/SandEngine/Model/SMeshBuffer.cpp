@@ -1,27 +1,15 @@
 #include "SandEnginePCH.h"
 #include "SMeshBuffer.h"
+#include "SandEngine/Application/SRenderer.h"
 
-SMeshBuffer::SMeshBuffer()
+void SMeshBuffer::EnsureVertexBuffer( const SVertexDescription & desc , eBufferUsage usage , int iNumOfVertices , const void * pVertices , eBufferBindFlag bindFlag , int miscFlag )
 {
-	m_VertexBuffer = nullptr;
-	m_IndexBuffer  = nullptr;
+	m_VertexBuffer = new SVertexBuffer( desc , usage , iNumOfVertices , pVertices , bindFlag , miscFlag );
 }
 
-void SMeshBuffer::EnsureVertexBuffer( const SVertexDescription & desc , eBufferUsage usage , const void * pVertices , eBufferBindFlag bindFlag , int miscFlag )
+void SMeshBuffer::EnsureIndexBuffer( eBufferUsage usage , int iNumOfIndices , const void* pIndices , eIndexFormat format, eBufferBindFlag bindFlag , int miscFlag )
 {
-	m_VertexBuffer = new SVertexBuffer( desc , usage , pVertices , bindFlag , miscFlag );
-}
-
-void SMeshBuffer::EnsureIndexBuffer( int stride , eBufferUsage usage , const short * pIndices , eBufferBindFlag bindFlag , int miscFlag )
-{
-	m_IndexBuffer = new SIndexBuffer( usage , stride , pIndices , bindFlag , miscFlag );
-	m_IndexBuffer->SetIndexType( eIT_Short );
-}
-
-void SMeshBuffer::EnsureIndexBuffer( int stride , eBufferUsage usage , const int * pIndices , eBufferBindFlag bindFlag , int miscFlag )
-{
-	m_IndexBuffer = new SIndexBuffer( usage , stride , pIndices , bindFlag , miscFlag );
-	m_IndexBuffer->SetIndexType( eIT_Int );
+	m_IndexBuffer = new SIndexBuffer( usage , iNumOfIndices , format , pIndices , bindFlag , miscFlag );
 }
 
 SVertexBuffer* SMeshBuffer::GetVertexBuffer()
@@ -32,4 +20,20 @@ SVertexBuffer* SMeshBuffer::GetVertexBuffer()
 SIndexBuffer* SMeshBuffer::GetIndexBuffer()
 {
 	return m_IndexBuffer.GetPointer();
+}
+
+int SMeshBuffer::GetNumOfVertices()
+{
+	return m_VertexBuffer.GetPointer() ? m_VertexBuffer->GetNumOfVertices() : 0;
+}
+
+int SMeshBuffer::GetNumOfIndices()
+{
+	return m_IndexBuffer.GetPointer() ? m_IndexBuffer->GetNumOfIndices() : 0;
+}
+
+void SMeshBuffer::SetFilename( const char* filename )
+{
+	if( m_VertexBuffer.GetPointer() != nullptr )	m_VertexBuffer->SetFilename( filename );
+	if( m_IndexBuffer.GetPointer() != nullptr )		m_IndexBuffer->SetFilename( filename );
 }

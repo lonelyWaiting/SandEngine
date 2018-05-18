@@ -51,7 +51,7 @@ struct TDeferenceWrapper<T*, PREDICATE_CLASS>
 //		return A < B;
 // }
 template<class T, class PREDICATE_CLASS>
-void SortInternal(T* First, const uint32 Num, const PREDICATE_CLASS& Predicate)
+void SortInternal(T* First, const suInt32 Num, const PREDICATE_CLASS& Predicate)
 {
 	struct FStack
 	{
@@ -72,7 +72,7 @@ void SortInternal(T* First, const uint32 Num, const PREDICATE_CLASS& Predicate)
 		Current = *StackTop;
 
 	Loop:
-		int32 Count = (int32)( Current.Max - Current.Min + 1 );
+		sInt32 Count = (sInt32)( Current.Max - Current.Min + 1 );
 		if (Count <= 8)
 		{
 			// ¸ÄÓÃÃ°ÅÝÅÅÐò
@@ -163,14 +163,14 @@ void SortInternal(T* First, const uint32 Num, const PREDICATE_CLASS& Predicate)
 // Sort elements using user defined predicate class.
 // The sort is unstable, meaning that the ordering of equal items is not necessarily preversed.
 template<class T, class PREDICATE_CLASS>
-void Sort(T* First, const uint32 Num, const PREDICATE_CLASS& Predicate)
+void Sort(T* First, const suInt32 Num, const PREDICATE_CLASS& Predicate)
 {
 	SortInternal(First, Num, TDeferenceWrapper<T, PREDICATE_CLASS>(Predicate));
 }
 
 // Specialized version of the above Sort function for pointers to elements.
 template<class T, class PREDICATE_CLASS>
-void Sort(T** First, const uint32 Num, const PREDICATE_CLASS& Predicate)
+void Sort(T** First, const suInt32 Num, const PREDICATE_CLASS& Predicate)
 {
 	SortInternal(First, Num, TDeferenceWrapper<T*, PREDICATE_CLASS>(Predicate));
 }
@@ -178,14 +178,14 @@ void Sort(T** First, const uint32 Num, const PREDICATE_CLASS& Predicate)
 // Sort elements. The sort is unstable, meaning that the ordering of equal items is not necessarily preserved.
 // Assumes < operator is defined for the template type.
 template<class T>
-void Sort(T* First, const uint32 Num)
+void Sort(T* First, const suInt32 Num)
 {
 	SortInternal(First, Num, TDeferenceWrapper<T, TLess<T>>(TLess<T>()));
 }
 
 // Specialized version of the above Sort function for pointers to elements.
 template<class T>
-void Sort(T** First, const uint32 Num)
+void Sort(T** First, const suInt32 Num)
 {
 	SortInternal(First, Num, TDeferenceWrapper<T*, TLess<T>>(TLess<T>()));
 }

@@ -16,13 +16,19 @@ SSmartPointer<T>::SSmartPointer( T* instance )
 
 template<class T>
 SSmartPointer<T>::SSmartPointer( const SSmartPointer<T>& other )
-{}
+{
+	m_instance = other.m_instance;
+	if( m_instance )	m_instance->Increase();
+}
 
 template<class T>
 SSmartPointer<T>::~SSmartPointer()
 {
-	m_instance->Release();
-	if( !m_instance->GetRefCount() )	SAFE_RELEASE( m_instance );
+	if( m_instance )
+	{
+		m_instance->Release();
+		if( m_instance->GetRefCount() == 0 )	SAFE_RELEASE( m_instance );
+	}
 }
 
 template<class T>
@@ -32,6 +38,19 @@ SSmartPointer<T>& SSmartPointer<T>::operator=( const SSmartPointer<T>& other )
 
 	m_instance = other.GetPointer();
 	if( m_instance )	m_instance->Increase();
+
+	return *this;
+}
+
+template<class T>
+SSmartPointer<T>& SSmartPointer<T>::operator=( T * instance )
+{
+	if( m_instance )	m_instance->Release();
+
+	m_instance = instance;
+	if( m_instance )	m_instance->Increase();
+
+	return *this;
 }
 
 template<class T>
@@ -47,7 +66,7 @@ T * SSmartPointer<T>::GetPointer()
 }
 
 template<class T>
-int SSmartPointer<T>::GetRefCount() const
+inline SSmartPointer<T>::operator T*( )
 {
-	return m_refcount;
+	return m_instance;
 }

@@ -23,36 +23,36 @@ public:
 	~SArray();
 
 public:
-	T& operator[]( uint32 pos );
-	const T& operator[]( uint32 pos ) const;
+	T& operator[]( suInt32 pos );
+	const T& operator[]( suInt32 pos ) const;
 
 public:
-	uint32		GetSize() const;
-	uint32		GetCapacity() const;
+	suInt32		GetSize() const;
+	suInt32		GetCapacity() const;
 	bool		IsEmpty() const;
 	T*			GetData();
 	const T*	GetData() const;
-	void		Reserve( uint32 newCapacity );
+	void		Reserve( suInt32 newCapacity );
 	void		PushBack( const T& element );
 	T			Pop();
 	T&			Peek();
 	void		Clear();
 	bool		Contains( const T& Item ) const;
-	void		Insert( uint32 pos , const T& value );
-	void		InsertZeroed( uint32 Index , uint32 Count = 1 );
-	void		Insert( const SArray<T>& Items , const int32 Index );
-	void		Insert( const T* Ptr , const uint32 Count , const uint32 Index );
-	void		RemoveIndex( int32 Index );
-	void		Remove( int32 Index , uint32 Count = 1 );
-	int32		RemoveValue( const T& Item );
+	void		Insert( suInt32 pos , const T& value );
+	void		InsertZeroed( suInt32 Index , suInt32 Count = 1 );
+	void		Insert( const SArray<T>& Items , const sInt32 Index );
+	void		Insert( const T* Ptr , const suInt32 Count , const suInt32 Index );
+	void		RemoveIndex( sInt32 Index );
+	void		Remove( sInt32 Index , suInt32 Count = 1 );
+	sInt32		RemoveValue( const T& Item );
 	template<class PREDICATE_CLASS>
-	int32		RemoveAll( const PREDICATE_CLASS& Predicate );
+	sInt32		RemoveAll( const PREDICATE_CLASS& Predicate );
 	
-	int32			Find( const T& Item ) const;	
+	sInt32			Find( const T& Item ) const;	
 	template<typename Predicate>
-	int32				FindFirstByPredicate( Predicate Pred );
+	sInt32				FindFirstByPredicate( Predicate Pred );
 	template<typename Predicate>
-	SArray<uint32>		FindListByPredicate( Predicate Pred ) const;
+	SArray<suInt32>		FindListByPredicate( Predicate Pred ) const;
 
 	// Sorts the array assuming < operator is defined for the item type
 	void Sort();
@@ -60,20 +60,20 @@ public:
 	template<class PREDICATE_CLASS>
 	void Sort( const PREDICATE_CLASS& Predicate );
 
-	void Resize(uint32 newSize);
+	void Resize(suInt32 newSize);
 	void Shrink();
 
 	void Swap( SArray<T>& other );
 
 protected:
 	void CopyToEmpty( const T* pData , int size );
-	void InsertUninitialized( uint32 index , uint32 count = 1 );
-	void RemoveAtImpl( uint32 Index , uint32 Count );
+	void InsertUninitialized( suInt32 index , suInt32 count = 1 );
+	void RemoveAtImpl( suInt32 Index , suInt32 Count );
 
 public:
 	T* m_pData			= nullptr;
-	uint32 m_iSize		= 0;
-	uint32 m_iCapacity	= 0;
+	suInt32 m_iSize		= 0;
+	suInt32 m_iCapacity	= 0;
 };
 
 #include "SArray.inl"

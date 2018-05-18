@@ -24,12 +24,12 @@
 #define eVM_Texcoord15	SBIT(19)
 #define eVM_Color		SBIT(20)
 
-SVertexBuffer::SVertexBuffer( const SVertexDescription & desc , eBufferUsage usage , const void * pInitData /*= nullptr*/ , eBufferBindFlag viewFlag /*= eBBF_None*/ , int miscFlag /*= 0*/ )
-	:SBuffer( usage , eBT_Vertex , desc.stride , pInitData , viewFlag , miscFlag )
+SVertexBuffer::SVertexBuffer( const SVertexDescription & desc , eBufferUsage usage , int iNumOfVertices , const void * pInitData /*= nullptr*/ , eBufferBindFlag viewFlag /*= eBBF_None*/ , int miscFlag /*= 0*/ )
+	:SBuffer( usage , eBT_Vertex , desc.stride * iNumOfVertices , pInitData , viewFlag , miscFlag )
 {
-	m_vertexDesc = desc;
+	m_vertexDesc     = desc;
+	m_iNumOfVertices = iNumOfVertices;
 }
-
 
 int SVertexBuffer::GetVertexMask()
 {
@@ -69,4 +69,9 @@ int SVertexBuffer::GetVertexMask()
 	}
 
 	return result;
+}
+
+int SVertexBuffer::GetNumOfVertices()
+{
+	return m_iNumOfVertices;
 }

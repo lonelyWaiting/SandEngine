@@ -23,7 +23,7 @@ SArray<T>::SArray()
 template<class T>
 inline SArray<T>::SArray( std::initializer_list<T> InitList )
 {
-	CopyToEmpty( InitList.begin() , (int32)InitList.size() );
+	CopyToEmpty( InitList.begin() , (sInt32)InitList.size() );
 }
 
 template<typename T>
@@ -36,7 +36,7 @@ template<class T>
 inline SArray<T>& SArray<T>::operator=( std::initializer_list<T> InitList )
 {
 	DestructItems( GetData() , m_iSize );
-	CopyToEmpty( InitList.begin() , (int32)InitList.size() );
+	CopyToEmpty( InitList.begin() , (sInt32)InitList.size() );
 
 	return *this;
 }
@@ -64,13 +64,13 @@ SArray<T>::~SArray()
 }
 
 template<typename T>
-uint32 SArray<T>::GetSize() const
+suInt32 SArray<T>::GetSize() const
 {
 	return m_iSize;
 }
 
 template<typename T>
-uint32 SArray<T>::GetCapacity() const
+suInt32 SArray<T>::GetCapacity() const
 {
 	return m_iCapacity;
 }
@@ -94,7 +94,7 @@ const T* SArray<T>::GetData() const
 }
 
 template<typename T>
-void SArray<T>::Reserve( uint32 NewCapacity )
+void SArray<T>::Reserve( suInt32 NewCapacity )
 {
 	if( NewCapacity > m_iCapacity )
 	{
@@ -104,7 +104,7 @@ void SArray<T>::Reserve( uint32 NewCapacity )
 }
 
 template<typename T>
-T& SArray<T>::operator[]( uint32 pos )
+T& SArray<T>::operator[]( suInt32 pos )
 {
 	assert( pos >= 0 && pos < m_iSize );
 
@@ -112,7 +112,7 @@ T& SArray<T>::operator[]( uint32 pos )
 }
 
 template<typename T>
-const T& SArray<T>::operator[]( uint32 pos ) const
+const T& SArray<T>::operator[]( suInt32 pos ) const
 {
 	assert( pos >= 0 && pos < m_iSize );
 
@@ -126,7 +126,7 @@ void SArray<T>::PushBack( const T& Item )
 
 	if (m_iSize + 1 > m_iCapacity)
 	{
-		Reserve(uint32((m_iSize + 1) * 1.5f));
+		Reserve( ( suInt32 )( ( m_iSize + 1 ) * 1.5f ) );
 	}
 
 	new (GetData() + m_iSize)T(Item);
@@ -155,24 +155,24 @@ inline bool SArray<T>::Contains( const T & Item ) const
 }
 
 template<typename T>
-void SArray<T>::Insert( const SArray<T>& Items , const int32 Index )
+void SArray<T>::Insert( const SArray<T>& Items , const sInt32 Index )
 {
 	assert( this->GetData() != Items.GetData() );
 
 	InsertUninitialized( Index , Items.GetSize() );
 
-	for( uint32 iStartIndex = 0; iStartIndex < Items.GetSize(); iStartIndex++ )
+	for( suInt32 iStartIndex = 0; iStartIndex < Items.GetSize(); iStartIndex++ )
 	{
 		new ( m_pData + iStartIndex + Index )T( Items[iStartIndex] );
 	}
 }
 
 template<typename T>
-void SArray<T>::InsertUninitialized( uint32 index , uint32 Count /* = 1 */ )
+void SArray<T>::InsertUninitialized( suInt32 index , suInt32 Count /* = 1 */ )
 {
 	if( index >= m_iSize )	return;
 
-	const uint32 oldSize= m_iSize;
+	const suInt32 oldSize= m_iSize;
 	if( m_iSize + Count > m_iCapacity )
 	{
 		Resize( m_iSize + Count );
@@ -200,13 +200,13 @@ void SArray<T>::InsertUninitialized( uint32 index , uint32 Count /* = 1 */ )
 }
 
 template<typename T>
-void SArray<T>::InsertZeroed( uint32 Index , uint32 Count /* = 1 */ )
+void SArray<T>::InsertZeroed( suInt32 Index , suInt32 Count /* = 1 */ )
 {
 	InsertUninitialized( Index , Count );
 
 	if( Index >= 0 && Index < m_iSize )
 	{
-		for( uint32 Start = Index , End = Count + Index; Start < End; Start++ )
+		for( suInt32 Start = Index , End = Count + Index; Start < End; Start++ )
 		{
 			*( m_pData + Start ) = T();
 		}
@@ -214,7 +214,7 @@ void SArray<T>::InsertZeroed( uint32 Index , uint32 Count /* = 1 */ )
 }
 
 template<typename T>
-void SArray<T>::Insert( const T* Ptr , const uint32 Count , const uint32 Index )
+void SArray<T>::Insert( const T* Ptr , const suInt32 Count , const suInt32 Index )
 {
 	assert( Ptr != nullptr && Index >= 0 && Index < m_iSize);
 
@@ -227,7 +227,7 @@ void SArray<T>::Insert( const T* Ptr , const uint32 Count , const uint32 Index )
 }
 
 template<typename T>
-void SArray<T>::Insert( uint32 Index , const T& value )
+void SArray<T>::Insert( suInt32 Index , const T& value )
 {
 	InsertUninitialized( Index , 1);
 	if( Index >= 0 && Index < m_iSize )
@@ -237,7 +237,7 @@ void SArray<T>::Insert( uint32 Index , const T& value )
 }
 
 template<typename T>
-void SArray<T>::RemoveAtImpl( uint32 Index , uint32 Count )
+void SArray<T>::RemoveAtImpl( suInt32 Index , suInt32 Count )
 {
 	if (Index < 0 || Index > m_iSize)	return;
 
@@ -256,19 +256,19 @@ void SArray<T>::RemoveAtImpl( uint32 Index , uint32 Count )
 }
 
 template<typename T>
-void SArray<T>::Remove( int32 Index , uint32 Count )
+void SArray<T>::Remove( sInt32 Index , suInt32 Count )
 {
 	RemoveAtImpl( Index , Count );
 }
 
 template<typename T>
-void SArray<T>::RemoveIndex( int32 Index )
+void SArray<T>::RemoveIndex( sInt32 Index )
 {
 	RemoveAtImpl( Index , 1 );
 }
 
 template<typename T>
-int32 SArray<T>::RemoveValue( const T& Item )
+sInt32 SArray<T>::RemoveValue( const T& Item )
 {
 	assert( &Item < GetData() || &Item >= ( GetData() + m_iCapacity ) );
 
@@ -280,17 +280,17 @@ int32 SArray<T>::RemoveValue( const T& Item )
 
 template<class T>
 template<class PREDICATE_CLASS>
-inline int32 SArray<T>::RemoveAll( const PREDICATE_CLASS & Predicate )
+inline sInt32 SArray<T>::RemoveAll( const PREDICATE_CLASS & Predicate )
 {
-	const uint32 OriginalNum = m_iSize;
+	const suInt32 OriginalNum = m_iSize;
 	if (OriginalNum == 0)	return 0;
 
-	uint32 WriteIndex = 0;
-	uint32 ReadIndex = 0;
+	suInt32 WriteIndex = 0;
+	suInt32 ReadIndex = 0;
 	bool NotMatch = !Predicate( GetData()[ReadIndex] );
 	do 
 	{
-		uint32 RunStartIndex = ReadIndex++;
+		suInt32 RunStartIndex = ReadIndex++;
 		while( ReadIndex < OriginalNum && NotMatch == !Predicate( GetData()[ReadIndex] ) )
 		{
 			ReadIndex++;
@@ -323,14 +323,14 @@ inline int32 SArray<T>::RemoveAll( const PREDICATE_CLASS & Predicate )
 }
 
 template<typename T>
-inline int32 SArray<T>::Find( const T& Item ) const
+inline sInt32 SArray<T>::Find( const T& Item ) const
 {
 	const T* Start = GetData();
 	for( const T* pData = Start , *pEnd = pData + m_iSize; pData != pEnd; pData++ )
 	{
 		if( *pData == Item )
 		{
-			return static_cast< int32 >( pData - Start );
+			return static_cast< sInt32 >( pData - Start );
 		}
 	}
 
@@ -339,13 +339,13 @@ inline int32 SArray<T>::Find( const T& Item ) const
 
 template<class T>
 template<typename Predicate>
-inline int32 SArray<T>::FindFirstByPredicate( Predicate Pred )
+inline sInt32 SArray<T>::FindFirstByPredicate( Predicate Pred )
 {
 	for( T* pData = GetData() , *pDataEnd = pData + m_iSize; pData != pDataEnd; ++pData )
 	{
 		if( Pred( *pData ) )
 		{
-			return ( int32 )( pData - GetData() );
+			return ( sInt32 )( pData - GetData() );
 		}
 	}
 
@@ -354,15 +354,15 @@ inline int32 SArray<T>::FindFirstByPredicate( Predicate Pred )
 
 template<class T>
 template<typename Predicate>
-inline SArray<uint32> SArray<T>::FindListByPredicate( Predicate Pred ) const
+inline SArray<suInt32> SArray<T>::FindListByPredicate( Predicate Pred ) const
 {
-	SArray<uint32> FilterResult;
+	SArray<suInt32> FilterResult;
 
 	for( const T* pData = GetData() , *pDataEnd = pData + m_iSize; pData != pDataEnd; ++pData )
 	{
 		if( Pred( *pData ) )
 		{
-			FilterResult.PushBack( ( uint32 )( pData - GetData() ) );
+			FilterResult.PushBack( ( suInt32 )( pData - GetData() ) );
 		}
 	}
 	return FilterResult;
@@ -397,7 +397,7 @@ inline void SArray<T>::Sort( const PREDICATE_CLASS & Predicate )
 }
 
 template<typename T>
-void SArray<T>::Resize(uint32 newSize)
+void SArray<T>::Resize(suInt32 newSize)
 {
 	if (newSize == m_iSize)	return;
 

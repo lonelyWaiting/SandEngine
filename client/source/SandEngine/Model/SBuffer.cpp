@@ -3,7 +3,7 @@
 #include "Application/SRenderer.h"
 #include "SandBase/Log/SLog.h"
 
-SBuffer::SBuffer( eBufferUsage usage , eBufferType type , int stride , const void* pInitData = nullptr , eBufferBindFlag bindFlag /*= eBBF_None*/, int miscFlag /*= 0*/ )
+SBuffer::SBuffer( eBufferUsage usage , eBufferType type , int stride , const void* pInitData /*= nullptr */, eBufferBindFlag bindFlag /*= eBBF_None*/, int miscFlag /*= 0*/ )
 {
 	if( bindFlag & eBBF_UAV )	usage = eBU_Default;
 
@@ -63,8 +63,6 @@ SBuffer::SBuffer( eBufferUsage usage , eBufferType type , int stride , const voi
 	{
 		SRenderer::Get().GetDevice()->CreateUnorderedAccessView( m_pBuffer , nullptr , &m_pUAV );
 	}
-
-	SetResourceFlag( eRF_Loaded );
 }
 
 SBuffer::~SBuffer()
@@ -87,8 +85,8 @@ ID3D11UnorderedAccessView * SBuffer::GetUnorderedAccessView() const
 void * SBuffer::Lock()
 {
 #ifdef _DEBUG
-	if( !m_pBuffer )		SLog::Error( "buffer:%s is empty , can't lock" , GetFilename().AsChar() );
-	else if( !m_Lockable )	SLog::Error( "buffer:%s can't be lock" , GetFilename().AsChar() );
+	if( !m_pBuffer )		SLog::Error( "buffer:%s is empty , can't lock" , "xxx" );
+	else if( !m_Lockable )	SLog::Error( "buffer:%s can't be lock" , "xx" );
 #endif
 
 	void* result = nullptr;
@@ -108,4 +106,10 @@ void SBuffer::UnLock()
 	{
 		SRenderer::Get().GetDeviceContext()->Unmap( m_pBuffer , 0 );
 	}
+}
+
+
+void SBuffer::SetFilename( const char* filename )
+{
+	if( m_pBuffer )	m_pBuffer->SetPrivateData( WKPDID_D3DDebugObjectName , sizeof( filename ) - 1 , filename );
 }

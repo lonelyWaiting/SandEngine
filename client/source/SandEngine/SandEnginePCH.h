@@ -106,23 +106,24 @@
 #define ushort	unsigned short int
 #endif
 
-#define VBit(i)	1 << i
+#define SBIT(n)			(1 << n)
+
 enum EInputMask
 {
-	EIM_NONE = VBit( 0 ) ,
-	EIM_POSITION = VBit( 1 ) ,
-	EIM_NORMAL = VBit( 2 ) ,
-	EIM_TANGENT = VBit( 3 ) ,
-	EIM_WEIGHT = VBit( 4 ) ,
-	EIM_TEXCOORD0 = VBit( 5 ) ,
-	EIM_TEXCOORD1 = VBit( 6 ) ,
-	EIM_TEXCOORD2 = VBit( 7 ) ,
-	EIM_TEXCOORD3 = VBit( 8 ) ,
-	EIM_TEXCOORD4 = VBit( 9 ) ,
-	EIM_TEXCOORD5 = VBit( 10 ) ,
-	EIM_TEXCOORD6 = VBit( 11 ) ,
-	EIM_TEXCOORD7 = VBit( 12 ) ,
-	EIM_COLOR = VBit( 13 )
+	EIM_NONE      = SBIT( 0 ) ,
+	EIM_POSITION  = SBIT( 1 ) ,
+	EIM_NORMAL    = SBIT( 2 ) ,
+	EIM_TANGENT   = SBIT( 3 ) ,
+	EIM_WEIGHT    = SBIT( 4 ) ,
+	EIM_TEXCOORD0 = SBIT( 5 ) ,
+	EIM_TEXCOORD1 = SBIT( 6 ) ,
+	EIM_TEXCOORD2 = SBIT( 7 ) ,
+	EIM_TEXCOORD3 = SBIT( 8 ) ,
+	EIM_TEXCOORD4 = SBIT( 9 ) ,
+	EIM_TEXCOORD5 = SBIT( 10 ) ,
+	EIM_TEXCOORD6 = SBIT( 11 ) ,
+	EIM_TEXCOORD7 = SBIT( 12 ) ,
+	EIM_COLOR     = SBIT( 13 )
 };
 
 enum EMapType
@@ -137,8 +138,7 @@ enum EMapType
 };
 
 #define EPSILON 10e-5f
-
-enum { INDEX_NONE = -1 };
+#define INDEX_NONE -1
 
 #ifdef _UNICODE
 typedef wchar_t TCHAR;
@@ -188,5 +188,4 @@ typedef signed long long PTRINT;
 #define RESTRICT	__restrict
 #endif
 
-#define SBIT(n)			(1 << n)
 #define Enum2Str(str)	#str

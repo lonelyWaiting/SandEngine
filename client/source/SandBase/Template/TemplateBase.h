@@ -97,7 +97,7 @@ struct TIdentity
 	typedef T Type;
 };
 
-template<typename T , uint32 N>
+template<typename T , suInt32 N>
 char( &ArrayCountHelper( const T( &)[N] ) )[N];
 
 #define ARRAY_COUNT(array)	(sizeof(ArrayCountHelper(array)) + 0)

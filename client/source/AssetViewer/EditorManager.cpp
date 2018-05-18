@@ -2,6 +2,7 @@
 #include "SandEngine/Callback/SCallback.h"
 #include "imguiDemo.h"
 #include "SandEngine/GUI/SGui.h"
+#include "SandEngine/Model/SMesh.h"
 
 class GuiHandler : public SCallbackHandle
 {
@@ -10,7 +11,7 @@ public:
 	{
 		if( userData.pSender == &SandEngine::Callback.OnDropFile )
 		{
-
+			//LoadMesh( ( const char* )userData.pUserData );
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEngineInit )
 		{

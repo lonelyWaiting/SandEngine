@@ -119,7 +119,9 @@
     <ClCompile Include="Math\SVector3f.cpp" />
     <ClCompile Include="Math\SVector4f.cpp" />
     <ClCompile Include="Object\SRefCounter.cpp" />
-    <ClCompile Include="Object\SSmartPointer.cpp" />
+    <None Include="Object\SSmartPointer.inl">
+      <FileType>Document</FileType>
+    </None>
     <ClCompile Include="SandBasePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

@@ -34,7 +34,7 @@ template<> struct TIsArithmetic<long double>
 	};
 };
 
-template<> struct TIsArithmetic<uint8>
+template<> struct TIsArithmetic<suInt8>
 {
 	enum
 	{
@@ -42,7 +42,7 @@ template<> struct TIsArithmetic<uint8>
 	};
 };
 
-template<> struct TIsArithmetic<uint16>
+template<> struct TIsArithmetic<suInt16>
 {
 	enum
 	{
@@ -50,7 +50,7 @@ template<> struct TIsArithmetic<uint16>
 	};
 };
 
-template<> struct TIsArithmetic<uint32>
+template<> struct TIsArithmetic<suInt32>
 {
 	enum
 	{
@@ -58,7 +58,7 @@ template<> struct TIsArithmetic<uint32>
 	};
 };
 
-template<> struct TIsArithmetic<uint64>
+template<> struct TIsArithmetic<suInt64>
 {
 	enum
 	{
@@ -66,7 +66,7 @@ template<> struct TIsArithmetic<uint64>
 	};
 };
 
-template<> struct TIsArithmetic<int8>
+template<> struct TIsArithmetic<sInt8>
 {
 	enum
 	{
@@ -74,7 +74,7 @@ template<> struct TIsArithmetic<int8>
 	};
 };
 
-template<> struct TIsArithmetic<int16>
+template<> struct TIsArithmetic<sInt16>
 {
 	enum
 	{
@@ -82,7 +82,7 @@ template<> struct TIsArithmetic<int16>
 	};
 };
 
-template<> struct TIsArithmetic<int32>
+template<> struct TIsArithmetic<sInt32>
 {
 	enum
 	{
@@ -90,7 +90,7 @@ template<> struct TIsArithmetic<int32>
 	};
 };
 
-template<> struct TIsArithmetic<int64>
+template<> struct TIsArithmetic<sInt64>
 {
 	enum
 	{

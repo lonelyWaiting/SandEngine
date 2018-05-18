@@ -51,15 +51,20 @@ class SIMesh
 public:
 	SIMesh( const char* name , eVertexAttribute vertexAttribute );
 	
-	SITriangle& AddTriangle();
-	SIVertex&   AddVertex();
-	void		SetVertexPos( int index , const SVector3f& pos );
-	void		SetVertexNormal( int index , const SVector3f& normal );
-	void		SetVertexTangent( int index , const SVector4f& tangent );
-	void		SetVertexBinormal( int index , const SVector3f& biNormal );
-	void		SetVertexColor( int index , const SVector3f& color );
-	void		SetVertexUV( int index , const SVector2f& uv );
-	void		SetMaterialIndex( int polygonIndex , int materialIndex );
+	SITriangle&			AddTriangle();
+	SIVertex&			AddVertex();
+	void		        SetVertexPos( int index , const SVector3f& pos );
+	void		        SetVertexNormal( int index , const SVector3f& normal );
+	void		        SetVertexTangent( int index , const SVector4f& tangent );
+	void		        SetVertexBinormal( int index , const SVector3f& biNormal );
+	void		        SetVertexColor( int index , const SVector3f& color );
+	void		        SetVertexUV( int index , const SVector2f& uv );
+	void				SetMaterialIndex( int polygonIndex , int materialIndex );
+	int					GetNumOfVertices() const;
+	int					GetNumOfTriangle() const;
+	const SIVertex&		GetVertex( int index ) const;
+	const SITriangle&	GetTriangle( int index ) const;
+	eVertexAttribute	GetVertexAttribute();
 
 protected:
 	SString            m_name;
@@ -83,7 +88,12 @@ public:
 	SIMesh& AddMesh( const char* name , eVertexAttribute vertexAttribute );
 	SIMaterial& AddMaterial();
 
+public:
+	class SMesh* Process();
+	void SetFilename( const char* filename );
+
 protected:
 	SArray<SIMesh>    m_Meshs;
 	SArray<SIMaterial> m_Materials;
+	SString m_Filename;
 };

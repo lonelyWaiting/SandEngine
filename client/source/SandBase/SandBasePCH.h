@@ -1,35 +1,35 @@
 #pragma once
 
-#ifndef uint32
-#define uint32	unsigned int
+#ifndef suInt32
+#define suInt32	unsigned int
 #endif
 
-#ifndef int32
-#define int32	int
+#ifndef sInt32
+#define sInt32	int
 #endif
 
-#ifndef uint8
-#define uint8	unsigned char
+#ifndef suInt8
+#define suInt8	unsigned char
 #endif
 
-#ifndef int8
-#define int8	char
+#ifndef sInt8
+#define sInt8	char
 #endif
 
-#ifndef uint16
-#define uint16	unsigned short
+#ifndef suInt16
+#define suInt16	unsigned short
 #endif
 
-#ifndef int16
-#define int16	short
+#ifndef sInt16
+#define sInt16	short
 #endif
 
-#ifndef uint64
-#define uint64	unsigned __int64
+#ifndef suInt64
+#define suInt64	unsigned __int64
 #endif
 
-#ifndef int64
-#define int64	__int64
+#ifndef sInt64
+#define sInt64	__int64
 #endif
 
 #ifndef INDEX_NONE

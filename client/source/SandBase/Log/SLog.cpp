@@ -1,5 +1,6 @@
-#include "SandBase/SandBasePCH.h"
+#include <SandBase/SandBasePCH.h>
 #include <stdarg.h>
+#include <iostream>
 #include "SLog.h"
 
 template<int size>

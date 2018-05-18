@@ -23,13 +23,13 @@ typename TEnableIf<!TIsTriviallyCopyConstructible<T>::Value>::Type ConstructItem
 }
 
 template<typename T>
-typename TEnableIf<TIsTriviallyDestructible<T>::Value>::Type DestructItems(T* pData, int32 Count)
+typename TEnableIf<TIsTriviallyDestructible<T>::Value>::Type DestructItems(T* pData, sInt32 Count)
 {
 
 }
 
 template<typename T>
-typename TEnableIf<!TIsTriviallyDestructible<T>::Value>::Type DestructItems(T* pData, int32 Count)
+typename TEnableIf<!TIsTriviallyDestructible<T>::Value>::Type DestructItems(T* pData, sInt32 Count)
 {
 	while (Count)
 	{

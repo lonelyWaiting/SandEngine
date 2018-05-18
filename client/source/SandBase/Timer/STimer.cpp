@@ -1,6 +1,6 @@
 #include <SandBase/SandBasePCH.h>
-#include "STimer.h"
 #include <windows.h>
+#include "STimer.h"
 
 STimer::STimer() :
 	m_SecondsPerCount( 0.0f ) ,

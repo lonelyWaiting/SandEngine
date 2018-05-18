@@ -76,6 +76,9 @@
     <ClInclude Include="Model\SMeshLoader.h">
       <Filter>Model</Filter>
     </ClInclude>
+    <ClInclude Include="Model\SMesh.h">
+      <Filter>Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\SApplication.cpp">
@@ -127,9 +130,16 @@
     <ClCompile Include="Model\SResourceManager.cpp">
       <Filter>Model</Filter>
     </ClCompile>
-    <ClCompile Include="Model\SConstantBuffer.cpp" />
-    <ClCompile Include="Model\SMeshBuffer.cpp" />
     <ClCompile Include="Model\SMeshLoader.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\SMesh.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\SConstantBuffer.cpp">
+      <Filter>Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Model\SMeshBuffer.cpp">
       <Filter>Model</Filter>
     </ClCompile>
   </ItemGroup>
