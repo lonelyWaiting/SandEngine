@@ -4,7 +4,7 @@
 #include "Model/SIScene.h"
 #include "SandBase/Log/SLog.h"
 
-void import_mesh_node( FbxNode* pNode , SArray<FbxNode*> meshNodeList )
+void import_mesh_node( FbxNode* pNode , SArray<FbxNode*>& meshNodeList )
 {
 	FbxNodeAttribute* pNodeAttribute = pNode->GetNodeAttribute();
 	if( pNodeAttribute && pNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh )
@@ -18,7 +18,7 @@ void import_mesh_node( FbxNode* pNode , SArray<FbxNode*> meshNodeList )
 	}
 }
 
-bool triangluate( FbxMesh* pMesh , FbxGeometryConverter& converter )
+bool triangluate( FbxMesh*& pMesh , FbxGeometryConverter& converter )
 {
 	if( !pMesh )	return false;
 	if( pMesh->IsTriangleMesh() )	return true;
@@ -41,9 +41,10 @@ eVertexAttribute import_vertex_attribute( FbxMesh* pMesh )
 
 void import_material_info( const FbxMesh* pMesh , SIMesh& siMesh , const SArray<FbxSurfaceMaterial*>& FbxMaterials )
 {
-	FbxNode* pNode = pMesh->GetNode();
-
+	FbxNode* pNode    = pMesh->GetNode();
 	int MaterialCount = pNode->GetMaterialCount();
+	if( !MaterialCount )	return;
+
 	SArray<int> MatIndexList;
 	MatIndexList.Reserve( MaterialCount );
 
@@ -65,8 +66,8 @@ void import_material_info( const FbxMesh* pMesh , SIMesh& siMesh , const SArray<
 
 	// just support one material index per vertex
 	const FbxGeometryElementMaterial* pMaterialLayer = pMesh->GetElementMaterial();
-	auto materialRefMode = pMaterialLayer->GetReferenceMode();
-	auto materialMapMode = pMaterialLayer->GetMappingMode();
+	auto materialRefMode = pMaterialLayer ? pMaterialLayer->GetReferenceMode() : FbxGeometryElement::eByControlPoint;
+	auto materialMapMode = pMaterialLayer ? pMaterialLayer->GetMappingMode() : FbxGeometryElement::eIndexToDirect;
 
 	for( int iPolygonIndex = 0 , polygonCount = pMesh->GetPolygonCount(); iPolygonIndex < polygonCount; iPolygonIndex++ )
 	{
@@ -594,6 +595,7 @@ bool fbx_importer( const char* filename , SIScene& siScene )
 {
 	// Create the FBX SDK Manager
 	FbxManager* lSdkManager = FbxManager::Create();
+	if( !lSdkManager )	SLog::Error( "Unable to Create FBX Manager!" );
 
 	// Create an IOSettings object. IOSROOT is defined in Fbxiosetting.h
 	FbxIOSettings* ios = FbxIOSettings::Create( lSdkManager , IOSROOT );
@@ -614,6 +616,15 @@ bool fbx_importer( const char* filename , SIScene& siScene )
 	if( !bImportStatus )
 	{
 		SLog::Error( "FbxImporter::Initialize() Failed:%s" , pImporter->GetStatus().GetErrorString() );
+		if( pImporter->GetStatus().GetCode() == FbxStatus::eInvalidFileVersion )
+		{
+			int sdkMajor  = 0,  sdkMinor  = 0,	sdkRevision  = 0;
+			int fileMajor = 0 , fileMinor = 0 , fileRevision = 0;
+			FbxManager::GetFileFormatVersion( sdkMajor , sdkMinor , sdkRevision );
+			pImporter->GetFileVersion( fileMajor , fileMinor , fileRevision );
+			SLog::Error( "FBX file format version for this FBX SDK is %d.%d.%d" , sdkMajor , sdkMinor , sdkRevision );
+			SLog::Error( "FBX File format version for file '%s' is %d.%d.%d" , filename , fileMajor , fileMinor , fileRevision );
+		}
 		return false;
 	}
 
