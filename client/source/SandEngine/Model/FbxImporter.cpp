@@ -2,6 +2,7 @@
 #include "FbxImporter.h"
 #include <fbxsdk.h>
 #include "Model/SIScene.h"
+#include "SandBase/Log/SLog.h"
 
 void import_mesh_node( FbxNode* pNode , SArray<FbxNode*> meshNodeList )
 {
@@ -612,7 +613,7 @@ bool fbx_importer( const char* filename , SIScene& siScene )
 
 	if( !bImportStatus )
 	{
-		std::cout << "Call to FbxImporter::Initialize() Failed" << std::endl << "Error returned: %s" << pImporter->GetStatus().GetErrorString() << std::endl;
+		SLog::Error( "FbxImporter::Initialize() Failed:%s" , pImporter->GetStatus().GetErrorString() );
 		return false;
 	}
 

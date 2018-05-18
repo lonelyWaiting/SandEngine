@@ -11,7 +11,7 @@ SString::SString()
 
 SString::SString( const char * str )
 {
-	if( !str )
+	if( str )
 	{
 		int len = ( int )strlen( str );
 		content.Reserve( len + 1 );

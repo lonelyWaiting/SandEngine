@@ -11,7 +11,7 @@ public:
 	{
 		if( userData.pSender == &SandEngine::Callback.OnDropFile )
 		{
-			//LoadMesh( ( const char* )userData.pUserData );
+			LoadMesh( ( const char* )userData.pUserData );
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEngineInit )
 		{

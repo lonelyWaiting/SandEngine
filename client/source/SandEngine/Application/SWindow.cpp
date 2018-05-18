@@ -26,7 +26,7 @@ SWindow::SWindow( const char * caption , WNDPROC proc , const SVector2f& size , 
 
 	RegisterClassEx( &wc );
 
-	m_hWnd = CreateWindowEx( NULL ,
+	m_hWnd = CreateWindowEx( WS_EX_ACCEPTFILES ,
 							 wc.lpszClassName ,
 							 caption ,
 							 m_dStyle ,
