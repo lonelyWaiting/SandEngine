@@ -12,7 +12,7 @@ public:
 	void Shutdown();
 	void Resize( const SVector2f& size );
 	void ClearColor( const SVector4f& color );
-	void Present( uint32 syncInterval = 0 , uint32 presentFlag = 0 );
+	void Present( suInt32 syncInterval = 0 , suInt32 presentFlag = 0 );
 
 public:
 	ID3D11Device * GetDevice();

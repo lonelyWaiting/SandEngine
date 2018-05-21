@@ -2,38 +2,38 @@
 #include "SMeshBuffer.h"
 #include "SandEngine/Application/SRenderer.h"
 
-void SMeshBuffer::EnsureVertexBuffer( const SVertexDescription & desc , eBufferUsage usage , int iNumOfVertices , const void * pVertices , eBufferBindFlag bindFlag , int miscFlag )
+void SMeshBuffer::EnsureVertexBuffer( const SVertexDescription & desc , eMemUsage usage , int iNumOfVertices , const void * pVertices , eBindFlag bindFlag )
 {
-	m_VertexBuffer = new SVertexBuffer( desc , usage , iNumOfVertices , pVertices , bindFlag , miscFlag );
+	m_VertexBuffer = new SVertexBuffer( desc , usage , iNumOfVertices , pVertices , bindFlag );
 }
 
-void SMeshBuffer::EnsureIndexBuffer( eBufferUsage usage , int iNumOfIndices , const void* pIndices , eIndexFormat format, eBufferBindFlag bindFlag , int miscFlag )
+void SMeshBuffer::EnsureIndexBuffer( eMemUsage usage , int iNumOfIndices , const void* pIndices , eIndexFormat format, eBindFlag bindFlag )
 {
-	m_IndexBuffer = new SIndexBuffer( usage , iNumOfIndices , format , pIndices , bindFlag , miscFlag );
+	m_IndexBuffer = new SIndexBuffer( usage , iNumOfIndices , format , pIndices , bindFlag );
 }
 
 SVertexBuffer* SMeshBuffer::GetVertexBuffer()
 {
-	return m_VertexBuffer.GetPointer();
+	return m_VertexBuffer;
 }
 
 SIndexBuffer* SMeshBuffer::GetIndexBuffer()
 {
-	return m_IndexBuffer.GetPointer();
+	return m_IndexBuffer;
 }
 
 int SMeshBuffer::GetNumOfVertices()
 {
-	return m_VertexBuffer.GetPointer() ? m_VertexBuffer->GetNumOfVertices() : 0;
+	return m_VertexBuffer ? m_VertexBuffer->GetNumOfVertices() : 0;
 }
 
 int SMeshBuffer::GetNumOfIndices()
 {
-	return m_IndexBuffer.GetPointer() ? m_IndexBuffer->GetNumOfIndices() : 0;
+	return m_IndexBuffer ? m_IndexBuffer->GetNumOfIndices() : 0;
 }
 
 void SMeshBuffer::SetFilename( const char* filename )
 {
-	if( m_VertexBuffer.GetPointer() != nullptr )	m_VertexBuffer->SetFilename( filename );
-	if( m_IndexBuffer.GetPointer() != nullptr )		m_IndexBuffer->SetFilename( filename );
+	if( m_VertexBuffer )	m_VertexBuffer->SetFilename( filename );
+	if( m_IndexBuffer )		m_IndexBuffer->SetFilename( filename );
 }

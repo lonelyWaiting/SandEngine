@@ -66,44 +66,40 @@
 #define GET_Y_LPARAM(lp)	((int)(short)((WORD)((((DWORD_PTR)(lp)) >> 16) & 0xffff)))
 #endif
 
-#ifndef int64
-#define int64	signed long long
+#ifndef suInt32
+#define suInt32	unsigned int
 #endif
 
-#ifndef uint64
-#define uint64	unsigned long long
+#ifndef sInt32
+#define sInt32	int
 #endif
 
-#ifndef int32
-#define int32	int
+#ifndef suInt8
+#define suInt8	unsigned char
 #endif
 
-#ifndef uint32
-#define uint32	unsigned int
+#ifndef sInt8
+#define sInt8	char
 #endif
 
-#ifndef int16
-#define int16	signed short
+#ifndef suInt16
+#define suInt16	unsigned short
 #endif
 
-#ifndef uint16
-#define uint16	unsigned short
+#ifndef sInt16
+#define sInt16	short
 #endif
 
-#ifndef int8
-#define int8	signed char
+#ifndef suInt64
+#define suInt64	unsigned __int64
 #endif
 
-#ifndef uint8
-#define uint8	unsigned char
+#ifndef sInt64
+#define sInt64	__int64
 #endif
 
 #ifndef Float
 #define Float	float
-#endif
-
-#ifndef ushort
-#define ushort	unsigned short int
 #endif
 
 #define SBIT(n)			(1 << n)

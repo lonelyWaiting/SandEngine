@@ -6,12 +6,13 @@
 #include "SIndexBuffer.h"
 #include "SandBase/Object/SSmartPointer.h"
 #include "SandBase/Object/SRefCounter.h"
+#include "SandEngine/Application/RenderState/RenderState.h"
 
 class SMeshBuffer : public SRefCounter
 {
 public:
-	void EnsureVertexBuffer( const SVertexDescription& desc , eBufferUsage usage , int iNumOfVertices , const void* pVertices = nullptr , eBufferBindFlag bindFlag = eBBF_None , int miscFlag = 0 );
-	void EnsureIndexBuffer( eBufferUsage usage , int iNumOfIndices , const void* pIndices = nullptr , eIndexFormat format = eIF_Short , eBufferBindFlag bindFlag = eBBF_None , int miscFlag = 0 );
+	void EnsureVertexBuffer( const SVertexDescription& desc , eMemUsage usage , int iNumOfVertices , const void* pVertices = nullptr , eBindFlag bindFlag = eBF_None );
+	void EnsureIndexBuffer( eMemUsage usage , int iNumOfIndices , const void* pIndices = nullptr , eIndexFormat format = eIF_Short , eBindFlag bindFlag = eBF_None );
 
 	SVertexBuffer* GetVertexBuffer();
 	SIndexBuffer*  GetIndexBuffer();

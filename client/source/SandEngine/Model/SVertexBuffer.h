@@ -18,7 +18,7 @@ struct SVertexDescription
 class SVertexBuffer : public SBuffer
 {
 public:
-	SVertexBuffer( const SVertexDescription& desc , eBufferUsage usage , int iNumOfVertices = 0, const void* pInitData = nullptr , eBufferBindFlag viewFlag = eBBF_None , int miscFlag = 0 );
+	SVertexBuffer( const SVertexDescription& desc , eMemUsage usage , int iNumOfVertices = 0, const void* pInitData = nullptr , eBindFlag viewFlag = eBF_None );
 	int GetVertexMask();
 	int GetNumOfVertices();
 

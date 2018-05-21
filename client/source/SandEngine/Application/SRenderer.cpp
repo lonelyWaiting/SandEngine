@@ -23,7 +23,7 @@ bool SRenderer::Init( HWND hwnd )
 		return false;
 	}
 
-	for( uint32 i = 0; pFactory->EnumAdapters( i , &pAdapter ) != DXGI_ERROR_NOT_FOUND; ++i )
+	for( suInt32 i = 0; pFactory->EnumAdapters( i , &pAdapter ) != DXGI_ERROR_NOT_FOUND; ++i )
 	{
 		vAdapter.PushBack( pAdapter );
 	}
@@ -34,14 +34,14 @@ bool SRenderer::Init( HWND hwnd )
 	// get adapter display modes:https://msdn.microsoft.com/en-us/library/windows/desktop/ff476878(v=vs.85).aspx
 	IDXGIOutput* pOutput = nullptr;
 	
-	for( uint32 i = 0 , numAdapter = vAdapter.GetSize(); i < numAdapter; i++ )
+	for( suInt32 i = 0 , numAdapter = vAdapter.GetSize(); i < numAdapter; i++ )
 	{
 		pAdapter = vAdapter[i];
 
 		SLog::Info( "Adapter:%d" , i );
 
 		SArray<IDXGIOutput*> outputList;
-		uint32			outputIdx = 0;
+		suInt32			outputIdx = 0;
 		IDXGIOutput*	pOutput   = nullptr;
 		while( pAdapter->EnumOutputs( outputIdx , &pOutput ) != DXGI_ERROR_NOT_FOUND )
 		{
@@ -49,13 +49,13 @@ bool SRenderer::Init( HWND hwnd )
 			outputIdx++;
 		}
 
-		for( uint32 j = 0 , outputNum = outputList.GetSize(); j < outputNum; j++ )
+		for( suInt32 j = 0 , outputNum = outputList.GetSize(); j < outputNum; j++ )
 		{
 			SLog::Info( "Adapter Output:%d" , j );
 
 			pOutput = outputList[j];
 			
-			uint32 numMode               = 0;
+			suInt32 numMode               = 0;
 			DXGI_MODE_DESC* displayModes = NULL;
 			DXGI_FORMAT format           = DXGI_FORMAT_R32G32B32A32_FLOAT;
 
@@ -65,7 +65,7 @@ bool SRenderer::Init( HWND hwnd )
 
 			if( FAILED( pOutput->GetDisplayModeList( format , 0 , &numMode , displayModes ) ) )	continue;
 
-			for( uint32 k = 0; k < numMode; k++ )
+			for( suInt32 k = 0; k < numMode; k++ )
 			{
 				const DXGI_MODE_DESC& desc = displayModes[k];
 
@@ -106,7 +106,7 @@ bool SRenderer::Init( HWND hwnd )
 													D3D_FEATURE_LEVEL_9_2 ,
 													D3D_FEATURE_LEVEL_9_1 };
 
-	uint32 createDeviceFlags = 0;
+	suInt32 createDeviceFlags = 0;
 #ifdef _DEBUG
 	createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
@@ -114,7 +114,7 @@ bool SRenderer::Init( HWND hwnd )
 	D3D_FEATURE_LEVEL FeatureLevelsSupported;
 
 	bool success = false;
-	for( uint32 i = 0, numAdapter = vAdapter.GetSize(); i < numAdapter; i++ )
+	for( suInt32 i = 0, numAdapter = vAdapter.GetSize(); i < numAdapter; i++ )
 	{
 		HRESULT hr = D3D11CreateDeviceAndSwapChain( vAdapter[i] ,
 													D3D_DRIVER_TYPE_UNKNOWN ,
@@ -241,8 +241,8 @@ void SRenderer::Resize( const SVector2f& size )
 	if( m_pDepthStencilView )	m_pDepthStencilView->Release();
 
 	D3D11_TEXTURE2D_DESC dsd;
-	dsd.Width              = ( const uint32 )size.x;
-	dsd.Height             = ( const uint32 )size.y;
+	dsd.Width              = ( const suInt32 )size.x;
+	dsd.Height             = ( const suInt32 )size.y;
 	dsd.MipLevels          = 1;
 	dsd.ArraySize          = 1;
 	dsd.Format             = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -299,7 +299,7 @@ void SRenderer::Shutdown()
 	SAFE_RELEASE( m_pDevice );
 }
 
-void SRenderer::Present( uint32 syncInterval /*= 0*/, uint32 presentFlag /*= 0*/ )
+void SRenderer::Present( suInt32 syncInterval /*= 0*/, suInt32 presentFlag /*= 0*/ )
 {
 	if( m_pSwapChain )	m_pSwapChain->Present( syncInterval , presentFlag );
 }

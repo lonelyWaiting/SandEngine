@@ -1,8 +1,8 @@
 #include "SandEnginePCH.h"
 #include "SIndexBuffer.h"
 
-SIndexBuffer::SIndexBuffer( eBufferUsage usage , int iNumOfIndices , eIndexFormat format , const void * pInitData , eBufferBindFlag bindFlag /*= eBBF_None*/ , int miscFlag /*= 0*/ )
-	:SBuffer( usage , eBT_Index , iNumOfIndices *  ( format == eIF_Short ? sizeof( short ) : sizeof( int ) ) , pInitData , bindFlag , miscFlag )
+SIndexBuffer::SIndexBuffer( eMemUsage usage , int iNumOfIndices , eIndexFormat format , const void * pInitData , eBindFlag bindFlag /*= eBBF_None*/ )
+	:SBuffer( usage , ( format == eIF_Short ? sizeof( short ) : sizeof( int ) ) , iNumOfIndices , pInitData , ( usage & eBU_StructureBuffer )? bindFlag : ( eBindFlag )( bindFlag | eBF_Index ) )
 {
 	m_IndexType     = format;
 	m_iNumOfIndices = iNumOfIndices;

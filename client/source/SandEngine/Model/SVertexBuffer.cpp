@@ -24,8 +24,8 @@
 #define eVM_Texcoord15	SBIT(19)
 #define eVM_Color		SBIT(20)
 
-SVertexBuffer::SVertexBuffer( const SVertexDescription & desc , eBufferUsage usage , int iNumOfVertices , const void * pInitData /*= nullptr*/ , eBufferBindFlag viewFlag /*= eBBF_None*/ , int miscFlag /*= 0*/ )
-	:SBuffer( usage , eBT_Vertex , desc.stride * iNumOfVertices , pInitData , viewFlag , miscFlag )
+SVertexBuffer::SVertexBuffer( const SVertexDescription & desc , eMemUsage usage , int iNumOfVertices , const void * pInitData /*= nullptr*/ , eBindFlag bindFlag /*= eBBF_None*/ )
+	:SBuffer( usage , desc.stride , iNumOfVertices , pInitData , ( usage & eBU_StructureBuffer ) ? bindFlag : ( eBindFlag )( eBF_Vertex | bindFlag ) )
 {
 	m_vertexDesc     = desc;
 	m_iNumOfVertices = iNumOfVertices;

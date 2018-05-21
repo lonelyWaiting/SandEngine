@@ -3,5 +3,5 @@
 class SConstantBuffer : public SBuffer
 {
 public:
-	SConstantBuffer( int stride , const void* pInitData = nullptr );
+	SConstantBuffer( bool dynamic , int stride , const void* pInitData = nullptr );
 };

@@ -14,7 +14,7 @@ enum eIndexFormat
 class SIndexBuffer : public SBuffer
 {
 public:
-	SIndexBuffer( eBufferUsage usage , int iNumOfIndices = 0, eIndexFormat format = eIF_Short , const void* pInitData = nullptr , eBufferBindFlag bindFlag = eBBF_None , int miscFlag = 0 );
+	SIndexBuffer( eMemUsage usage , int iNumOfIndices = 0, eIndexFormat format = eIF_Short , const void* pInitData = nullptr , eBindFlag bindFlag = eBF_None );
 	eIndexFormat GetIndexType();
 	int GetNumOfIndices();
 

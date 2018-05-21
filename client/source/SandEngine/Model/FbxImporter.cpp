@@ -32,9 +32,11 @@ eVertexAttribute import_vertex_attribute( FbxMesh* pMesh )
 {
 	eVertexAttribute vertexAttribute = eVA_POSITION;
 
-	vertexAttribute = pMesh->GetElementNormalCount()  > 0 ? (eVertexAttribute)( eVA_NORMAL  | vertexAttribute ) : vertexAttribute;
-	vertexAttribute = pMesh->GetElementTangentCount() > 0 ? (eVertexAttribute)( eVA_TANGENT | vertexAttribute ) : vertexAttribute;
-	vertexAttribute = pMesh->GetElementUVCount()      > 0 ? (eVertexAttribute)( eVA_UV      | vertexAttribute ) : vertexAttribute;
+	vertexAttribute = pMesh->GetElementNormalCount()      > 0 ? (eVertexAttribute)( eVA_NORMAL  | vertexAttribute ) : vertexAttribute;
+	vertexAttribute = pMesh->GetElementTangentCount()     > 0 ? (eVertexAttribute)( eVA_TANGENT | vertexAttribute ) : vertexAttribute;
+	vertexAttribute = pMesh->GetElementUVCount()          > 0 ? (eVertexAttribute)( eVA_UV      | vertexAttribute ) : vertexAttribute;
+	vertexAttribute = pMesh->GetElementBinormalCount()    > 0 ? ( eVertexAttribute )( eVA_BINORMAL | vertexAttribute ) : vertexAttribute;
+	vertexAttribute = pMesh->GetElementVertexColorCount() > 0 ? ( eVertexAttribute )( eVA_VERTEXCOLOR | vertexAttribute ) : vertexAttribute;
 
 	return vertexAttribute;
 }
@@ -469,19 +471,21 @@ void import_geometry( FbxNode* pRootNode , const SArray<FbxSurfaceMaterial*>& Fb
 	SArray<FbxNode*> meshNodeList;
 	import_mesh_node( pRootNode , meshNodeList );
 
-	SArray<FbxMesh*> triMeshList;
+	SArray<FbxNode*> triMeshNode;
 	for( int i = 0 , meshCount = meshNodeList.GetSize(); i < meshCount; i++ )
 	{
-		FbxMesh* pMesh = ( FbxMesh* )meshNodeList[i]->GetNodeAttribute();
-		if( triangluate( pMesh , converter ) )	triMeshList.PushBack( pMesh );
+		FbxNode* pNode = meshNodeList[i];
+		FbxMesh* pMesh = ( FbxMesh* )pNode->GetNodeAttribute();
+		if( triangluate( pMesh , converter ) )	triMeshNode.PushBack( pNode );
 	}
 
-	for( int i = 0 , meshCount = triMeshList.GetSize(); i < meshCount; i++ )
+	for( int i = 0 , meshCount = triMeshNode.GetSize(); i < meshCount; i++ )
 	{
-		FbxMesh* pMesh = triMeshList[i];
+		FbxNode* pNode = triMeshNode[i];
+		FbxMesh* pMesh = ( FbxMesh* )pNode->GetNodeAttribute();
 		eVertexAttribute vertexAttribute = import_vertex_attribute( pMesh );
 
-		SIMesh& siMesh = scene.AddMesh( pMesh->GetName() , vertexAttribute );
+		SIMesh& siMesh = scene.AddMesh( pNode->GetName() , vertexAttribute );
 		import_geometry_topology( pMesh , siMesh );
 		import_material_info( pMesh , siMesh , FbxMaterials );
 		import_vertex_info( pMesh , siMesh );

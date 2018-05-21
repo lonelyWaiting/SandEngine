@@ -3,64 +3,85 @@
 #include "Application/SRenderer.h"
 #include "SandBase/Log/SLog.h"
 
-SBuffer::SBuffer( eBufferUsage usage , eBufferType type , int stride , const void* pInitData /*= nullptr */, eBufferBindFlag bindFlag /*= eBBF_None*/, int miscFlag /*= 0*/ )
+// byte address size must be a multiple of four
+DXGI_FORMAT GetSRVBufferFormat( eMemUsage usage )
 {
-	if( bindFlag & eBBF_UAV )	usage = eBU_Default;
+	if( usage & eBU_StructureBuffer )
+		return DXGI_FORMAT_UNKNOWN;
+	else if( usage & eBU_UAV_ByteAddress )
+		return DXGI_FORMAT_R32_TYPELESS;
+	else
+		return DXGI_FORMAT_R32_UINT;
+}
 
-	D3D11_BUFFER_DESC bufDesc;
-	switch( usage )
+SBuffer::SBuffer( eMemUsage usage , int stride , int count , const void* pInitData /*= nullptr */, eBindFlag bindFlag /*= eBBF_None*/ )
+{
+	D3D11_BUFFER_DESC bufDesc = { 0 };
+	if( usage & eBU_Dynamic )
 	{
-		case eBU_Default:
-			bufDesc.Usage = D3D11_USAGE_DEFAULT;
-			break;
-		case eBU_Static:
-			bufDesc.Usage = D3D11_USAGE_IMMUTABLE;
-			break;
-		case eBU_Dynamic:
-			bufDesc.Usage          = D3D11_USAGE_DYNAMIC;
-			bufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-			m_Lockable = true;
-			break;
-		case eBU_Staging:
-			bufDesc.Usage = D3D11_USAGE_STAGING;
-			break;
+		bufDesc.Usage          = D3D11_USAGE_DYNAMIC;
+		bufDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	}
-	bufDesc.ByteWidth = stride;
+	else if( usage & eBU_Static )
+	{
+		bufDesc.Usage          = D3D11_USAGE_IMMUTABLE;
+		bufDesc.CPUAccessFlags = 0;
+	}
+
+	bufDesc.ByteWidth = stride * count;
 	
-	switch( type )
+	if( bindFlag & eBF_Vertex )         bufDesc.BindFlags |= D3D11_BIND_VERTEX_BUFFER;
+	if( bindFlag & eBF_Index )	        bufDesc.BindFlags |= D3D11_BIND_INDEX_BUFFER;
+	if( bindFlag & eBF_Constant )	    bufDesc.BindFlags |= D3D11_BIND_CONSTANT_BUFFER;
+	if( bindFlag & eBF_SRV )		    bufDesc.BindFlags |= D3D11_BIND_SHADER_RESOURCE;
+	if( bindFlag & eBF_UAV )		    bufDesc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
+	if( bindFlag & eBF_StreamOut )	    bufDesc.BindFlags |= D3D11_BIND_STREAM_OUTPUT;
+
+	if( usage & eBU_StructureBuffer )	bufDesc.MiscFlags |= D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	if( usage & eBU_UAV_ByteAddress )	bufDesc.MiscFlags |= D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS;
+
+	// https://msdn.microsoft.com/en-us/library/windows/desktop/ff476900(v=vs.85).aspx#Raw_Buffer_Views
+	if( ( usage & eBU_UAV_ByteAddress ) && ( usage & eBU_StructureBuffer ) )
 	{
-		case eBT_Vertex:
-			bufDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			break;
-		case eBT_Index:
-			bufDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-			break;
-		case eBT_Constant:
-			bufDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-			break;
+		SLog::Error( "can't combine the D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS flag with D3D11_RESOURCE_MISC_BUFFER_STRUCTURED" );
+		assert( false );
 	}
 
-	if( bindFlag & eBBF_SRV )	        bufDesc.BindFlags |= D3D11_BIND_SHADER_RESOURCE;
-	if( bindFlag & eBBF_UAV )	        bufDesc.BindFlags |= D3D11_BIND_UNORDERED_ACCESS;
-	if( bindFlag & eBBF_StreamOut )	    bufDesc.BindFlags |= D3D11_BIND_STREAM_OUTPUT;
+	if( ( bindFlag & eBF_Constant ) && ( usage & eBU_UAV_ByteAddress ) )
+	{
+		SLog::Error( "can't specify D3D11_RESOURCE_MISC_BUFFER_ALLOW_RAW_VIEWS in MiscFlags if you specify D3D11_BIND_CONSTANT_BUFFER in BindFlags" );
+		assert( false );
+	}
 
-	bufDesc.MiscFlags           = miscFlag;
-	bufDesc.StructureByteStride = 0;
+	bufDesc.StructureByteStride = ( usage & eBU_StructureBuffer ) ? stride : 0;
 
 	D3D11_SUBRESOURCE_DATA data;
 	data.pSysMem          = pInitData;
 	data.SysMemPitch      = 0;
 	data.SysMemSlicePitch = 0;
-
+	
 	SRenderer::Get().GetDevice()->CreateBuffer( &bufDesc , &data , &m_pBuffer );
 
-	if( bindFlag & eBBF_SRV )
+	if( bindFlag & eBF_SRV )
 	{
-		SRenderer::Get().GetDevice()->CreateShaderResourceView( m_pBuffer , nullptr , &m_pSRV );
+		D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+		ZeroMemory( &srvDesc , sizeof( srvDesc ) );
+		srvDesc.Format                = GetSRVBufferFormat( usage );
+		srvDesc.ViewDimension         = D3D11_SRV_DIMENSION_BUFFEREX;
+		srvDesc.BufferEx.NumElements  = ( usage & eBU_StructureBuffer ) ? ( stride * count ) >> 2 : count;
+		srvDesc.BufferEx.Flags        = D3D11_BUFFEREX_SRV_FLAG_RAW;
+		SRenderer::Get().GetDevice()->CreateShaderResourceView( m_pBuffer , &srvDesc , &m_pSRV );
 	}
 
-	if( bindFlag & eBBF_UAV )
+	if( bindFlag & eBF_UAV )
 	{
+		D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+		memset( &uavDesc , 0 , sizeof( uavDesc ) );
+		uavDesc.Format              = DXGI_FORMAT_UNKNOWN;
+		uavDesc.ViewDimension       = D3D11_UAV_DIMENSION_BUFFER;
+		uavDesc.Buffer.FirstElement = 0;
+		uavDesc.Buffer.NumElements  = count;
+		uavDesc.Buffer.Flags        = D3D11_BUFFER_UAV_FLAG_RAW;
 		SRenderer::Get().GetDevice()->CreateUnorderedAccessView( m_pBuffer , nullptr , &m_pUAV );
 	}
 }

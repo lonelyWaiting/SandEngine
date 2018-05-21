@@ -21,9 +21,11 @@
   <ItemGroup>
     <ClInclude Include="..\..\thirdparty\imgui\imgui.h" />
     <ClInclude Include="..\..\thirdparty\imgui\imgui_internal.h" />
+    <ClInclude Include="Application\RenderState\RenderState.h" />
     <ClInclude Include="Application\SandEngineModule.h" />
     <ClInclude Include="Application\SApplication.h" />
     <ClInclude Include="Application\SRenderer.h" />
+    <ClInclude Include="Application\SRenderHelper.h" />
     <ClInclude Include="Application\SWindow.h" />
     <ClInclude Include="Callback\SCallback.h" />
     <ClInclude Include="GUI\SGui.h" />
@@ -44,9 +46,11 @@
     <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp" />
     <ClCompile Include="..\..\thirdparty\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\..\thirdparty\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Application\RenderState\RenderState.cpp" />
     <ClCompile Include="Application\SandEngineModule.cpp" />
     <ClCompile Include="Application\SApplication.cpp" />
     <ClCompile Include="Application\SRenderer.cpp" />
+    <ClCompile Include="Application\SRenderHelper.cpp" />
     <ClCompile Include="Application\SWindow.cpp" />
     <ClCompile Include="Callback\SCallback.cpp" />
     <ClCompile Include="GUI\SGui.cpp" />

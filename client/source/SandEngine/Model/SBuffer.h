@@ -14,27 +14,25 @@ enum eVertexFormat
 	eVF_UByte4 = SBIT( 20 )
 };
 
-enum eBufferUsage
+enum eMemUsage
 {
-	eBU_Default  ,	// gpu:read+write
-	eBU_Static,		// gpu:read
-	eBU_Dynamic  ,	// gpu:read,cpu:write
-	eBU_Staging		// support data transfer copy from the gpu to the cpu
+	eBU_Static		    = SBIT(0),		// gpu:read
+	eBU_Dynamic         = SBIT(1),		// gpu:read,cpu:write
+	eBU_UAV_ByteAddress = SBIT(2),
+	eBU_StructureBuffer = SBIT(3),
 };
 
-enum eBufferType
+enum eBindFlag
 {
-	eBT_Vertex ,
-	eBT_Index  ,
-	eBT_Constant
-};
-
-enum eBufferBindFlag
-{
-	eBBF_None,
-	eBBF_SRV ,
-	eBBF_UAV ,
-	eBBF_StreamOut
+	eBF_None         = 0 ,
+	eBF_Vertex       = SBIT( 0 ) ,
+	eBF_Index        = SBIT( 1 ) ,
+	eBF_Constant     = SBIT( 2 ) ,
+	eBF_SRV          = SBIT( 3 ) ,
+	eBF_UAV          = SBIT( 4 ) ,
+	eBF_StreamOut    = SBIT( 5 ) ,
+	eBF_RenderTarget = SBIT( 6 ) ,
+	eBF_DepthStencil = SBIT( 7 ) ,
 };
 
 #include "SResource.h"
@@ -46,7 +44,7 @@ struct ID3D11Buffer;
 class SBuffer : public SRefCounter
 {
 public:
-	SBuffer( eBufferUsage usage , eBufferType type , int stride , const void* pInitData = nullptr , eBufferBindFlag bindFlag = eBBF_None , int miscFlag = 0 );
+	SBuffer( eMemUsage usage , int stride , int count , const void* pInitData = nullptr , eBindFlag bindFlag = eBF_None );
 	~SBuffer();
 
 	void SetFilename( const char* filename );

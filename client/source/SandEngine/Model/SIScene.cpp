@@ -200,8 +200,8 @@ SMesh* SIScene::Process()
 		}
 		desc.stride = offset;
 
-		pMeshBuffer->EnsureVertexBuffer( desc , eBU_Dynamic , iVertexNum , vertexList.GetData() , eBBF_SRV );
-		pMeshBuffer->EnsureIndexBuffer( eBU_Dynamic , iTriangleNum * 3 , triangleList.GetData() , eIF_Short , eBBF_SRV );
+		pMeshBuffer->EnsureVertexBuffer( desc , eMemUsage( eBU_Dynamic | eBU_UAV_ByteAddress ) , iVertexNum , vertexList.GetData() , eBF_SRV );
+		pMeshBuffer->EnsureIndexBuffer( ( eMemUsage )( eBU_Dynamic | eBU_UAV_ByteAddress ) , iTriangleNum * 3 , triangleList.GetData() , eIF_Int , eBF_SRV );
 
 		pMesh->SetMeshBuffer( pMeshBuffer );
 
