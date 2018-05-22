@@ -28,6 +28,11 @@ void BlendState::ComputeHash()
 	SRenderer::Get().GetDevice()->CreateBlendState( &blendDesc , &pBlendState );
 }
 
+BlendStateDesc & BlendState::GetDesc()
+{
+	return desc;
+}
+
 RasterizerState::RasterizerState()
 {
 	desc.fillMode              = eFM_Solid;
@@ -51,17 +56,55 @@ void RasterizerState::ComputeHash()
 	SRenderer::Get().GetDevice()->CreateRasterizerState( &raster_desc , &pRasterizerState );
 }
 
-BlendState & RenderState::GetBlendState()
+RasterizerStateDesc & RasterizerState::GetDesc()
 {
-	return m_BlendState;
+	return desc;
 }
 
-RasterizerState& RenderState::GetRasterizerState()
+BlendStateDesc & RenderState::GetBlendState()
 {
-	return m_RasterizerState;
+	return m_BlendState.GetDesc();
+}
+
+RasterizerStateDesc& RenderState::GetRasterizerState()
+{
+	return m_RasterizerState.GetDesc();
+}
+
+DepthStencilDesc& RenderState::GetDepthStencilDesc()
+{
+	return m_DepthStencilState.GetDesc();
 }
 
 RasterizerState::~RasterizerState()
 {
 	SAFE_RELEASE( pRasterizerState );
+}
+
+#define stencil_default_read_mask 0xff
+#define stencil_default_write_mask 0xff
+
+DepthStencilState::DepthStencilState()
+{
+	desc.depthEnable                  = true;
+	desc.depthWriteMask               = eDWM_All;
+	desc.depthFunc                    = eCF_Less;
+	desc.stencilEnable                = false;
+	desc.stencilReadMask              = stencil_default_read_mask;
+	desc.stencilWriteMask             = stencil_default_write_mask;
+	desc.frontFace.stencilFunc        = eCF_Always;
+	desc.frontFace.stencilDepthFailOp = eSO_Keep;
+	desc.frontFace.stencilPassOp      = eSO_Keep;
+	desc.frontFace.stencilFailOp      = eSO_Keep;
+	desc.backFace.stencilFunc         = eCF_Always;
+	desc.backFace.stencilDepthFailOp  = eSO_Keep;
+	desc.backFace.stencilPassOp       = eSO_Keep;
+	desc.backFace.stencilFailOp       = eSO_Keep;
+
+	pDepthStencilState = nullptr;
+}
+
+DepthStencilDesc & DepthStencilState::GetDesc()
+{
+	return desc;
 }

@@ -59,6 +59,8 @@ public:
 	BlendState();
 	~BlendState();
 	void ComputeHash();
+	BlendStateDesc& GetDesc();
+
 private:
 	BlendStateDesc desc;
 	ID3D11BlendState* pBlendState;
@@ -77,7 +79,7 @@ enum eCullMode
 	eCM_Back  = 3,
 };
 
-struct RasterierStateDesc
+struct RasterizerStateDesc
 {
 	eFillMode fillMode;
 	eCullMode cullMode;
@@ -110,20 +112,83 @@ public:
 	RasterizerState();
 	~RasterizerState();
 	void ComputeHash();
+	RasterizerStateDesc& GetDesc();
 private:
-	RasterierStateDesc desc;
+	RasterizerStateDesc desc;
 	ID3D11RasterizerState* pRasterizerState;
+};
+
+enum eDepthWriteMask
+{
+	eDWM_Zero = 0 ,
+	eDWM_All  = 1
+};
+
+enum eComparisonFunc
+{
+	eCF_Never         = 1 ,
+	eCF_Less          = 2 ,
+	eCF_Equal         = 3 ,
+	eCF_Less_Equal    = 4 ,
+	eCF_Greater       = 5 ,
+	eCF_Not_Equal     = 6 ,
+	eCF_Greater_Equal = 7 ,
+	eCF_Always        = 8 ,
+};
+
+enum eStencilOp
+{
+	eSO_Keep     = 1,
+	eSO_Zero     = 2,
+	eSO_Replace  = 3,
+	eSO_Incr_Sat = 4,
+	eSO_Decr_Sat = 5,
+	eSO_Invert   = 6,
+	eSO_Incr     = 7,
+	eSO_Desc     = 8,
+};
+
+struct DepthStencilOp
+{
+	eStencilOp		stencilFailOp;
+	eStencilOp		stencilDepthFailOp;
+	eStencilOp		stencilPassOp;
+	eComparisonFunc stencilFunc;
+};
+
+struct DepthStencilDesc
+{
+	bool			depthEnable;
+	eDepthWriteMask depthWriteMask;
+	eComparisonFunc depthFunc;
+	bool			stencilEnable;
+	suInt8			stencilReadMask;
+	suInt8			stencilWriteMask;
+	DepthStencilOp	frontFace;
+	DepthStencilOp	backFace;
+};
+
+class DepthStencilState
+{
+public:
+	DepthStencilState();
+	DepthStencilDesc& GetDesc();
+private:
+	ID3D11DepthStencilState * pDepthStencilState;
+	DepthStencilDesc desc;
 };
 
 class RenderState : public SRefCounter
 {
 public:
-	BlendState& GetBlendState();
-	RasterizerState& GetRasterizerState();
+	BlendStateDesc&		 GetBlendState();
+	RasterizerStateDesc& GetRasterizerState();
+	DepthStencilDesc&	 GetDepthStencilDesc();
 
 public:
-	BlendState     m_BlendState;
-	RasterizerState m_RasterizerState;
+	BlendState        m_BlendState;
+	RasterizerState   m_RasterizerState;
+	DepthStencilState m_DepthStencilState;
 };
 
 typedef SSmartPointer<RenderState> renderStatePtr;
