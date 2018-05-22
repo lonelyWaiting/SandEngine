@@ -14,6 +14,27 @@ DXGI_FORMAT GetSRVBufferFormat( eMemUsage usage )
 		return DXGI_FORMAT_R32_UINT;
 }
 
+DXGI_FORMAT GetUAVBufferFormat( eMemUsage usage )
+{
+	if( usage & eBU_UAV_ByteAddress )
+		return DXGI_FORMAT_R32_TYPELESS;
+	else 
+		return DXGI_FORMAT_R32_UINT;
+}
+
+int GetUAVBufferFlag( eMemUsage usage )
+{
+	int flag = 0;
+	if( usage & eBU_UAV_ByteAddress )
+		flag = D3D11_BUFFER_UAV_FLAG_RAW;
+	if( usage & eBU_UAV_Append )
+		flag |= D3D11_BUFFER_UAV_FLAG_APPEND;
+	if( usage & eBU_UAV_Count )
+		flag |= D3D11_BUFFER_UAV_FLAG_COUNTER;
+
+	return flag;
+}
+
 SBuffer::SBuffer( eMemUsage usage , int stride , int count , const void* pInitData /*= nullptr */, eBindFlag bindFlag /*= eBBF_None*/ )
 {
 	D3D11_BUFFER_DESC bufDesc = { 0 };
@@ -68,8 +89,8 @@ SBuffer::SBuffer( eMemUsage usage , int stride , int count , const void* pInitDa
 		ZeroMemory( &srvDesc , sizeof( srvDesc ) );
 		srvDesc.Format                = GetSRVBufferFormat( usage );
 		srvDesc.ViewDimension         = D3D11_SRV_DIMENSION_BUFFEREX;
-		srvDesc.BufferEx.NumElements  = ( usage & eBU_StructureBuffer ) ? ( stride * count ) >> 2 : count;
-		srvDesc.BufferEx.Flags        = D3D11_BUFFEREX_SRV_FLAG_RAW;
+		srvDesc.BufferEx.NumElements  = ( usage & eBU_UAV_ByteAddress ) ? ( stride * count ) >> 2 : count;
+		srvDesc.BufferEx.Flags        = usage & eBU_UAV_ByteAddress ? D3D11_BUFFEREX_SRV_FLAG_RAW : 0;
 		SRenderer::Get().GetDevice()->CreateShaderResourceView( m_pBuffer , &srvDesc , &m_pSRV );
 	}
 
@@ -77,12 +98,12 @@ SBuffer::SBuffer( eMemUsage usage , int stride , int count , const void* pInitDa
 	{
 		D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
 		memset( &uavDesc , 0 , sizeof( uavDesc ) );
-		uavDesc.Format              = DXGI_FORMAT_UNKNOWN;
+		uavDesc.Format              = GetUAVBufferFormat( usage );
 		uavDesc.ViewDimension       = D3D11_UAV_DIMENSION_BUFFER;
 		uavDesc.Buffer.FirstElement = 0;
-		uavDesc.Buffer.NumElements  = count;
-		uavDesc.Buffer.Flags        = D3D11_BUFFER_UAV_FLAG_RAW;
-		SRenderer::Get().GetDevice()->CreateUnorderedAccessView( m_pBuffer , nullptr , &m_pUAV );
+		uavDesc.Buffer.NumElements  = ( usage & eBU_UAV_ByteAddress ) ? ( stride * count ) >> 2 : count;
+		uavDesc.Buffer.Flags        = GetUAVBufferFlag( usage );
+		SRenderer::Get().GetDevice()->CreateUnorderedAccessView( m_pBuffer , &uavDesc , &m_pUAV );
 	}
 }
 

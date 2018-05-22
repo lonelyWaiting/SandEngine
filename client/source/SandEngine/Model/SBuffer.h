@@ -16,10 +16,12 @@ enum eVertexFormat
 
 enum eMemUsage
 {
-	eBU_Static		    = SBIT(0),		// gpu:read
-	eBU_Dynamic         = SBIT(1),		// gpu:read,cpu:write
-	eBU_UAV_ByteAddress = SBIT(2),
-	eBU_StructureBuffer = SBIT(3),
+	eBU_Static          = SBIT( 0 ) ,		// gpu:read
+	eBU_Dynamic         = SBIT( 1 ) ,		// gpu:read,cpu:write
+	eBU_UAV_ByteAddress = SBIT( 2 ) ,
+	eBU_StructureBuffer = SBIT( 3 ) ,
+	eBU_UAV_Append      = SBIT( 4 ) ,
+	eBU_UAV_Count       = SBIT( 5 ),
 };
 
 enum eBindFlag
@@ -31,8 +33,6 @@ enum eBindFlag
 	eBF_SRV          = SBIT( 3 ) ,
 	eBF_UAV          = SBIT( 4 ) ,
 	eBF_StreamOut    = SBIT( 5 ) ,
-	eBF_RenderTarget = SBIT( 6 ) ,
-	eBF_DepthStencil = SBIT( 7 ) ,
 };
 
 #include "SResource.h"
