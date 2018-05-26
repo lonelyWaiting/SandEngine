@@ -3,7 +3,7 @@
 class SRefCounter
 {
 public:
-	void Increase();
+	void AddRef();
 	void Release();
 
 	int GetRefCount();

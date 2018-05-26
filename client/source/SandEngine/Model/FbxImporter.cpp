@@ -497,7 +497,7 @@ void import_material( FbxNode* pNode , SArray<FbxSurfaceMaterial*>& FbxMaterial 
 	for( int i = 0, iMaterialCount = pNode->GetMaterialCount(); i < iMaterialCount; i++ )
 	{
 		FbxSurfaceMaterial* pMaterial = pNode->GetMaterial( i );
-
+		
 		bool existMaterial = false;
 		for( int k = 0; k < ( int )FbxMaterial.GetSize(); k++ )
 		{
@@ -509,7 +509,7 @@ void import_material( FbxNode* pNode , SArray<FbxSurfaceMaterial*>& FbxMaterial 
 		}
 		if( existMaterial )	continue;
 
-		SIMaterial& siMat = scene.AddMaterial();
+		SIMaterial& siMat = scene.AddMaterial( pMaterial->GetName() );
 		FbxMaterial.PushBack( pMaterial );
 
 		int iLayerTextureIndex = 0;

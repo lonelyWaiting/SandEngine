@@ -7,9 +7,15 @@ SMesh::SMesh( const char * filename )
 
 }
 
-int SMesh::GetMaterialCount()
+int SMesh::GetSubmeshCount()
 {
-	return m_Materials.GetSize();
+	return m_subMeshes.GetSize();
+}
+
+const SBaseSubmesh& SMesh::GetSubmesh( int i ) const
+{
+	assert( i >= 0 && i < ( int )m_subMeshes.GetSize() );
+	return m_subMeshes[i];
 }
 
 void SMesh::SetMeshBuffer( SMeshBuffer* pMeshBuffer /* = nullptr */ )
@@ -30,4 +36,12 @@ SMesh* LoadMesh( const char* filename )
 	}
 
 	return nullptr;
+}
+
+SBaseSubmesh::SBaseSubmesh( const char * name )
+{
+	this->name = name;
+	iVertexStart = iVertexNum = 0;
+	iIndexStart  = iIndexNum  = 0;
+	matID = -1;
 }

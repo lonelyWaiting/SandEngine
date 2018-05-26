@@ -6,7 +6,6 @@
 #include "SIndexBuffer.h"
 #include "SandBase/Object/SSmartPointer.h"
 #include "SandBase/Object/SRefCounter.h"
-#include "SandEngine/Application/RenderState/RenderState.h"
 
 class SMeshBuffer : public SRefCounter
 {

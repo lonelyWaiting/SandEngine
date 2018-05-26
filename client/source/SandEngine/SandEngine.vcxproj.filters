@@ -19,8 +19,11 @@
     <Filter Include="Model\Importer">
       <UniqueIdentifier>{89ecd511-11fb-4df6-903a-50a2d4b92a73}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Application\RenderState">
-      <UniqueIdentifier>{f48487e1-82e2-47be-b8e5-29eeb399f6ea}</UniqueIdentifier>
+    <Filter Include="Model\Material">
+      <UniqueIdentifier>{3952e67f-740c-4598-a2c6-3bd7a568bd5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pipeline">
+      <UniqueIdentifier>{fbbe0cb0-0ffb-497d-a470-0bb80727b955}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -82,11 +85,14 @@
     <ClInclude Include="Model\SMesh.h">
       <Filter>Model</Filter>
     </ClInclude>
-    <ClInclude Include="Application\RenderState\RenderState.h">
-      <Filter>Application\RenderState</Filter>
+    <ClInclude Include="Model\Material\Material.h">
+      <Filter>Model\Material</Filter>
     </ClInclude>
-    <ClInclude Include="Application\SRenderHelper.h">
-      <Filter>Application</Filter>
+    <ClInclude Include="Model\Material\RenderState.h">
+      <Filter>Model\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\SRenderHelper.h">
+      <Filter>Pipeline</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -151,11 +157,11 @@
     <ClCompile Include="Model\SMeshBuffer.cpp">
       <Filter>Model</Filter>
     </ClCompile>
-    <ClCompile Include="Application\RenderState\RenderState.cpp">
-      <Filter>Application\RenderState</Filter>
+    <ClCompile Include="Model\Material\RenderState.cpp">
+      <Filter>Model\Material</Filter>
     </ClCompile>
-    <ClCompile Include="Application\SRenderHelper.cpp">
-      <Filter>Application</Filter>
+    <ClCompile Include="Model\Material\Material.cpp">
+      <Filter>Model\Material</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

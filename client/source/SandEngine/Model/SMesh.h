@@ -3,27 +3,36 @@
 #include "SandBase/Vector/SArray.h"
 #include "SMeshBuffer.h"
 #include "SandEngine/Application/SandEngineModule.h"
+#include "SandEngine/Model/Material/Material.h"
 
-struct SMaterial
+class SBaseSubmesh
 {
-	int iNumOfVertices = 0;
-	int iNumOfTriangle = 0;
-	int iVertexOffset  = 0;
-	int iIndexOffset   = 0;
+public:
+	SBaseSubmesh( const char* );
 
-	// texture object
+private:
+	SString	name;
+	int iVertexStart = 0;
+	int iVertexNum   = 0;
+	int iIndexStart  = 0;
+	int iIndexNum    = 0;
+	int matID        = -1;
+
+	friend class SIScene;
 };
 
 class SMesh : public SResource
 {
 public:
 	SMesh( const char* filename );
-	int GetMaterialCount();
 	void SetMeshBuffer( SMeshBuffer* pMeshBuffer = nullptr );
-	
+	int GetSubmeshCount();
+	const SBaseSubmesh& GetSubmesh( int i ) const;
+
 private:
-	SArray<SMaterial> m_Materials;
-	SMeshBufferPtr m_MeshBuffer;
+	SArray<SBaseSubmesh> m_subMeshes;
+	SMeshBufferPtr       m_MeshBuffer;
+	SArray<SMatObj>		 m_matList;
 	friend class SIScene;
 };
 

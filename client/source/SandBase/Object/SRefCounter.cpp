@@ -1,7 +1,7 @@
 #include "SandBase/SandBasePCH.h"
 #include "SRefCounter.h"
 
-void SRefCounter::Increase()
+void SRefCounter::AddRef()
 {
 	++m_refCount;
 }

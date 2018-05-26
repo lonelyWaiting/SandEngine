@@ -6,23 +6,23 @@
 
 enum eBlendFactor
 {
-	eBF_Zero             = 0,
-	eBF_One              = 1,
-	eBF_Src_Color        = 2,
-	eBF_Inv_Src_Color    = 3,
-	eBF_Src_Alpha		 = 4,
-	eBF_Inv_Src_Alpha	 = 5,
-	eBF_Dest_Alpha       = 6,
-	eBF_Inv_Dest_Alpha   = 7,
-	eBF_Dest_Color       = 8,
-	eBF_Inv_Dest_Color   = 9,
-	eBF_Src_Alpha_Sat    = 10,
-	eBF_Blend_Factor     = 11,
-	eBF_Inv_Blend_Factor = 14,
-	eBF_Src1_Color       = 15,
-	eBF_Inv_Src1_Color   = 16,
-	eBF_Src1_Alpha       = 17,
-	eBF_Inv_Src1_Alpha   = 18
+	eBF_Zero             = 1,
+	eBF_One              = 2,
+	eBF_Src_Color        = 3,
+	eBF_Inv_Src_Color    = 4,
+	eBF_Src_Alpha		 = 5,
+	eBF_Inv_Src_Alpha	 = 6,
+	eBF_Dest_Alpha       = 7,
+	eBF_Inv_Dest_Alpha   = 8,
+	eBF_Dest_Color       = 9,
+	eBF_Inv_Dest_Color   = 10,
+	eBF_Src_Alpha_Sat    = 11,
+	eBF_Blend_Factor     = 14,
+	eBF_Inv_Blend_Factor = 15,
+	eBF_Src1_Color       = 16,
+	eBF_Inv_Src1_Color   = 17,
+	eBF_Src1_Alpha       = 18,
+	eBF_Inv_Src1_Alpha   = 19
 };
 
 enum eBlendOp
@@ -53,6 +53,8 @@ struct BlendStateDesc
 	RenderTargetBlendDesc renderTarget[8];
 };
 
+typedef SSmartPointer<ID3D11BlendState>	D3DBlendStatePtr;
+
 class BlendState
 {
 public:
@@ -63,7 +65,8 @@ public:
 
 private:
 	BlendStateDesc desc;
-	ID3D11BlendState* pBlendState;
+	D3DBlendStatePtr pBlendState;
+	unsigned int hash;
 };
 
 enum eFillMode
@@ -106,6 +109,8 @@ struct RasterizerStateDesc
 	bool      antialiasedLineEnable;
 };
 
+typedef SSmartPointer<ID3D11RasterizerState> D3DRasterizerStatePtr;
+
 class RasterizerState
 {
 public:
@@ -115,7 +120,8 @@ public:
 	RasterizerStateDesc& GetDesc();
 private:
 	RasterizerStateDesc desc;
-	ID3D11RasterizerState* pRasterizerState;
+	D3DRasterizerStatePtr pRasterizerState;
+	unsigned int hash;
 };
 
 enum eDepthWriteMask
@@ -168,14 +174,18 @@ struct DepthStencilDesc
 	DepthStencilOp	backFace;
 };
 
+typedef SSmartPointer<ID3D11DepthStencilState>	D3DDepthStencilStatePtr;
+
 class DepthStencilState
 {
 public:
 	DepthStencilState();
+	void ComputeHash();
 	DepthStencilDesc& GetDesc();
 private:
-	ID3D11DepthStencilState * pDepthStencilState;
+	D3DDepthStencilStatePtr pDepthStencilState;
 	DepthStencilDesc desc;
+	unsigned int hash;
 };
 
 class RenderState : public SRefCounter

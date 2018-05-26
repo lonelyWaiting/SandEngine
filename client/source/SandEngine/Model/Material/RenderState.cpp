@@ -2,6 +2,26 @@
 #include "RenderState.h"
 #include "SandEngine/Application/SRenderer.h"
 
+unsigned int ComputeHashInternal( const void* ptr , int size )
+{
+	unsigned int hash = 0;
+	int sizeInt = size >> 2;
+	unsigned int* pIntData = ( unsigned int* )ptr;
+	for( int i = 0; i < sizeInt; i++ , pIntData++ )
+	{
+		hash += ( unsigned int )*pIntData * ( i + 11 );
+	}
+
+	int sizeChar = size - ( sizeInt << 2 );
+	unsigned char* pCharData = ( unsigned char* )pIntData;
+	for( int i = 0; i < sizeChar; i++ , pCharData++ )
+	{
+		hash += ( unsigned char )*pCharData * ( i + 13 );
+	}
+
+	return hash;
+}
+
 BlendState::BlendState()
 {
 	desc.alphaToCoverageEnable          = false;
@@ -23,9 +43,13 @@ BlendState::~BlendState()
 
 void BlendState::ComputeHash()
 {
+	hash = ComputeHashInternal( &desc , sizeof( desc ) );
+
+	ID3D11BlendState* pState = nullptr;
 	D3D11_BLEND_DESC blendDesc;
-	memcpy( &blendDesc , &desc , sizeof( desc ) );
-	SRenderer::Get().GetDevice()->CreateBlendState( &blendDesc , &pBlendState );
+	memcpy( &blendDesc , &desc , sizeof( blendDesc ) );
+	SRenderer::Get().GetDevice()->CreateBlendState( &blendDesc , &pState );
+	pBlendState = pState;
 }
 
 BlendStateDesc & BlendState::GetDesc()
@@ -51,9 +75,13 @@ RasterizerState::RasterizerState()
 
 void RasterizerState::ComputeHash()
 {
+	hash = ComputeHashInternal( &desc , sizeof( desc ) );
+
+	ID3D11RasterizerState* pState = nullptr;
 	D3D11_RASTERIZER_DESC raster_desc;
 	memcpy( &raster_desc , &desc , sizeof( desc ) );
-	SRenderer::Get().GetDevice()->CreateRasterizerState( &raster_desc , &pRasterizerState );
+	SRenderer::Get().GetDevice()->CreateRasterizerState( &raster_desc , &pState );
+	pRasterizerState = pState;
 }
 
 RasterizerStateDesc & RasterizerState::GetDesc()
@@ -107,4 +135,15 @@ DepthStencilState::DepthStencilState()
 DepthStencilDesc & DepthStencilState::GetDesc()
 {
 	return desc;
+}
+
+void DepthStencilState::ComputeHash()
+{
+	hash = ComputeHashInternal( &desc , sizeof( desc ) );
+
+	ID3D11DepthStencilState* pState = nullptr;
+	D3D11_DEPTH_STENCIL_DESC dsDesc;
+	memcpy( &dsDesc , &desc , sizeof( dsDesc ) );
+	SRenderer::Get().GetDevice()->CreateDepthStencilState( &dsDesc , &pState );
+	pDepthStencilState = pState;
 }
