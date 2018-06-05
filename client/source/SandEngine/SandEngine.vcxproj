@@ -27,21 +27,23 @@
     <ClInclude Include="Application\SWindow.h" />
     <ClInclude Include="Callback\SCallback.h" />
     <ClInclude Include="GUI\SGui.h" />
-    <ClInclude Include="Model\FbxImporter.h" />
-    <ClInclude Include="Model\Material\Material.h" />
-    <ClInclude Include="Model\Material\RenderState.h" />
-    <ClInclude Include="Model\SBuffer.h" />
-    <ClInclude Include="Model\SConstantBuffer.h" />
-    <ClInclude Include="Model\SMesh.h" />
-    <ClInclude Include="Model\SIndexBuffer.h" />
-    <ClInclude Include="Model\SIScene.h" />
-    <ClInclude Include="Model\SMeshBuffer.h" />
-    <ClInclude Include="Model\SMeshLoader.h" />
-    <ClInclude Include="Model\SResource.h" />
-    <ClInclude Include="Model\SResourceManager.h" />
-    <ClInclude Include="Model\SVertexBuffer.h" />
     <ClInclude Include="Pipeline\SRenderHelper.h" />
+    <ClInclude Include="Pipeline\SShader.h" />
+    <ClInclude Include="Resource\FbxImporter.h" />
+    <ClInclude Include="Resource\Material\Material.h" />
+    <ClInclude Include="Resource\Material\RenderState.h" />
+    <ClInclude Include="Resource\SBuffer.h" />
+    <ClInclude Include="Resource\SConstantBuffer.h" />
+    <ClInclude Include="Resource\SIScene.h" />
+    <ClInclude Include="Resource\SMeshBuffer.h" />
+    <ClInclude Include="Resource\SResource.h" />
+    <ClInclude Include="Resource\SResourceManager.h" />
+    <ClInclude Include="Resource\SStaticMesh.h" />
+    <ClInclude Include="Resource\SStaticMeshManager.h" />
+    <ClInclude Include="Resource\Texture\STextureManager.h" />
+    <ClInclude Include="Resource\Texture\STextureObject.h" />
     <ClInclude Include="SandEnginePCH.h" />
+    <ClInclude Include="SApiDef.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp" />
@@ -53,22 +55,21 @@
     <ClCompile Include="Application\SWindow.cpp" />
     <ClCompile Include="Callback\SCallback.cpp" />
     <ClCompile Include="GUI\SGui.cpp" />
-    <ClCompile Include="Model\FbxImporter.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Model\Material\Material.cpp" />
-    <ClCompile Include="Model\Material\RenderState.cpp" />
-    <ClCompile Include="Model\SBuffer.cpp" />
-    <ClCompile Include="Model\SConstantBuffer.cpp" />
-    <ClCompile Include="Model\SIndexBuffer.cpp" />
-    <ClCompile Include="Model\SIScene.cpp" />
-    <ClCompile Include="Model\SMesh.cpp" />
-    <ClCompile Include="Model\SMeshBuffer.cpp" />
-    <ClCompile Include="Model\SMeshLoader.cpp" />
-    <ClCompile Include="Model\SResource.cpp" />
-    <ClCompile Include="Model\SResourceManager.cpp" />
-    <ClCompile Include="Model\SVertexBuffer.cpp" />
+    <ClCompile Include="Pipeline\SRenderHelper.cpp" />
+    <ClCompile Include="Pipeline\SShader.cpp" />
+    <ClCompile Include="Resource\FbxImporter.cpp" />
+    <ClCompile Include="Resource\Material\Material.cpp" />
+    <ClCompile Include="Resource\Material\RenderState.cpp" />
+    <ClCompile Include="Resource\SBuffer.cpp" />
+    <ClCompile Include="Resource\SConstantBuffer.cpp" />
+    <ClCompile Include="Resource\SIScene.cpp" />
+    <ClCompile Include="Resource\SMeshBuffer.cpp" />
+    <ClCompile Include="Resource\SResource.cpp" />
+    <ClCompile Include="Resource\SResourceManager.cpp" />
+    <ClCompile Include="Resource\SStaticMesh.cpp" />
+    <ClCompile Include="Resource\SStaticMeshManager.cpp" />
+    <ClCompile Include="Resource\Texture\STextureManager.cpp" />
+    <ClCompile Include="Resource\Texture\STextureObject.cpp" />
     <ClCompile Include="SandEnginePCH.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

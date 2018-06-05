@@ -83,6 +83,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="IO\SFileStream.h" />
     <ClInclude Include="Log\SLog.h" />
     <ClInclude Include="Math\SMath.h" />
     <ClInclude Include="Math\SMatrix3f.h" />
@@ -110,6 +111,7 @@
     <ClInclude Include="Vector\SArray.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="IO\SFileStream.cpp" />
     <ClCompile Include="Log\SLog.cpp" />
     <ClCompile Include="Math\SMath.cpp" />
     <ClCompile Include="Math\SMatrix3f.cpp" />

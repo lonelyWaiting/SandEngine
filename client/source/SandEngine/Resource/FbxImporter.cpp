@@ -1,7 +1,7 @@
 #include "SandEnginePCH.h"
 #include "FbxImporter.h"
 #include <fbxsdk.h>
-#include "Model/SIScene.h"
+#include "SandEngine/Resource/SIScene.h"
 #include "SandBase/Log/SLog.h"
 
 void import_mesh_node( FbxNode* pNode , SArray<FbxNode*>& meshNodeList )
@@ -33,9 +33,8 @@ eVertexAttribute import_vertex_attribute( FbxMesh* pMesh )
 	eVertexAttribute vertexAttribute = eVA_POSITION;
 
 	vertexAttribute = pMesh->GetElementNormalCount()      > 0 ? (eVertexAttribute)( eVA_NORMAL  | vertexAttribute ) : vertexAttribute;
-	vertexAttribute = pMesh->GetElementTangentCount()     > 0 ? (eVertexAttribute)( eVA_TANGENT | vertexAttribute ) : vertexAttribute;
-	vertexAttribute = pMesh->GetElementUVCount()          > 0 ? (eVertexAttribute)( eVA_UV      | vertexAttribute ) : vertexAttribute;
-	vertexAttribute = pMesh->GetElementBinormalCount()    > 0 ? ( eVertexAttribute )( eVA_BINORMAL | vertexAttribute ) : vertexAttribute;
+	vertexAttribute = pMesh->GetElementTangentCount()     > 0 ? (eVertexAttribute)( eVA_TEXCOORD2 | vertexAttribute ) : vertexAttribute;
+	vertexAttribute = pMesh->GetElementUVCount()          > 0 ? (eVertexAttribute)( eVA_TEXCOORD0      | vertexAttribute ) : vertexAttribute;
 	vertexAttribute = pMesh->GetElementVertexColorCount() > 0 ? ( eVertexAttribute )( eVA_VERTEXCOLOR | vertexAttribute ) : vertexAttribute;
 
 	return vertexAttribute;
@@ -280,67 +279,6 @@ void import_vertex_info( FbxMesh* pMesh , SIMesh& siMesh )
 								int tangentIdx = pTangentLayer->GetIndexArray().GetAt( polygonVertexIdx );
 								const auto& tangent = pTangentLayer->GetDirectArray().GetAt( tangentIdx );
 								siMesh.SetVertexTangent( iControlPointIndex , SVector4f( ( float )tangent[0] , ( float )tangent[1] , ( float )tangent[2] , ( float )tangent[3] ) );
-								break;
-							}
-
-							default:
-								break;
-						}
-						break;
-					}
-
-					default:
-						break;
-				}
-			}
-
-			FbxGeometryElementBinormal* pBinormalLayer = pMesh->GetElementBinormal();
-			if( pBinormalLayer )
-			{
-				switch( pBinormalLayer->GetMappingMode() )
-				{
-					case FbxGeometryElement::eByControlPoint:
-					{
-						switch( pBinormalLayer->GetReferenceMode() )
-						{
-							case FbxGeometryElement::eDirect:
-							{
-								const auto& binormal = pBinormalLayer->GetDirectArray().GetAt( iControlPointIndex );
-								siMesh.SetVertexBinormal( iControlPointIndex , SVector3f( ( float )binormal[0] , ( float )binormal[1] , ( float )binormal[2] ) );
-								break;
-							}
-
-							case FbxGeometryElement::eIndexToDirect:
-							{
-								int binormalIdx = pBinormalLayer->GetIndexArray().GetAt( iControlPointIndex );
-								const auto& binormal = pBinormalLayer->GetDirectArray().GetAt( binormalIdx );
-								siMesh.SetVertexBinormal( iControlPointIndex , SVector3f( ( float )binormal[0] , ( float )binormal[1] , ( float )binormal[2] ) );
-								break;
-							}
-
-							default:
-								break;
-						}
-						break;
-					}
-
-					case FbxGeometryElement::eByPolygonVertex:
-					{
-						switch( pBinormalLayer->GetReferenceMode() )
-						{
-							case FbxGeometryElement::eDirect:
-							{
-								const auto& binormal = pBinormalLayer->GetDirectArray().GetAt( polygonVertexIdx );
-								siMesh.SetVertexBinormal( iControlPointIndex , SVector3f( ( float )binormal[0] , ( float )binormal[1] , ( float )binormal[2] ) );
-								break;
-							}
-
-							case FbxGeometryElement::eIndexToDirect:
-							{
-								int binormalIdx = pBinormalLayer->GetIndexArray().GetAt( polygonVertexIdx );
-								const auto& binormal = pBinormalLayer->GetDirectArray().GetAt( binormalIdx );
-								siMesh.SetVertexBinormal( iControlPointIndex , SVector3f( ( float )binormal[0] , ( float )binormal[1] , ( float )binormal[2] ) );
-								break;
 								break;
 							}
 

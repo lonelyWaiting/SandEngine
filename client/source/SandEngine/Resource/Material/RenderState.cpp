@@ -1,6 +1,7 @@
 #include "SandEnginePCH.h"
 #include "RenderState.h"
 #include "SandEngine/Application/SRenderer.h"
+#include "SandEngine/Pipeline/SRenderHelper.h"
 
 unsigned int ComputeHashInternal( const void* ptr , int size )
 {
@@ -48,7 +49,7 @@ void BlendState::ComputeHash()
 	ID3D11BlendState* pState = nullptr;
 	D3D11_BLEND_DESC blendDesc;
 	memcpy( &blendDesc , &desc , sizeof( blendDesc ) );
-	SRenderer::Get().GetDevice()->CreateBlendState( &blendDesc , &pState );
+	SRenderHelper::g_Device->CreateBlendState( &blendDesc , &pState );
 	pBlendState = pState;
 }
 
@@ -80,7 +81,7 @@ void RasterizerState::ComputeHash()
 	ID3D11RasterizerState* pState = nullptr;
 	D3D11_RASTERIZER_DESC raster_desc;
 	memcpy( &raster_desc , &desc , sizeof( desc ) );
-	SRenderer::Get().GetDevice()->CreateRasterizerState( &raster_desc , &pState );
+	SRenderHelper::g_Device->CreateRasterizerState( &raster_desc , &pState );
 	pRasterizerState = pState;
 }
 
@@ -144,6 +145,6 @@ void DepthStencilState::ComputeHash()
 	ID3D11DepthStencilState* pState = nullptr;
 	D3D11_DEPTH_STENCIL_DESC dsDesc;
 	memcpy( &dsDesc , &desc , sizeof( dsDesc ) );
-	SRenderer::Get().GetDevice()->CreateDepthStencilState( &dsDesc , &pState );
+	SRenderHelper::g_Device->CreateDepthStencilState( &dsDesc , &pState );
 	pDepthStencilState = pState;
 }

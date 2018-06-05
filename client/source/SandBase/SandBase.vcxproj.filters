@@ -25,6 +25,9 @@
     <Filter Include="STimer">
       <UniqueIdentifier>{eaf66f15-0de8-4799-a0f5-952077c29b83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="IO">
+      <UniqueIdentifier>{f42c9cd4-8c84-49a7-8833-24c19bffe0af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Template\IsPODType.h">
@@ -100,6 +103,9 @@
     <ClInclude Include="Timer\STimer.h">
       <Filter>STimer</Filter>
     </ClInclude>
+    <ClInclude Include="IO\SFileStream.h">
+      <Filter>IO</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\SMath.cpp">
@@ -136,6 +142,7 @@
     <ClCompile Include="Object\SRefCounter.cpp">
       <Filter>Object</Filter>
     </ClCompile>
+    <ClCompile Include="IO\SFileStream.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Vector\SArray.inl">

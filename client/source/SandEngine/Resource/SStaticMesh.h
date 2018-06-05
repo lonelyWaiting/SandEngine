@@ -2,8 +2,8 @@
 
 #include "SandBase/Vector/SArray.h"
 #include "SMeshBuffer.h"
-#include "SandEngine/Application/SandEngineModule.h"
-#include "SandEngine/Model/Material/Material.h"
+#include "SandEngine/SApiDef.h"
+#include "SandEngine/Resource/Material/Material.h"
 
 class SBaseSubmesh
 {
@@ -21,13 +21,15 @@ private:
 	friend class SIScene;
 };
 
-class SMesh : public SResource
+class SStaticMesh : public SResource
 {
 public:
-	SMesh( const char* filename );
+	SStaticMesh( const char* filename , class SResourceManager& manager );
 	void SetMeshBuffer( SMeshBuffer* pMeshBuffer = nullptr );
 	int GetSubmeshCount();
 	const SBaseSubmesh& GetSubmesh( int i ) const;
+	void Ensureloaded();
+	void EnsureUnloaded();
 
 private:
 	SArray<SBaseSubmesh> m_subMeshes;
@@ -35,5 +37,3 @@ private:
 	SArray<SMatObj>		 m_matList;
 	friend class SIScene;
 };
-
-SAND_API SMesh* LoadMesh( const char* filename );

@@ -2,6 +2,7 @@
 #include "SBuffer.h"
 #include "Application/SRenderer.h"
 #include "SandBase/Log/SLog.h"
+#include "SandEngine/Pipeline/SRenderHelper.h"
 
 // byte address size must be a multiple of four
 DXGI_FORMAT GetSRVBufferFormat( eMemUsage usage )
@@ -81,7 +82,7 @@ SBuffer::SBuffer( eMemUsage usage , int stride , int count , const void* pInitDa
 	data.SysMemPitch      = 0;
 	data.SysMemSlicePitch = 0;
 	
-	SRenderer::Get().GetDevice()->CreateBuffer( &bufDesc , &data , &m_pBuffer );
+	SRenderHelper::g_Device->CreateBuffer( &bufDesc , &data , &m_pBuffer );
 
 	if( bindFlag & eBF_SRV )
 	{
@@ -91,7 +92,7 @@ SBuffer::SBuffer( eMemUsage usage , int stride , int count , const void* pInitDa
 		srvDesc.ViewDimension         = D3D11_SRV_DIMENSION_BUFFEREX;
 		srvDesc.BufferEx.NumElements  = ( usage & eBU_UAV_ByteAddress ) ? ( stride * count ) >> 2 : count;
 		srvDesc.BufferEx.Flags        = usage & eBU_UAV_ByteAddress ? D3D11_BUFFEREX_SRV_FLAG_RAW : 0;
-		SRenderer::Get().GetDevice()->CreateShaderResourceView( m_pBuffer , &srvDesc , &m_pSRV );
+		SRenderHelper::g_Device->CreateShaderResourceView( m_pBuffer , &srvDesc , &m_pSRV );
 	}
 
 	if( bindFlag & eBF_UAV )
@@ -103,7 +104,7 @@ SBuffer::SBuffer( eMemUsage usage , int stride , int count , const void* pInitDa
 		uavDesc.Buffer.FirstElement = 0;
 		uavDesc.Buffer.NumElements  = ( usage & eBU_UAV_ByteAddress ) ? ( stride * count ) >> 2 : count;
 		uavDesc.Buffer.Flags        = GetUAVBufferFlag( usage );
-		SRenderer::Get().GetDevice()->CreateUnorderedAccessView( m_pBuffer , &uavDesc , &m_pUAV );
+		SRenderHelper::g_Device->CreateUnorderedAccessView( m_pBuffer , &uavDesc , &m_pUAV );
 	}
 }
 
@@ -135,7 +136,7 @@ void * SBuffer::Lock()
 	if( m_pBuffer && m_Lockable )
 	{
 		D3D11_MAPPED_SUBRESOURCE data;
-		SRenderer::Get().GetDeviceContext()->Map( m_pBuffer , 0 , D3D11_MAP_WRITE_DISCARD , 0 , &data );
+		SRenderHelper::g_ImmediateContext->Map( m_pBuffer , 0 , D3D11_MAP_WRITE_DISCARD , 0 , &data );
 		result = ( void* )data.pData;
 	}
 
@@ -146,7 +147,7 @@ void SBuffer::UnLock()
 {
 	if( m_pBuffer && m_Lockable )
 	{
-		SRenderer::Get().GetDeviceContext()->Unmap( m_pBuffer , 0 );
+		SRenderHelper::g_ImmediateContext->Unmap( m_pBuffer , 0 );
 	}
 }
 
@@ -154,4 +155,63 @@ void SBuffer::UnLock()
 void SBuffer::SetFilename( const char* filename )
 {
 	if( m_pBuffer )	m_pBuffer->SetPrivateData( WKPDID_D3DDebugObjectName , sizeof( filename ) - 1 , filename );
+}
+
+SVertexBuffer::SVertexBuffer( const SVertexDescription & desc , eMemUsage usage , int iNumOfVertices , const void * pInitData /*= nullptr*/ , eBindFlag bindFlag /*= eBBF_None*/ )
+	:SBuffer( usage , desc.stride , iNumOfVertices , pInitData , ( usage & eBU_StructureBuffer ) ? bindFlag : ( eBindFlag )( eBF_Vertex | bindFlag ) )
+{
+	m_vertexDesc = desc;
+	m_iNumOfVertices = iNumOfVertices;
+}
+
+int SVertexBuffer::GetVertexMask()
+{
+	int result = eVA_None;
+
+	if( m_vertexDesc.m_iPos != -1 )
+	{
+		result |= eVA_POSITION;
+	}
+
+	if( m_vertexDesc.m_iNormal != -1 )
+	{
+		result |= eVA_NORMAL;
+	}
+
+	for( int i = 0; i < 16; i++ )
+	{
+		if( m_vertexDesc.m_iTexcoord[i] != -1 )
+		{
+			result |= ( eVA_TEXCOORD0 << i );
+		}
+	}
+
+	if( m_vertexDesc.m_color != -1 )
+	{
+		result |= eVA_VERTEXCOLOR;
+	}
+
+	return result;
+}
+
+int SVertexBuffer::GetNumOfVertices()
+{
+	return m_iNumOfVertices;
+}
+
+SIndexBuffer::SIndexBuffer( eMemUsage usage , int iNumOfIndices , eIndexFormat format , const void * pInitData , eBindFlag bindFlag /*= eBBF_None*/ )
+	:SBuffer( usage , ( format == eIF_Short ? sizeof( short ) : sizeof( int ) ) , iNumOfIndices , pInitData , ( usage & eBU_StructureBuffer ) ? bindFlag : ( eBindFlag )( bindFlag | eBF_Index ) )
+{
+	m_IndexType = format;
+	m_iNumOfIndices = iNumOfIndices;
+}
+
+eIndexFormat SIndexBuffer::GetIndexType()
+{
+	return m_IndexType;
+}
+
+int SIndexBuffer::GetNumOfIndices()
+{
+	return m_iNumOfIndices;
 }

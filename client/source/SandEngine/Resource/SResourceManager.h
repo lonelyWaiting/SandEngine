@@ -3,19 +3,13 @@
 #include "SResource.h"
 #include "SandBase/Vector/SArray.h"
 
-class SResource;
-
 class SResourceManager
 {
 public:
-	static SResourceManager & Get()
-	{
-		static SResourceManager manager;
-		return manager;
-	}
-
+	SResourceManager() {}
 	void RegisterResource( SResource* resource );
+	SResource* FindResourceByName( const char* filename );
 
 protected:
-	SArray<SResource*> m_resourceList;
+	SArray<SResourcePtr> m_resourceList;
 };

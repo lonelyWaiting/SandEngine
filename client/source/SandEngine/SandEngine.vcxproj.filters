@@ -13,17 +13,26 @@
     <Filter Include="Callback">
       <UniqueIdentifier>{774024c6-e2d9-47d0-aee9-81b7b320e65d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Model">
-      <UniqueIdentifier>{9dc065e4-36dd-438f-9042-37b85a2111af}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Model\Importer">
-      <UniqueIdentifier>{89ecd511-11fb-4df6-903a-50a2d4b92a73}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Model\Material">
-      <UniqueIdentifier>{3952e67f-740c-4598-a2c6-3bd7a568bd5c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Pipeline">
       <UniqueIdentifier>{fbbe0cb0-0ffb-497d-a470-0bb80727b955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{9dc065e4-36dd-438f-9042-37b85a2111af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Material">
+      <UniqueIdentifier>{16f29858-2f64-49bc-84db-8ea4f713cb68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Impoter">
+      <UniqueIdentifier>{753f6ecf-105e-4390-ad1a-10c6f28b335f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Impoter\Fbx">
+      <UniqueIdentifier>{af6057ac-6bee-4911-b16f-ba82ddf8da76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Texture">
+      <UniqueIdentifier>{b061744e-33ed-41b2-86a2-becfc94cd5f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Buffer">
+      <UniqueIdentifier>{296116b6-3e23-4b7c-ae86-6a8a3e0faa5e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -52,47 +61,53 @@
     <ClInclude Include="Callback\SCallback.h">
       <Filter>Callback</Filter>
     </ClInclude>
-    <ClInclude Include="Model\FbxImporter.h">
-      <Filter>Model\Importer</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\SIScene.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\SVertexBuffer.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\SIndexBuffer.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\SBuffer.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\SResource.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\SResourceManager.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\SConstantBuffer.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\SMeshBuffer.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\SMeshLoader.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\SMesh.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\Material\Material.h">
-      <Filter>Model\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="Model\Material\RenderState.h">
-      <Filter>Model\Material</Filter>
-    </ClInclude>
     <ClInclude Include="Pipeline\SRenderHelper.h">
       <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\SShader.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Material\Material.h">
+      <Filter>Resource\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Material\RenderState.h">
+      <Filter>Resource\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\FbxImporter.h">
+      <Filter>Resource\Impoter\Fbx</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\SBuffer.h">
+      <Filter>Resource\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\SConstantBuffer.h">
+      <Filter>Resource\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\SIScene.h">
+      <Filter>Resource\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\SMeshBuffer.h">
+      <Filter>Resource\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\SStaticMesh.h">
+      <Filter>Resource\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\SStaticMeshManager.h">
+      <Filter>Resource\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Texture\STextureObject.h">
+      <Filter>Resource\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\SResourceManager.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\SResource.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Texture\STextureManager.h">
+      <Filter>Resource\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="SApiDef.h">
+      <Filter>Application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -124,44 +139,50 @@
     <ClCompile Include="Application\SandEngineModule.cpp">
       <Filter>Application</Filter>
     </ClCompile>
-    <ClCompile Include="Model\FbxImporter.cpp">
-      <Filter>Model\Importer</Filter>
+    <ClCompile Include="Pipeline\SShader.cpp">
+      <Filter>Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Model\SIScene.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Pipeline\SRenderHelper.cpp">
+      <Filter>Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Model\SVertexBuffer.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Resource\Material\Material.cpp">
+      <Filter>Resource\Material</Filter>
     </ClCompile>
-    <ClCompile Include="Model\SIndexBuffer.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Resource\Material\RenderState.cpp">
+      <Filter>Resource\Material</Filter>
     </ClCompile>
-    <ClCompile Include="Model\SBuffer.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Resource\FbxImporter.cpp">
+      <Filter>Resource\Impoter\Fbx</Filter>
     </ClCompile>
-    <ClCompile Include="Model\SResource.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Resource\SBuffer.cpp">
+      <Filter>Resource\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="Model\SResourceManager.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Resource\SConstantBuffer.cpp">
+      <Filter>Resource\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="Model\SMeshLoader.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Resource\SIScene.cpp">
+      <Filter>Resource\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="Model\SMesh.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Resource\SMeshBuffer.cpp">
+      <Filter>Resource\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="Model\SConstantBuffer.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Resource\SStaticMesh.cpp">
+      <Filter>Resource\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="Model\SMeshBuffer.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Resource\SStaticMeshManager.cpp">
+      <Filter>Resource\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="Model\Material\RenderState.cpp">
-      <Filter>Model\Material</Filter>
+    <ClCompile Include="Resource\SResource.cpp">
+      <Filter>Resource</Filter>
     </ClCompile>
-    <ClCompile Include="Model\Material\Material.cpp">
-      <Filter>Model\Material</Filter>
+    <ClCompile Include="Resource\SResourceManager.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Texture\STextureManager.cpp">
+      <Filter>Resource\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Texture\STextureObject.cpp">
+      <Filter>Resource\Texture</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

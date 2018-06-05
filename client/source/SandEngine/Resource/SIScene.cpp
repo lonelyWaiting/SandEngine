@@ -1,5 +1,7 @@
 #include "SandEnginePCH.h"
 #include "SIScene.h"
+#include "SandEngine/Application/SandEngineModule.h"
+#include "SandEngine/Resource/SStaticMeshManager.h"
 
 SIMesh& SIScene::AddMesh( const char* name , eVertexAttribute vertexAttribute )
 {
@@ -61,17 +63,9 @@ void SIMesh::SetVertexNormal( int index , const SVector3f & normal )
 
 void SIMesh::SetVertexTangent( int index , const SVector4f & tangent )
 {
-	if( ( m_vertexAttribute & eVA_TANGENT ) == eVA_TANGENT && index >= 0 && index < ( int )m_vertexList.GetSize() )
+	if( ( m_vertexAttribute & eVA_TEXCOORD2 ) == eVA_TEXCOORD2 && index >= 0 && index < ( int )m_vertexList.GetSize() )
 	{
 		m_vertexList[index].Tangent = tangent;
-	}
-}
-
-void SIMesh::SetVertexBinormal( int index , const SVector3f & biNormal )
-{
-	if( ( m_vertexAttribute & eVA_BINORMAL ) == eVA_BINORMAL && index >= 0 && index < ( int )m_vertexList.GetSize() )
-	{
-		m_vertexList[index].Binormal = biNormal;
 	}
 }
 
@@ -85,7 +79,7 @@ void SIMesh::SetVertexColor( int index , const SVector3f & color )
 
 void SIMesh::SetVertexUV( int index , const SVector2f & uv )
 {
-	if( ( m_vertexAttribute & eVA_UV ) == eVA_UV && index >= 0 && index < ( int )m_vertexList.GetSize() )
+	if( ( m_vertexAttribute & eVA_TEXCOORD0 ) == eVA_TEXCOORD0 && index >= 0 && index < ( int )m_vertexList.GetSize() )
 	{
 		m_vertexList[index].UV = uv;
 	}
@@ -131,9 +125,9 @@ const char* SIMesh::GetName()
 	return m_name.AsChar();
 }
 
-#include "SMesh.h"
+#include "SStaticMesh.h"
 
-SMesh* SIScene::Process()
+SStaticMesh* SIScene::Process()
 {
 	SArray<int> triangleList;
 	int iVertexNum = 0 , iTriangleNum = 0;
@@ -161,7 +155,7 @@ SMesh* SIScene::Process()
 		}
 	}
 
-	SMesh* pMesh = new SMesh( m_Filename.AsChar() );
+	SStaticMesh* pMesh = SandEngine::StaticMeshManager.LoadStaticMesh(m_Filename.AsChar());
 	SMeshBuffer* pMeshBuffer = new SMeshBuffer();
 
 	eVertexAttribute va = m_Meshs[0].GetVertexAttribute();
@@ -180,19 +174,13 @@ SMesh* SIScene::Process()
 		offset += sizeof( float ) * 3;
 	}
 
-	if( va & eVA_TANGENT )
+	if( va & eVA_TEXCOORD2 )
 	{
-		desc.m_iTangent = eVF_Float4 | offset;
+		desc.m_iTexcoord[2] = eVF_Float4 | offset;
 		offset += sizeof( float ) * 4;
 	}
 
-	if( va & eVA_BINORMAL )
-	{
-		desc.m_iBinormal = eVF_Float3 | offset;
-		offset += sizeof( float ) * 3;
-	}
-
-	if( va & eVA_UV )
+	if( va & eVA_TEXCOORD0 )
 	{
 		desc.m_iTexcoord[0] = eVF_Float2 | offset;
 		offset += sizeof( float ) * 2;
@@ -224,19 +212,13 @@ SMesh* SIScene::Process()
 				pVertex += sizeof( float ) * 3;
 			}
 
-			if( va & eVA_TANGENT )
+			if( va & eVA_TEXCOORD2 )
 			{
 				memcpy( pVertex , &vert.Tangent , sizeof( float ) * 4 );
 				pVertex += sizeof( float ) * 4;
 			}
 
-			if( va & eVA_BINORMAL )
-			{
-				memcpy( pVertex , &vert.Binormal , sizeof( float ) * 3 );
-				pVertex += sizeof( float ) * 3;
-			}
-
-			if( va & eVA_UV )
+			if( va & eVA_TEXCOORD0 )
 			{
 				memcpy( pVertex , &vert.UV , sizeof( float ) * 2 );
 				pVertex += sizeof( float ) * 2;

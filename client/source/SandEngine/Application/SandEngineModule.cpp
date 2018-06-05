@@ -3,8 +3,12 @@
 #include "Callback/SCallback.h"
 #include "GUI/SGui.h"
 #include "SRenderer.h"
+#include "SandEngine/Resource/SStaticMeshManager.h"
+#include "SandEngine/Resource/Texture/STextureManager.h"
 
-SCallbackManager SandEngine::Callback;
+SCallbackManager	SandEngine::Callback;
+SStaticMeshManager	SandEngine::StaticMeshManager;
+STextureManager		SandEngine::TextureManager;
 
 class SandEngineHandler : public SCallbackHandle
 {
@@ -22,7 +26,7 @@ public:
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEngineInit )
 		{
-			ImGuiInit( userData.pUserData , SRenderer::Get().GetDevice() , SRenderer::Get().GetDeviceContext() );
+			ImGuiInit( userData.pUserData );
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEngineDeInit )
 		{
@@ -34,9 +38,8 @@ public:
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnResize )
 		{
-			const SVector2f& size = *( const SVector2f* )( userData.pUserData );
 			ImGuiBeginResize();
-			SRenderer::Get().Resize( size );
+			SRenderer::Get().Resize(*(const SVector2f*)(userData.pUserData));
 			ImGuiEndResize();
 		}
 	}

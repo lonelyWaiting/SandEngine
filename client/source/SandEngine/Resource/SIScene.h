@@ -5,17 +5,7 @@
 #include "SandBase/Math/SVector4f.h"
 #include "SandBase/Vector/SArray.h"
 #include "SandBase/String/SString.h"
-
-enum eVertexAttribute
-{
-	eVA_None        = 0      ,
-	eVA_POSITION    = 1 << 0 ,
-	eVA_UV          = 1 << 1 ,
-	eVA_NORMAL      = 1 << 2 ,
-	eVA_TANGENT     = 1 << 3 ,
-	eVA_BINORMAL    = 1 << 4 ,
-	eVA_VERTEXCOLOR = 1 << 5 ,
-};
+#include "SandEngine/Resource/SBuffer.h"
 
 enum eTextureType
 {
@@ -55,7 +45,6 @@ public:
 	void				SetVertexPos( int index , const SVector3f& pos );
 	void				SetVertexNormal( int index , const SVector3f& normal );
 	void				SetVertexTangent( int index , const SVector4f& tangent );
-	void				SetVertexBinormal( int index , const SVector3f& biNormal );
 	void				SetVertexColor( int index , const SVector3f& color );
 	void				SetVertexUV( int index , const SVector2f& uv );
 	void				SetMaterialIndex( int polygonIndex , int materialIndex );
@@ -90,7 +79,7 @@ public:
 	SIMesh & AddMesh( const char* name , eVertexAttribute vertexAttribute );
 	SIMaterial& AddMaterial( const char* name );
 	void SetFilename( const char* filename );
-	class SMesh* Process();
+	class SStaticMesh* Process();
 
 protected:
 	SArray<SIMesh>		m_Meshs;

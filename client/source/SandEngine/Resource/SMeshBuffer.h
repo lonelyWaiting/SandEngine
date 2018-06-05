@@ -2,8 +2,7 @@
 #ifndef SMESHBUFFER_H
 #define SMESHBUFFER_H
 
-#include "SVertexBuffer.h"
-#include "SIndexBuffer.h"
+#include "SandEngine/Resource/SBuffer.h"
 #include "SandBase/Object/SSmartPointer.h"
 #include "SandBase/Object/SRefCounter.h"
 

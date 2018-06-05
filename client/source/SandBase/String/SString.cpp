@@ -344,3 +344,24 @@ int SString::Find_Internal( const char * str , bool( *cmp_function )( const char
 
 	return j == matchLen ? i - j : -1;
 }
+
+bool SString::IsEqual( const char* str ) const
+{
+	int size = GetLength();
+
+	bool result = str && ( strlen( str ) == size );
+
+	if( result )
+	{
+		for( int i = 0; i < size; i++ )
+		{
+			if( str[i] != content[i] )
+			{
+				result = false;
+				break;
+			}
+		}
+	}
+
+	return result;
+}

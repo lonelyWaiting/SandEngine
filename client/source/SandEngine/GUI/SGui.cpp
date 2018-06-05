@@ -27,6 +27,7 @@
 #include "SandEnginePCH.h"
 #include "Imgui/imgui.h"
 #include "SGui.h"
+#include "SandEngine/Pipeline/SRenderHelper.h"
 
 // DirectX
 #include <d3d11.h>
@@ -592,13 +593,13 @@ void ImGuiInitStyle()
 	ImGui::StyleColorsDark();
 }
 
-bool ImGuiInit( void* hwnd , ID3D11Device* device , ID3D11DeviceContext* device_context )
+bool ImGuiInit( void* hwnd )
 {
 	ImGui::CreateContext();
 
 	g_hWnd              = ( HWND )hwnd;
-	g_pd3dDevice        = device;
-	g_pd3dDeviceContext = device_context;
+	g_pd3dDevice        = SRenderHelper::g_Device;
+	g_pd3dDeviceContext = SRenderHelper::g_ImmediateContext;
 
 	if( !QueryPerformanceFrequency( ( LARGE_INTEGER * )&g_TicksPerSecond ) )
 		return false;
