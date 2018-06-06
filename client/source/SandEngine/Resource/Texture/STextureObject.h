@@ -4,20 +4,13 @@
 #include "SandEngine/Resource/SResourceManager.h"
 #include "SandBase/Object/SSmartPointer.h"
 
-enum eTextureView
-{
-	eTV_None = 0,
-	eTV_RenderTarget = SBIT( 0 ) , 
-	eTV_DepthStencil = SBIT( 1 ) ,
-};
-
 typedef SSmartPointer<ID3D11Texture2D> Texture2DPtr;
 
 class STextureObject : public SResource
 {
 public:
-	STextureObject( const char* filename , SResourceManager& manager );	
-	STextureObject();
+	STextureObject( const char* filename , SResourceManager& manager );
+
 	void Ensureloaded();
 	void SetD3DTexture(ID3D11Texture2D* tex);
 	ID3D11Texture2D* GetD3DTexture();
@@ -40,8 +33,7 @@ typedef SSmartPointer<ID3D11DepthStencilView>	DepthStencilPtr;
 class SRenderableTexture : public STextureObject
 {
 public:
-	SRenderableTexture(const SRenderableConfig& cfg);
-	void SetRenderableConfig(const SRenderableConfig& cfg);
+	SRenderableTexture(const char* name, const SRenderableConfig& cfg, SResourceManager& manager);
 	void Ensureloaded();
 	void EnsureUnloaded();
 	

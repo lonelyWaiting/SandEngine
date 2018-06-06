@@ -4,10 +4,13 @@
 #include "SandEngine/Resource/SResourceManager.h"
 
 class STextureObject;
+class SRenderableTexture;
+struct SRenderableConfig;
 
 class STextureManager : public SResourceManager
 {
 public:
 	SAND_API STextureObject* Load2DTexture( const char* filename );
 	SAND_API STextureObject* Load3DTexture( const char* filename );
+	SRenderableTexture* CreateRenderableTexture(const char* name, const SRenderableConfig& cfg);
 };

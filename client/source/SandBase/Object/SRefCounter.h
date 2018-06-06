@@ -5,6 +5,7 @@ class SRefCounter
 public:
 	void AddRef();
 	void Release();
+	virtual ~SRefCounter() {}
 
 	int GetRefCount();
 

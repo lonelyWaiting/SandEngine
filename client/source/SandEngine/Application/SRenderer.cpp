@@ -5,6 +5,8 @@
 #include "SandBase/Math/SVector4f.h"
 #include "SandBase/Log/SLog.h"
 #include "SandEngine/Pipeline/SRenderHelper.h"
+#include "SandEngineModule.h"
+#include "SandEngine/Resource/Texture/STextureManager.h"
 
 SRenderer & SRenderer::Get()
 {
@@ -20,7 +22,7 @@ bool SRenderer::Init( HWND hwnd )
 	if (FAILED(SRenderHelper::g_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer)))	return false;
 	SRenderableConfig cfg;
 	cfg.enableAsRenderTarget = true;
-	m_RenderTarget = new SRenderableTexture(cfg);
+	m_RenderTarget = SandEngine::TextureManager.CreateRenderableTexture("Final", cfg);
 	m_RenderTarget->SetD3DTexture(pBackBuffer);
 	m_RenderTarget->Ensureloaded();
 	pBackBuffer->Release();
@@ -34,7 +36,7 @@ bool SRenderer::Init( HWND hwnd )
 	cfg.enableAsRenderTarget = false;
 	cfg.width                = clientWidth;
 	cfg.height               = clientHeight;
-	m_DepthStencil = new SRenderableTexture(cfg);
+	m_DepthStencil = SandEngine::TextureManager.CreateRenderableTexture("Depth", cfg);
 	m_DepthStencil->Ensureloaded();
 
 	ID3D11RenderTargetView* rtView = m_RenderTarget->GetD3DRenderTarget();
@@ -83,7 +85,7 @@ void SRenderer::Resize( const SVector2f& size )
 	SRenderableConfig cfg;
 	cfg.enableAsRenderTarget = true;
 	cfg.enableAsDepth        = false;
-	m_RenderTarget->SetRenderableConfig(cfg);
+	m_RenderTarget = SandEngine::TextureManager.CreateRenderableTexture("Final", cfg);
 	m_RenderTarget->SetD3DTexture(pBackBuffer);
 	m_RenderTarget->Ensureloaded();
 	pBackBuffer->Release();
@@ -102,7 +104,7 @@ void SRenderer::Resize( const SVector2f& size )
 	cfg.enableAsRenderTarget = false;
 	cfg.width                = (suInt32)size.x;
 	cfg.height               = (suInt32)size.y;
-	m_DepthStencil->SetRenderableConfig(cfg);
+	m_DepthStencil = SandEngine::TextureManager.CreateRenderableTexture("Depth", cfg);
 	m_DepthStencil->Ensureloaded();
 
 	ID3D11RenderTargetView* rtView = m_RenderTarget->GetD3DRenderTarget();

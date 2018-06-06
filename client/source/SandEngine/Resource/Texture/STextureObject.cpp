@@ -8,11 +8,6 @@ STextureObject::STextureObject( const char * filename , SResourceManager & manag
 	m_Texture = nullptr;
 }
 
-STextureObject::STextureObject()
-{
-	m_Texture = nullptr;
-}
-
 void STextureObject::SetD3DTexture(ID3D11Texture2D* tex)
 {
 	m_Texture = tex;
@@ -28,7 +23,8 @@ void STextureObject::Ensureloaded()
 	// TODO.Create D3D Texture2D
 }
 
-SRenderableTexture::SRenderableTexture(const SRenderableConfig& cfg)
+SRenderableTexture::SRenderableTexture(const char* name, const SRenderableConfig& cfg, SResourceManager& manager)
+	:STextureObject(name, manager)
 {
 	m_cfg = cfg;
 }
@@ -97,7 +93,6 @@ void SRenderableTexture::DoLoaded()
 		if (FAILED(SRenderHelper::g_Device->CreateDepthStencilView(pDepthStencilBuffer, 0, &pDepthStencilView)))	return;
 		m_Texture      = pDepthStencilBuffer;
 		m_depthStencil = pDepthStencilView;
-		pDepthStencilBuffer->Release();
 		pDepthStencilView->Release();
 	}
 }
@@ -107,9 +102,4 @@ void SRenderableTexture::DoUnloaded()
 	if (m_Texture)		m_Texture      = nullptr;
 	if (m_renderTarget)	m_renderTarget = nullptr;
 	if (m_depthStencil)	m_depthStencil = nullptr;
-}
-
-void SRenderableTexture::SetRenderableConfig(const SRenderableConfig& cfg)
-{
-	m_cfg = cfg;
 }
