@@ -164,31 +164,31 @@ SStaticMesh* SIScene::Process()
 	SVertexDescription desc;
 	if( va & eVA_POSITION )
 	{
-		desc.m_iPos = eVF_Float3 | offset;
+		desc.m_iPos = (eVF_Float3 << 24) | offset;
 		offset += sizeof( float ) * 3;
 	}
 
 	if( va & eVA_NORMAL )
 	{
-		desc.m_iNormal = eVF_Float3 | offset;
+		desc.m_iNormal = (eVF_Float3 << 24) | offset;
 		offset += sizeof( float ) * 3;
 	}
 
 	if( va & eVA_TEXCOORD2 )
 	{
-		desc.m_iTexcoord[2] = eVF_Float4 | offset;
+		desc.m_iTexcoord[2] = (eVF_Float4 << 24) | offset;
 		offset += sizeof( float ) * 4;
 	}
 
 	if( va & eVA_TEXCOORD0 )
 	{
-		desc.m_iTexcoord[0] = eVF_Float2 | offset;
+		desc.m_iTexcoord[0] = (eVF_Float2 << 24) | offset;
 		offset += sizeof( float ) * 2;
 	}
 
 	if( va & eVA_VERTEXCOLOR )
 	{
-		desc.m_color = eVF_Float3 | offset;
+		desc.m_color = (eVF_Float3 << 24) | offset;
 		offset += sizeof( float ) * 3;
 	}
 	desc.stride = offset;

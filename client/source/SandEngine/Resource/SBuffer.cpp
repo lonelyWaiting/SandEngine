@@ -125,6 +125,11 @@ ID3D11UnorderedAccessView * SBuffer::GetUnorderedAccessView() const
 	return m_pUAV;
 }
 
+ID3D11Buffer* SBuffer::GetBuffer() const
+{
+	return m_pBuffer;
+}
+
 void * SBuffer::Lock()
 {
 #ifdef _DEBUG

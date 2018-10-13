@@ -16,6 +16,7 @@ public:
 	static IDXGISwapChain*		g_SwapChain;
 
 	static void SetRenderState();
+	static void ResetStream();
 	static void AddMeshStream( class SMeshBuffer* mesh , suInt32 mask );
 	static void SetTexture( eShaderStage stage , int slot , STextureObject* tex );
 	static bool CreateDeviceAndContext( HWND hwnd );

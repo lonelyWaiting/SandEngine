@@ -8,11 +8,11 @@
 // in directx 11 , input assembler vertex input resouces slots is 32
 enum eVertexFormat
 {
-	eVF_Float3 = SBIT( 16 ) ,
-	eVF_Float4 = SBIT( 17 ) ,
-	eVF_Float2 = SBIT( 18 ) ,
-	eVF_Float  = SBIT( 19 ) ,
-	eVF_UByte4 = SBIT( 20 )
+	eVF_Float3 = SBIT( 1 ) ,
+	eVF_Float4 = SBIT( 2 ) ,
+	eVF_Float2 = SBIT( 3 ) ,
+	eVF_Float  = SBIT( 4 ) ,
+	eVF_UByte4 = SBIT( 5 )
 };
 
 enum eVertexAttribute
@@ -62,6 +62,25 @@ enum eBindFlag
 
 #include "SResource.h"
 
+static DXGI_FORMAT ConvertToDXVertexFormat(eVertexFormat vf)
+{
+	switch (vf)
+	{
+	case eVF_Float:
+		return DXGI_FORMAT_R32_FLOAT;
+	case eVF_Float2:
+		return DXGI_FORMAT_R32G32_FLOAT;
+	case eVF_Float3:
+		return DXGI_FORMAT_R32G32B32_FLOAT;
+	case eVF_Float4:
+		return DXGI_FORMAT_R32G32B32A32_FLOAT;
+	case eVF_UByte4:
+		return DXGI_FORMAT_R8G8B8A8_UNORM;
+	}
+
+	return DXGI_FORMAT_UNKNOWN;
+}
+
 struct ID3D11ShaderResourceView;
 struct ID3D11UnorederAccessView;
 struct ID3D11Buffer;
@@ -76,6 +95,7 @@ public:
 
 	ID3D11ShaderResourceView*  GetShaderResourceView()  const;
 	ID3D11UnorderedAccessView* GetUnorderedAccessView() const;
+	ID3D11Buffer*			   GetBuffer() const;
 
 	void* Lock();
 	void  UnLock();
@@ -102,6 +122,19 @@ public:
 	SVertexBuffer( const SVertexDescription& desc , eMemUsage usage , int iNumOfVertices = 0 , const void* pInitData = nullptr , eBindFlag viewFlag = eBF_None );
 	int GetVertexMask();
 	int GetNumOfVertices();
+
+	int GetPositionOffset()			{ return m_vertexDesc.m_iPos & 0xf; }
+	int GetNormalOffset()			{ return m_vertexDesc.m_iNormal & 0xf; }
+	int GetColorOffset()			{ return m_vertexDesc.m_color & 0xf; }
+	int GetTexcoordOffset(int i)	{ return m_vertexDesc.m_iTexcoord[i] & 0xf; }
+	int GetStride()					{ return m_vertexDesc.stride; }
+
+	eVertexFormat GetPositionFormat()		{ return (eVertexFormat)(m_vertexDesc.m_iPos & 0xfff0); }
+	eVertexFormat GetNormalFormat()			{ return (eVertexFormat)(m_vertexDesc.m_iNormal & 0xfff0); }
+	eVertexFormat GetColorFormat()			{ return (eVertexFormat)(m_vertexDesc.m_color & 0xfff0); }
+	eVertexFormat GetTexcoordFormat(int i)	{ return (eVertexFormat)(m_vertexDesc.m_iTexcoord[i] & 0xfff0); }
+
+	int GetVertexStride() { return m_vertexDesc.stride; }
 
 private:
 	SVertexDescription m_vertexDesc;
