@@ -31,7 +31,6 @@
 #include <d3d11.h>
 #include <d3dCompiler.h>
 
-#include <wrl.h>
 #include <windows.h>
 
 #ifndef SAFE_RELEASE
