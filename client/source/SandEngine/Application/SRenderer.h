@@ -20,6 +20,5 @@ private:
 	SRenderer() {}
 
 private:
-	SRenderableTexturePtr m_RenderTarget;
-	SRenderableTexturePtr m_DepthStencil;
+	SRenderTexturePtr m_RT;
 };

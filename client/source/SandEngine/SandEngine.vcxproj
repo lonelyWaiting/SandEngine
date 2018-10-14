@@ -28,12 +28,13 @@
     <ClInclude Include="Callback\SCallback.h" />
     <ClInclude Include="GUI\SGui.h" />
     <ClInclude Include="Pipeline\SRenderHelper.h" />
-    <ClInclude Include="Pipeline\SShader.h" />
     <ClInclude Include="Resource\FbxImporter.h" />
+    <ClInclude Include="Resource\Image\SImage.h" />
     <ClInclude Include="Resource\Material\Material.h" />
     <ClInclude Include="Resource\Material\RenderState.h" />
     <ClInclude Include="Resource\SBuffer.h" />
     <ClInclude Include="Resource\SConstantBuffer.h" />
+    <ClInclude Include="Resource\Shaders\SShader.h" />
     <ClInclude Include="Resource\SIScene.h" />
     <ClInclude Include="Resource\SMeshBuffer.h" />
     <ClInclude Include="Resource\SResource.h" />
@@ -56,12 +57,13 @@
     <ClCompile Include="Callback\SCallback.cpp" />
     <ClCompile Include="GUI\SGui.cpp" />
     <ClCompile Include="Pipeline\SRenderHelper.cpp" />
-    <ClCompile Include="Pipeline\SShader.cpp" />
     <ClCompile Include="Resource\FbxImporter.cpp" />
+    <ClCompile Include="Resource\Image\SImage.cpp" />
     <ClCompile Include="Resource\Material\Material.cpp" />
     <ClCompile Include="Resource\Material\RenderState.cpp" />
     <ClCompile Include="Resource\SBuffer.cpp" />
     <ClCompile Include="Resource\SConstantBuffer.cpp" />
+    <ClCompile Include="Resource\Shaders\SShader.cpp" />
     <ClCompile Include="Resource\SIScene.cpp" />
     <ClCompile Include="Resource\SMeshBuffer.cpp" />
     <ClCompile Include="Resource\SResource.cpp" />
@@ -221,7 +223,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib;libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)client\thirdparty\fbxsdk\lib\x64\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>

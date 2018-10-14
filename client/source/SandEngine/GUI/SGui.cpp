@@ -854,6 +854,7 @@ void GuiUnRegister( void* func , void* data /*= nullptr*/ )
 	{
 		if( it->first == func && it->second == data )
 		{
+			if (data)	SAFE_DELETE(data);
 			editorFunc.erase( it );
 			break;
 		}

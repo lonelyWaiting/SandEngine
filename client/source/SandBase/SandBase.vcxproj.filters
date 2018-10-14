@@ -142,7 +142,9 @@
     <ClCompile Include="Object\SRefCounter.cpp">
       <Filter>Object</Filter>
     </ClCompile>
-    <ClCompile Include="IO\SFileStream.cpp" />
+    <ClCompile Include="IO\SFileStream.cpp">
+      <Filter>IO</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Vector\SArray.inl">

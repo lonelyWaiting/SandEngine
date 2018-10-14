@@ -31,9 +31,9 @@ public:
 	bool ReadFloat( float& value );
 	bool ReadString( char* str );
 	bool Read( char* ptr , int sizeInByte );
-	void Read( const SVector2f& v );
-	void Read( const SVector3f& v );
-	void Read( const SVector4f& v );
+	bool Read( SVector2f& v );
+	bool Read( SVector3f& v );
+	bool Read( SVector4f& v );
 
 	int GetFileSize();
 

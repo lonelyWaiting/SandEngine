@@ -2,11 +2,30 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="EditorManager.cpp" />
-    <ClCompile Include="imguiDemo.cpp" />
+    <ClCompile Include="EditorManager.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="IBLEditor.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="IBL.cpp">
+      <Filter>Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EditorManager.h" />
-    <ClInclude Include="imguiDemo.h" />
+    <Filter Include="Editor">
+      <UniqueIdentifier>{571ec9ea-8ba0-40d8-b3f1-1581cfc75120}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="EditorManager.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="IBL.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorHelper.h">
+      <Filter>Editor</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

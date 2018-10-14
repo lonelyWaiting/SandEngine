@@ -37,6 +37,7 @@ enum eVertexAttribute
 	eVA_TEXCOORD13  = SBIT( 16 ) ,
 	eVA_TEXCOORD14  = SBIT( 17 ) ,
 	eVA_TEXCOORD15  = SBIT( 18 ) ,
+	eVA_IndexBuffer = SBIT( 19 ),
 };
 
 enum eMemUsage

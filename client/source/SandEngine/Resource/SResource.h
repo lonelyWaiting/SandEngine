@@ -4,6 +4,7 @@
 #include "SandBase/String/SString.h"
 #include "SandEngine/SandEnginePCH.h"
 #include "SandBase/Object/SSmartPointer.h"
+#include "SandEngine/SApiDef.h"
 
 enum eResourceFlag
 {

@@ -5,6 +5,7 @@
 #include "SRenderer.h"
 #include "SandEngine/Resource/SStaticMeshManager.h"
 #include "SandEngine/Resource/Texture/STextureManager.h"
+#include "SandEngine/Resource/Shaders/SShader.h"
 
 SCallbackManager	SandEngine::Callback;
 SStaticMeshManager	SandEngine::StaticMeshManager;
@@ -27,6 +28,7 @@ public:
 		else if( userData.pSender == &SandEngine::Callback.OnEngineInit )
 		{
 			ImGuiInit( userData.pUserData );
+			SShader::InitShader();
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEngineDeInit )
 		{
@@ -43,9 +45,8 @@ public:
 			ImGuiEndResize();
 		}
 	}
-};
+}gSandEngineHandler;
 
-SandEngineHandler gSandEngineHandler;
 
 void SandEngineInit()
 {

@@ -34,6 +34,12 @@
     <Filter Include="Resource\Buffer">
       <UniqueIdentifier>{296116b6-3e23-4b7c-ae86-6a8a3e0faa5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource\Image">
+      <UniqueIdentifier>{4e8ad8ab-9678-457b-adf0-9d1c0a06117a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Shaders">
+      <UniqueIdentifier>{713864b8-cdf3-465b-83de-80988a24db51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\SandEngineModule.h">
@@ -62,9 +68,6 @@
       <Filter>Callback</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\SRenderHelper.h">
-      <Filter>Pipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Pipeline\SShader.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Resource\Material\Material.h">
@@ -109,6 +112,12 @@
     <ClInclude Include="SApiDef.h">
       <Filter>Application</Filter>
     </ClInclude>
+    <ClInclude Include="Resource\Image\SImage.h">
+      <Filter>Resource\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Shaders\SShader.h">
+      <Filter>Resource\Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\SApplication.cpp">
@@ -138,9 +147,6 @@
     </ClCompile>
     <ClCompile Include="Application\SandEngineModule.cpp">
       <Filter>Application</Filter>
-    </ClCompile>
-    <ClCompile Include="Pipeline\SShader.cpp">
-      <Filter>Pipeline</Filter>
     </ClCompile>
     <ClCompile Include="Pipeline\SRenderHelper.cpp">
       <Filter>Pipeline</Filter>
@@ -183,6 +189,12 @@
     </ClCompile>
     <ClCompile Include="Resource\Texture\STextureObject.cpp">
       <Filter>Resource\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Image\SImage.cpp">
+      <Filter>Resource\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Shaders\SShader.cpp">
+      <Filter>Resource\Shaders</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

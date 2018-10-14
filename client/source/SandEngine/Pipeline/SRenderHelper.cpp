@@ -2,10 +2,10 @@
 #include "SRenderHelper.h"
 #include "SandEngine/Resource/Material/Material.h"
 #include "SandEngine/Application/SRenderer.h"
-#include "SandEngine/Pipeline/SShader.h"
 #include "SandBase/Log/Slog.h"
 #include "SandEngine/Resource/Texture/STextureObject.h"
 #include "SandEngine/Resource/SMeshBuffer.h"
+#include "SandEngine/Resource/Shaders/SShader.h"
 
 ID3D11Device*        SRenderHelper::g_Device           = nullptr;
 IDXGISwapChain*      SRenderHelper::g_SwapChain        = nullptr;
@@ -32,8 +32,48 @@ ID3D11DeviceContext* SRenderHelper::g_ImmediateContext = nullptr;
 #define STREAM_VERTEX_TEXCOORD15	18
 
 
-static D3D11_INPUT_ELEMENT_DESC g_InputLayer[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
+static D3D11_INPUT_ELEMENT_DESC g_InputLayout[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT];
 static ID3D11Buffer* g_VertexBuffer[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT] = { nullptr };
+static unsigned int g_VertexBufferStride[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT] = { 0 };
+static unsigned int g_VertexBufferOffset[D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT] = { 0 };
+static int g_InputLayoutCount   = 0;
+static int g_VertexBufferCount = 0;
+static ID3D11Buffer* g_IndexBuffer = nullptr;
+static std::map<size_t, ID3D11InputLayout*> g_InputLayoutManager;
+
+// https://stackoverflow.com/questions/19195183/how-to-properly-hash-the-custom-struct
+template<class T>
+inline void hash_combine(std::size_t& s, const T& v)
+{
+	std::hash<T> h;
+	s ^= h(v) + 0x9e3779b9 + (s << 6) + (s >> 2);
+}
+
+ID3D11InputLayout* FindInputLayer(ID3DBlob* blob)
+{
+	std::size_t h = 0;
+	for (int i = 0; i < g_InputLayoutCount; i++)
+	{
+		auto element = g_InputLayout[i];
+		hash_combine(h, element.SemanticName);
+		hash_combine(h, element.SemanticIndex);
+		hash_combine(h, element.Format);
+		hash_combine(h, element.InputSlot);
+		hash_combine(h, element.AlignedByteOffset);
+		hash_combine(h, element.InputSlotClass);
+		hash_combine(h, element.InstanceDataStepRate);
+	}
+
+	auto iter = g_InputLayoutManager.find(h);
+	if (iter != g_InputLayoutManager.end())	return iter->second;
+
+	ID3D11InputLayout* inputLayout = nullptr;
+	SRenderHelper::g_Device->CreateInputLayout(g_InputLayout, g_InputLayoutCount, blob->GetBufferPointer(), blob->GetBufferSize(), &inputLayout);
+
+	g_InputLayoutManager[h] = inputLayout;
+
+	return inputLayout;
+}
 
 void SRenderHelper::SetRenderState()
 {
@@ -42,71 +82,74 @@ void SRenderHelper::SetRenderState()
 
 void SRenderHelper::ResetStream()
 {
-
+	g_InputLayoutCount = g_VertexBufferCount = 0;
 }
 
 void SRenderHelper::AddMeshStream( SMeshBuffer * mesh , suInt32 mask )
 {
-	if (mesh && mesh->GetVertexBuffer())	return;
+	if (!mesh || !mesh->GetVertexBuffer())	return;
 
 	ID3D11Buffer* pBuffer = mesh->GetVertexBuffer()->GetBuffer();
 	if (!pBuffer)	return;
 
+	g_VertexBuffer[g_VertexBufferCount]       = pBuffer;
+	g_VertexBufferStride[g_VertexBufferCount] = mesh->GetVertexBuffer()->GetStride();
+	g_VertexBufferOffset[g_VertexBufferCount] = 0;
+
+	if (mask & eVA_IndexBuffer)
+	{
+		auto ib = mesh->GetIndexBuffer();
+		if(ib)	g_IndexBuffer = ib->GetBuffer();
+	}
+
 	if (mask & eVA_POSITION)
 	{
-		g_VertexBuffer[0]                    = pBuffer;
-		g_InputLayer[0].SemanticName         = "POSITION";
-		g_InputLayer[0].SemanticIndex        = 0;
-		g_InputLayer[0].Format               = ConvertToDXVertexFormat(mesh->GetVertexBuffer()->GetPositionFormat());
-		g_InputLayer[0].InputSlot            = 0;	// specify which vertex buffer used
-		g_InputLayer[0].AlignedByteOffset    = mesh->GetVertexBuffer()->GetPositionOffset();
-		g_InputLayer[0].InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA;
-		g_InputLayer[0].InstanceDataStepRate = 0;
+		g_InputLayout[g_InputLayoutCount].SemanticName         = "POSITION";
+		g_InputLayout[g_InputLayoutCount].SemanticIndex        = 0;
+		g_InputLayout[g_InputLayoutCount].Format               = ConvertToDXVertexFormat(mesh->GetVertexBuffer()->GetPositionFormat());
+		g_InputLayout[g_InputLayoutCount].InputSlot            = g_VertexBufferCount;
+		g_InputLayout[g_InputLayoutCount].AlignedByteOffset    = mesh->GetVertexBuffer()->GetPositionOffset();
+		g_InputLayout[g_InputLayoutCount].InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA;
+		g_InputLayout[g_InputLayoutCount].InstanceDataStepRate = 0;
 	}
 
 	if (mask & eVA_NORMAL)
 	{
-		g_VertexBuffer[0]                    = pBuffer;
-		g_InputLayer[0].SemanticName         = "NORMAL";
-		g_InputLayer[0].SemanticIndex        = 0;
-		g_InputLayer[0].Format               = ConvertToDXVertexFormat(mesh->GetVertexBuffer()->GetNormalFormat());
-		g_InputLayer[0].InputSlot            = 0;	// specify which vertex buffer used
-		g_InputLayer[0].AlignedByteOffset    = mesh->GetVertexBuffer()->GetNormalOffset();
-		g_InputLayer[0].InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA;
-		g_InputLayer[0].InstanceDataStepRate = 0;
+		g_InputLayout[g_InputLayoutCount].SemanticName         = "NORMAL";
+		g_InputLayout[g_InputLayoutCount].SemanticIndex        = 0;
+		g_InputLayout[g_InputLayoutCount].Format               = ConvertToDXVertexFormat(mesh->GetVertexBuffer()->GetNormalFormat());
+		g_InputLayout[g_InputLayoutCount].InputSlot            = g_VertexBufferCount;	// specify which vertex buffer used
+		g_InputLayout[g_InputLayoutCount].AlignedByteOffset    = mesh->GetVertexBuffer()->GetNormalOffset();
+		g_InputLayout[g_InputLayoutCount].InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA;
+		g_InputLayout[g_InputLayoutCount].InstanceDataStepRate = 0;
 	}
 
 	if (mask & eVA_VERTEXCOLOR)
 	{
-		g_VertexBuffer[0]                    = pBuffer;
-		g_InputLayer[0].SemanticName         = "COLOR";
-		g_InputLayer[0].SemanticIndex        = 0;
-		g_InputLayer[0].Format               = ConvertToDXVertexFormat(mesh->GetVertexBuffer()->GetColorFormat());
-		g_InputLayer[0].InputSlot            = 0;	// specify which vertex buffer used
-		g_InputLayer[0].AlignedByteOffset    = mesh->GetVertexBuffer()->GetColorOffset();
-		g_InputLayer[0].InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA;
-		g_InputLayer[0].InstanceDataStepRate = 0;
+		g_InputLayout[g_InputLayoutCount].SemanticName         = "COLOR";
+		g_InputLayout[g_InputLayoutCount].SemanticIndex        = 0;
+		g_InputLayout[g_InputLayoutCount].Format               = ConvertToDXVertexFormat(mesh->GetVertexBuffer()->GetColorFormat());
+		g_InputLayout[g_InputLayoutCount].InputSlot            = g_VertexBufferCount;	// specify which vertex buffer used
+		g_InputLayout[g_InputLayoutCount].AlignedByteOffset    = mesh->GetVertexBuffer()->GetColorOffset();
+		g_InputLayout[g_InputLayoutCount].InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA;
+		g_InputLayout[g_InputLayoutCount].InstanceDataStepRate = 0;
 	}
 
 	for (int i = 0; i < 16; i++)
 	{
 		if (mask & (eVA_TEXCOORD0 >> i))
 		{
-			g_VertexBuffer[0]                    = pBuffer;
-			g_InputLayer[0].SemanticName         = "TEXCOORD";
-			g_InputLayer[0].SemanticIndex        = i;
-			g_InputLayer[0].Format               = ConvertToDXVertexFormat(mesh->GetVertexBuffer()->GetTexcoordFormat(i));
-			g_InputLayer[0].InputSlot            = 0;	// specify which vertex buffer used
-			g_InputLayer[0].AlignedByteOffset    = mesh->GetVertexBuffer()->GetTexcoordOffset(i);
-			g_InputLayer[0].InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA;
-			g_InputLayer[0].InstanceDataStepRate = 0;
+			g_InputLayout[g_InputLayoutCount].SemanticName         = "TEXCOORD";
+			g_InputLayout[g_InputLayoutCount].SemanticIndex        = i;
+			g_InputLayout[g_InputLayoutCount].Format               = ConvertToDXVertexFormat(mesh->GetVertexBuffer()->GetTexcoordFormat(i));
+			g_InputLayout[g_InputLayoutCount].InputSlot            = g_VertexBufferCount;	// specify which vertex buffer used
+			g_InputLayout[g_InputLayoutCount].AlignedByteOffset    = mesh->GetVertexBuffer()->GetTexcoordOffset(i);
+			g_InputLayout[g_InputLayoutCount].InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA;
+			g_InputLayout[g_InputLayoutCount].InstanceDataStepRate = 0;
 		}
 	}
-}
 
-void SRenderHelper::SetTexture( eShaderStage stage , int slot , STextureObject * tex )
-{
-	return;
+	g_VertexBufferCount++;
 }
 
 bool SRenderHelper::CreateDeviceAndContext( HWND hwnd )
@@ -246,11 +289,6 @@ bool SRenderHelper::CreateDeviceAndContext( HWND hwnd )
 	return success;
 }
 
-void SRenderHelper::CreateShader( SShader & shader )
-{
-	shader.CreateShader( g_Device );
-}
-
 void SRenderHelper::ReportDetailDebug()
 { 
 #ifdef _DEBUG
@@ -263,4 +301,119 @@ void SRenderHelper::ReportDetailDebug()
 		SAFE_RELEASE( pDebugDevice );
 	}
 #endif
+}
+
+void SRenderHelper::BindTexture(eShaderStage stage, int slot, STexture2D* tex)
+{
+	ID3D11ShaderResourceView*	srv		= tex->GetSRV();
+	ID3D11SamplerState*			sampler = tex->GetSampler();
+	switch (stage)
+	{
+	case eST_Vertex:
+		g_ImmediateContext->VSSetShaderResources(slot, 1, &srv);
+		g_ImmediateContext->VSSetSamplers(slot, 1, &sampler);
+		break;
+	case eST_Pixel:
+		g_ImmediateContext->PSSetShaderResources(slot, 1, &srv);
+		g_ImmediateContext->PSSetSamplers(slot, 1, &sampler);
+		break;
+	case eST_Geometry:
+		g_ImmediateContext->GSSetShaderResources(slot, 1, &srv);
+		g_ImmediateContext->GSSetSamplers(slot, 1, &sampler);
+		break;
+	case eST_Hull:
+		g_ImmediateContext->HSSetShaderResources(slot, 1, &srv);
+		g_ImmediateContext->HSSetSamplers(slot, 1, &sampler);
+		break;
+	case eST_Domain:
+		g_ImmediateContext->DSSetShaderResources(slot, 1, &srv);
+		g_ImmediateContext->DSSetSamplers(slot, 1, &sampler);
+		break;
+	case eST_Compute:
+		g_ImmediateContext->CSSetShaderResources(slot, 1, &srv);
+		g_ImmediateContext->CSSetSamplers(slot, 1, &sampler);
+		break;
+	}
+}
+
+void SRenderHelper::Render(int indexCount, int startIndex, int startVertex, D3D11_PRIMITIVE_TOPOLOGY topology, const SShader& shader)
+{
+	g_ImmediateContext->IASetVertexBuffers(0, g_VertexBufferCount, g_VertexBuffer, g_VertexBufferStride, g_VertexBufferOffset);
+	g_ImmediateContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
+
+	if (ID3D11VertexShader* vs = shader.GetVertexShader())
+	{
+		g_ImmediateContext->VSSetShader(vs, nullptr, 0);
+		g_ImmediateContext->IASetInputLayout(FindInputLayer(shader.GetVertexBlob()));
+	}
+
+	if (ID3D11PixelShader* ps = shader.GetPixelShader())
+	{
+		g_ImmediateContext->PSSetShader(ps, nullptr, 0);
+	}
+
+	if (ID3D11HullShader* hs = shader.GetHullShader())
+	{
+		g_ImmediateContext->HSSetShader(hs, nullptr, 0);
+	}
+
+	if (ID3D11DomainShader* ds = shader.GetDomainShader())
+	{
+		g_ImmediateContext->DSSetShader(ds, nullptr, 0);
+	}
+
+	if (ID3D11GeometryShader* gs = shader.GetGeometryShader())
+	{
+		g_ImmediateContext->GSSetShader(gs, nullptr, 0);
+	}
+
+	if (ID3D11ComputeShader* cs = shader.GetComputeShader())
+	{
+		g_ImmediateContext->CSSetShader(cs, nullptr, 0);
+	}
+
+	g_ImmediateContext->IASetPrimitiveTopology(topology);
+
+	g_ImmediateContext->DrawIndexed(indexCount, startIndex, startVertex);
+}
+
+void SRenderHelper::RenderFullScreen(const SShader& shader)
+{
+	g_ImmediateContext->IASetVertexBuffers(0, 0, nullptr, nullptr, nullptr);
+	g_ImmediateContext->IASetIndexBuffer(nullptr, (DXGI_FORMAT)0, 0);
+	g_ImmediateContext->IASetInputLayout(NULL);
+
+	const SShader& fullscreenVS = SShader::FindShader("../../../pub/data/shaders/fullscreenVS.hlsl");
+	if (ID3D11VertexShader* vs = fullscreenVS.GetVertexShader())
+	{
+		g_ImmediateContext->VSSetShader(vs, nullptr, 0);
+	}
+	
+	if (ID3D11PixelShader* ps = shader.GetPixelShader())
+	{
+		g_ImmediateContext->PSSetShader(ps, nullptr, 0);
+	}
+
+	g_ImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	g_ImmediateContext->Draw(3, 0);
+}
+
+void SRenderHelper::SetRenderTarget(SRenderTexture* tex, bool useDepth)
+{
+	ID3D11RenderTargetView* rtv = tex->GetRenderTargetView();
+	
+	if (rtv)
+	{
+		ID3D11DepthStencilView* dsv = nullptr;
+		if (useDepth)
+		{
+			dsv = tex->GetDepthStencilView();
+		}
+		else
+		{
+			g_ImmediateContext->OMGetRenderTargets(0, nullptr, &dsv);
+		}
+		g_ImmediateContext->OMSetRenderTargets(1, &rtv, dsv);
+	}
 }

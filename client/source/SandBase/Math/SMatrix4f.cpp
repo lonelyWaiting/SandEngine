@@ -314,10 +314,10 @@ SMatrix4f SMatrix4f::LookAtLHMatrix( SVector3f& eye , SVector3f& at , SVector3f&
 	SVector3f zAxis = at - eye;
 	zAxis.Normalize();
 
-	SVector3f xAxis = cross( up , zAxis );
+	SVector3f xAxis = SVector3f::cross( up , zAxis );
 	xAxis.Normalize();
 	
-	SVector3f yAxis = cross( zAxis , xAxis );
+	SVector3f yAxis = SVector3f::cross( zAxis , xAxis );
 
 	ret.m_afEntry[0] = xAxis.x;		ret.m_afEntry[1] = yAxis.x;		ret.m_afEntry[2] = zAxis.x;		ret.m_afEntry[3] = 0.0f;
 	ret.m_afEntry[4] = xAxis.y;		ret.m_afEntry[5] = yAxis.y;		ret.m_afEntry[6] = zAxis.y;		ret.m_afEntry[7] = 0.0f;

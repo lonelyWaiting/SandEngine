@@ -106,6 +106,20 @@ public:
 		return *this;
 	}
 
+	inline SVector3f operator /(float v) const
+	{
+		return SVector3f(x / v, y / v, z / v);
+	}
+
+	inline SVector3f& operator /= (float v)
+	{
+		x /= v;
+		y /= v;
+		z /= v;
+
+		return *this;
+	}
+
 	inline friend SVector3f operator* ( const float lhs , const SVector3f& rhs )
 	{
 		return SVector3f( lhs * rhs.x , lhs * rhs.y , lhs * rhs.z );
@@ -154,12 +168,19 @@ public:
 		return ( lhs.x * rhs.x + lhs.y * rhs.y + lhs.z * rhs.z );
 	}
 
-	inline friend SVector3f cross( const SVector3f& lhs , const SVector3f& rhs )
+	static SVector3f cross(const SVector3f& lhs, const SVector3f& rhs)
+	{
+		return SVector3f(lhs.y * rhs.z - lhs.z * rhs.y,
+						 lhs.z * rhs.x - lhs.x * rhs.z,
+						 lhs.x * rhs.y - lhs.y * rhs.x);
+	}
+
+	/*inline friend SVector3f cross( const SVector3f& lhs , const SVector3f& rhs )
 	{
 		return SVector3f( lhs.y * rhs.z - lhs.z * rhs.y ,
 						 lhs.z * rhs.x - lhs.x * rhs.z ,
 						 lhs.x * rhs.y - lhs.y * rhs.x );
-	}
+	}*/
 
 	inline void clamp( float min , float max )
 	{

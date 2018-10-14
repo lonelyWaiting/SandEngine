@@ -3,6 +3,7 @@
 #include "SandBase/Math/SVector2f.h"
 #include "SandBase/Math/SVector3f.h"
 #include "SandBase/Math/SVector4f.h"
+#include <filesystem>
 
 void SFileStream::BeginChunk( long pos )
 {
@@ -22,48 +23,47 @@ bool SFileInStream::OpenFile( const char* szFilename )
 
 bool SFileInStream::Read( char* ptr , int sizeInByte )
 {
-	if( ifs.read( ( char* )ptr , sizeInByte ) )
-	{
-		return true;
-	}
+	ifs.read((char*)ptr, sizeInByte);
+	return ifs ? true : false;
+}
 
-	return false;
+bool SFileInStream::Read(SVector2f & v)
+{
+	ifs.read((char*)v.m, sizeof(float) * 2);
+	return ifs ? true : false;
+}
+
+bool SFileInStream::Read(SVector3f & v)
+{
+	ifs.read((char*)v.m, sizeof(float) * 3);
+	return ifs ? true : false;
+}
+
+bool SFileInStream::Read(SVector4f & v)
+{
+	ifs.read((char*)v.m, sizeof(float) * 4);
+	return ifs ? true : false;
 }
 
 bool SFileInStream::ReadInt( int& value )
 {
-	if( ifs.read( ( char* )( &value ) , sizeof( int ) ) )
-	{
-		return true;
-	}
-
-	return false;
+	ifs.read((char*)(&value), sizeof(int));
+	return ifs ? true : false;
 }
 
 bool SFileInStream::ReadFloat( float& value )
 {
-	if( ifs.read( ( char* )( &value ) , sizeof( float ) ) )
-	{
-		return true;
-	}
-
-	return false;
+	ifs.read((char*)(&value), sizeof(float));
+	return ifs ? true : false;
 }
 
 bool SFileInStream::ReadString( char* str )
 {
 	int size = 0;
-	if( !ReadInt( size ) )
-	{
-		return false;
-	}
+	if (!ReadInt(size))	return false;
 
-	if( !ifs.read( str , size ) )
-	{
-		return false;
-	}
-
-	return true;
+	ifs.read(str, size);
+	return ifs ? true : false;
 }
 
 void SFileInStream::Close()

@@ -20,11 +20,8 @@ bool SRenderer::Init( HWND hwnd )
 
 	ID3D11Texture2D* pBackBuffer = nullptr;
 	if (FAILED(SRenderHelper::g_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (LPVOID*)&pBackBuffer)))	return false;
-	SRenderableConfig cfg;
-	cfg.enableAsRenderTarget = true;
-	m_RenderTarget = SandEngine::TextureManager.CreateRenderableTexture("Final", cfg);
-	m_RenderTarget->SetD3DTexture(pBackBuffer);
-	m_RenderTarget->Ensureloaded();
+	m_RT = new SRenderTexture(pBackBuffer);
+	m_RT->Create();
 	pBackBuffer->Release();
 
 	RECT clientArea;
@@ -32,15 +29,8 @@ bool SRenderer::Init( HWND hwnd )
 	int clientWidth  = clientArea.right - clientArea.left;
 	int clientHeight = clientArea.bottom - clientArea.top;
 
-	cfg.enableAsDepth        = true;
-	cfg.enableAsRenderTarget = false;
-	cfg.width                = clientWidth;
-	cfg.height               = clientHeight;
-	m_DepthStencil = SandEngine::TextureManager.CreateRenderableTexture("Depth", cfg);
-	m_DepthStencil->Ensureloaded();
-
-	ID3D11RenderTargetView* rtView = m_RenderTarget->GetD3DRenderTarget();
-	SRenderHelper::g_ImmediateContext->OMSetRenderTargets(1, &rtView, m_DepthStencil->GetD3DDepthStencil());
+	ID3D11RenderTargetView* rtView = m_RT->GetRenderTargetView();
+	SRenderHelper::g_ImmediateContext->OMSetRenderTargets(1, &rtView, m_RT->GetDepthStencilView());
 
 	D3D11_VIEWPORT vp;
 	vp.Width    = ( float )clientWidth;
@@ -63,8 +53,7 @@ void SRenderer::Resize( const SVector2f& size )
 	SRenderHelper::g_ImmediateContext->OMSetRenderTargets( 0 , 0 , 0 );
 
 	// Release all outstanding references to the swap chain's buffers
-	m_RenderTarget->EnsureUnloaded();
-	m_DepthStencil->EnsureUnloaded();
+	m_RT = nullptr;
 
 	// Preserve the existing buffer count and format
 	// Automatically choose the width and height to match the client rect for HWND
@@ -82,16 +71,17 @@ void SRenderer::Resize( const SVector2f& size )
 		return;
 	}
 
-	SRenderableConfig cfg;
+	/*SRenderableConfig cfg;
 	cfg.enableAsRenderTarget = true;
 	cfg.enableAsDepth        = false;
 	m_RenderTarget = SandEngine::TextureManager.CreateRenderableTexture("Final", cfg);
 	m_RenderTarget->SetD3DTexture(pBackBuffer);
-	m_RenderTarget->Ensureloaded();
+	m_RenderTarget->Ensureloaded();*/
+	m_RT = new SRenderTexture(pBackBuffer);
 	pBackBuffer->Release();
 
 	// Perform error handling here!
-	if (!m_RenderTarget->GetD3DRenderTarget())
+	if (!m_RT->GetRenderTargetView())
 	{
 		SLog::Error("Resize CreateRenderTargetView Failed");
 		return;
@@ -100,15 +90,9 @@ void SRenderer::Resize( const SVector2f& size )
 	// should i recreate the depth/stencil buffer too ?
 	// https://gamedev.stackexchange.com/questions/86164/idxgiswapchainresizebuffers-should-i-recreate-the-depth-stencil-buffer-too
 	// depth/stencil resize is just optional
-	cfg.enableAsDepth        = true;
-	cfg.enableAsRenderTarget = false;
-	cfg.width                = (suInt32)size.x;
-	cfg.height               = (suInt32)size.y;
-	m_DepthStencil = SandEngine::TextureManager.CreateRenderableTexture("Depth", cfg);
-	m_DepthStencil->Ensureloaded();
 
-	ID3D11RenderTargetView* rtView = m_RenderTarget->GetD3DRenderTarget();
-	SRenderHelper::g_ImmediateContext->OMSetRenderTargets(1, &rtView, m_DepthStencil->GetD3DDepthStencil());
+	ID3D11RenderTargetView* rtView = m_RT->GetRenderTargetView();
+	SRenderHelper::g_ImmediateContext->OMSetRenderTargets(1, &rtView, m_RT->GetDepthStencilView());
 
 	D3D11_VIEWPORT vp;
 	vp.Width    = size.x;
@@ -124,8 +108,11 @@ void SRenderer::ClearColor( const SVector4f & color )
 {
 	const float c[4] = { color[0] / 255.0f ,color[1] / 255.0f,color[2] / 255.0f,color[3] / 255.0f };
 
-	SRenderHelper::g_ImmediateContext->ClearRenderTargetView(m_RenderTarget->GetD3DRenderTarget(), c);
-	SRenderHelper::g_ImmediateContext->ClearDepthStencilView(m_DepthStencil->GetD3DDepthStencil(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL , 1.0f , 0 );
+	SRenderHelper::g_ImmediateContext->ClearRenderTargetView(m_RT->GetRenderTargetView(), c);
+	SRenderHelper::g_ImmediateContext->ClearDepthStencilView(m_RT->GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL , 1.0f , 0 );
+
+	ID3D11RenderTargetView* rtView = m_RT->GetRenderTargetView();
+	SRenderHelper::g_ImmediateContext->OMSetRenderTargets(1, &rtView, m_RT->GetDepthStencilView());
 }
 
 void SRenderer::Shutdown()
