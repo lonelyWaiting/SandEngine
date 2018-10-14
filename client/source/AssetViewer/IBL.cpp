@@ -114,7 +114,7 @@ SVector2f IntegrateBRDF(float roughness, float NdotV)
 
 	SVector3f N = SVector3f(0, 1, 0);
 
-	unsigned int NumSamples = 1024;
+	unsigned int NumSamples = 50;
 	for (unsigned int i = 0; i < NumSamples; i++)
 	{
 		SVector2f Xi = Hammersley(i, NumSamples);
@@ -145,6 +145,8 @@ void IBLGenerateLutMap(const char* path)
 
 	sBRDFLutMap = new STexture2D(image.GetWidth(), image.GetHeight(), STF_RGBAFloat, false);
 
+	SImageEncode encoder(image.GetWidth(), image.GetHeight());
+
 	int width  = image.GetWidth();
 	int height = image.GetHeight();
 
@@ -160,10 +162,12 @@ void IBLGenerateLutMap(const char* path)
 			SVector2f brdf  = IntegrateBRDF(roughness, NdotV);
 
 			sBRDFLutMap->SetPixel(i, height - 1 - j, brdf.x, brdf.y, 0.0f, 1.0f);
+			encoder.SetPixel(i, j, brdf.x, brdf.y, 0.0f, 1.0f);
 		}
 	}
 
 	sBRDFLutMap->Apply();
+	encoder.write("../../../pub/data/textures/brdfLut.hdr");
 }
 
 void IBLGenerateIrradianceMap(const char* path)
@@ -172,6 +176,7 @@ void IBLGenerateIrradianceMap(const char* path)
 	image.Load(path);
 
 	sIrradianceMap = new STexture2D(image.GetWidth(), image.GetHeight(), STF_RGBAFloat, false);
+	SImageEncode encode(image.GetWidth(), image.GetHeight());
 
 	int   phiSampleCount = 50;
 	int   thetaSampleCount = 50;
@@ -212,10 +217,12 @@ void IBLGenerateIrradianceMap(const char* path)
 			irradiance = SMath::PI * irradiance / (float)(phiSampleCount * thetaSampleCount);
 
 			sIrradianceMap->SetPixel(i, j, irradiance);
+			encode.SetPixel(i, j, irradiance);
 		}
 	}
 
 	sIrradianceMap->Apply();
+	encode.write("../../../pub/data/textures/Irradiance.hdr");
 }
 
 void IBLGeneratePrefilterMap(const char* path)
@@ -230,7 +237,6 @@ void IBLGeneratePrefilterMap(const char* path)
 	unsigned int mipNum = sPrefilterMap->GetMipMapCount();
 	unsigned int sampleNum = 1024;
 
-#pragma omp parallel for schedule(dynamic)
 	for (int miplevel = 0; miplevel < mipNum; miplevel++)
 	{
 		float roughness = (float)miplevel / (float)(mipNum - 1);
@@ -238,9 +244,12 @@ void IBLGeneratePrefilterMap(const char* path)
 		unsigned int cur_width  = width >> miplevel;
 		unsigned int cur_height = height >> miplevel;
 
-		for (unsigned int i = 0; i < cur_width; i++)
+		SImageEncode encode(cur_width, cur_height);
+
+#pragma omp parallel for schedule(dynamic)
+		for (int i = 0; i < cur_width; i++)
 		{
-			for (unsigned int j = 0; j < cur_height; j++)
+			for (int j = 0; j < cur_height; j++)
 			{
 				float phi   = (float)i / (float)(cur_width - 1) * SMath::TWO_PI;
 				float theta = (float)j / (float)(cur_height - 1) * SMath::PI;
@@ -272,8 +281,13 @@ void IBLGeneratePrefilterMap(const char* path)
 
 				prefilterdColor /= sumWeight;
 				sPrefilterMap->SetPixel(i, j, prefilterdColor, miplevel);
+				encode.SetPixel(i, j, prefilterdColor);
 			}
 		}
+
+		SString path = "../../../pub/data/textures/prefilter";
+		path.AppendFormat("%d.hdr", miplevel);
+		encode.write(path.AsChar());
 	}
 
 	sPrefilterMap->Apply();

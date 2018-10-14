@@ -34,6 +34,8 @@ public:
 	void SetPixel(int x, int y, const SVector3f& c);
 	void SetPixel(int x, int y, const SVector4f& c);
 
+	void write(const char* path);
+
 private:
 	float* m_pData  = nullptr;
 	int    m_width  = 0;

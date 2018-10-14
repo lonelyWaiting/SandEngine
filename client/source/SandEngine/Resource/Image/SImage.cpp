@@ -2,6 +2,8 @@
 #include "SImage.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stbimage/stb_image.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stbimage/stb_image_write.h"
 
 SImageDecode::~SImageDecode()
 {
@@ -38,7 +40,7 @@ SImageEncode::SImageEncode(int width, int height)
 
 	m_width  = width;
 	m_height = height;
-	m_pData  = new float[width * height];
+	m_pData  = new float[width * height * 4];
 }
 
 SImageEncode::~SImageEncode()
@@ -50,7 +52,7 @@ void SImageEncode::SetPixel(int x, int y, float r, float g, float b, float a)
 {
 	if (x < 0 || x >= m_width || y < 0 || y >= m_height)	return;
 
-	int offset = y * m_width + x;
+	int offset = (y * m_width + x) * 4;
 	m_pData[offset]     = r;
 	m_pData[offset + 1] = g;
 	m_pData[offset + 2] = b;
@@ -65,4 +67,9 @@ void SImageEncode::SetPixel(int x, int y, const SVector3f& c)
 void SImageEncode::SetPixel(int x, int y, const SVector4f& c)
 {
 	SetPixel(x, y, c.x, c.y, c.z, c.w);
+}
+
+void SImageEncode::write(const char* path)
+{
+	stbi_write_hdr(path, m_width, m_height, 4, m_pData);
 }
