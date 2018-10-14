@@ -19,7 +19,7 @@ public:
 	{
 		if( userData.pSender == &SandEngine::Callback.OnDropFile )
 		{
-			SandEngine::StaticMeshManager.LoadStaticMesh( ( const char* )userData.pUserData );
+			//SandEngine::StaticMeshManager.LoadStaticMesh( ( const char* )userData.pUserData );
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEngineInit )
 		{

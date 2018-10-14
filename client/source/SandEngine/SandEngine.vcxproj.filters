@@ -25,9 +25,6 @@
     <Filter Include="Resource\Impoter">
       <UniqueIdentifier>{753f6ecf-105e-4390-ad1a-10c6f28b335f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource\Impoter\Fbx">
-      <UniqueIdentifier>{af6057ac-6bee-4911-b16f-ba82ddf8da76}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource\Texture">
       <UniqueIdentifier>{b061744e-33ed-41b2-86a2-becfc94cd5f7}</UniqueIdentifier>
     </Filter>
@@ -76,22 +73,13 @@
     <ClInclude Include="Resource\Material\RenderState.h">
       <Filter>Resource\Material</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\FbxImporter.h">
-      <Filter>Resource\Impoter\Fbx</Filter>
-    </ClInclude>
     <ClInclude Include="Resource\SBuffer.h">
       <Filter>Resource\Buffer</Filter>
     </ClInclude>
     <ClInclude Include="Resource\SConstantBuffer.h">
       <Filter>Resource\Buffer</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\SIScene.h">
-      <Filter>Resource\Buffer</Filter>
-    </ClInclude>
     <ClInclude Include="Resource\SMeshBuffer.h">
-      <Filter>Resource\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\SStaticMesh.h">
       <Filter>Resource\Buffer</Filter>
     </ClInclude>
     <ClInclude Include="Resource\SStaticMeshManager.h">
@@ -157,22 +145,13 @@
     <ClCompile Include="Resource\Material\RenderState.cpp">
       <Filter>Resource\Material</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\FbxImporter.cpp">
-      <Filter>Resource\Impoter\Fbx</Filter>
-    </ClCompile>
     <ClCompile Include="Resource\SBuffer.cpp">
       <Filter>Resource\Buffer</Filter>
     </ClCompile>
     <ClCompile Include="Resource\SConstantBuffer.cpp">
       <Filter>Resource\Buffer</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\SIScene.cpp">
-      <Filter>Resource\Buffer</Filter>
-    </ClCompile>
     <ClCompile Include="Resource\SMeshBuffer.cpp">
-      <Filter>Resource\Buffer</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\SStaticMesh.cpp">
       <Filter>Resource\Buffer</Filter>
     </ClCompile>
     <ClCompile Include="Resource\SStaticMeshManager.cpp">

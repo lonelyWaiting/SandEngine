@@ -1,15 +1,9 @@
 #pragma once
 
 #include "SandEngine/SApiDef.h"
-#include "SandEngine/Resource/SResourceManager.h"
 
 class STexture2D;
-class SRenderableTexture;
-struct SRenderableConfig;
-
-class STextureManager : public SResourceManager
+namespace STextureManager
 {
-public:
-	SAND_API STexture2D* Load2DTexture( const char* filename );
-	SAND_API STexture2D* Load3DTexture( const char* filename );
+	SAND_API STexture2D* Load2DTextureFromFile(const char* filename);
 };

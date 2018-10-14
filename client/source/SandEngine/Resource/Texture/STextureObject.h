@@ -111,16 +111,16 @@ public:
 	int                    m_width         = 0;
 	int                    m_height        = 0;
 	bool                   m_usemip        = false;
-	float                  m_mipMapBias    = 0.0f;
-	TextureWrapMode        m_wrapMode      = TextureWrapMode::Repeat;
-	TextureFilterMode      m_filterMode    = TextureFilterMode::Bilinear;
 	TextureFormat	       m_format        = TextureFormat::STF_R8G8B8A8;
-	TextureSampleComparison m_Comparision  = TextureSampleComparison::Always;
-	SVector4f			   m_BorderColor   = SVector4f::Zero();
-	int					   m_MaxAnisotropy = 0;
 	bool                   m_isFloatFormat = false;
 	int                    m_componentNum  = 4;
 	int					   m_mipNum        = 1;
+	float                  m_mipMapBias    = 0.0f;
+	TextureWrapMode        m_wrapMode      = TextureWrapMode::Repeat;
+	TextureFilterMode      m_filterMode    = TextureFilterMode::Bilinear;
+	TextureSampleComparison m_Comparision  = TextureSampleComparison::Always;
+	SVector4f			   m_BorderColor   = SVector4f::Zero();
+	int					   m_MaxAnisotropy = 0;
 	Texture2DPtr	       m_Texture;
 
 };
@@ -128,6 +128,7 @@ public:
 class STexture2D : public STexture
 {
 public:
+	STexture2D() {}
 	SAND_API STexture2D(int width, int height);
 	SAND_API STexture2D(int width, int height, TextureFormat fomat, bool mipChain);
 	~STexture2D();
@@ -146,6 +147,8 @@ public:
 	SAND_API void				SetPixel(int x, int y, const SVector3f& c, int miplevel = 0);
 	SAND_API void				SetPixel(int x, int y, const SVector4f& c, int miplevel = 0);
 	SAND_API void				Apply();
+
+	void SetResourceAndSRV(ID3D11Resource* resource, ID3D11ShaderResourceView* srv);
 	
 protected:
 	void*                 m_systemMem    = nullptr;

@@ -322,12 +322,29 @@ void STexture2D::Apply()
 		desc.BorderColor[3] = m_BorderColor[3];
 		desc.MinLOD         = 0.0f;
 		desc.MaxLOD         = 0.0f;
-		desc.MipLODBias     = 0.0f;
+		desc.MipLODBias     = m_mipMapBias;
 		desc.ComparisonFunc = ConvertToDxComparisonFunc(m_Comparision);
 		ID3D11SamplerState* samplerState;
 		SRenderHelper::g_Device->CreateSamplerState(&desc, &samplerState);
 		m_SamplerState = samplerState;
 	}
+}
+
+void STexture2D::SetResourceAndSRV(ID3D11Resource* resource, ID3D11ShaderResourceView* srv)
+{
+	m_Texture = (ID3D11Texture2D*)resource;
+	m_SRV     = srv;
+
+	D3D11_TEXTURE2D_DESC desc;
+	m_Texture->GetDesc(&desc);
+
+	m_width         = desc.Width;
+	m_height        = desc.Height;
+	m_usemip        = desc.MipLevels != 1;
+	m_format        = ConvertToNativeFormat(desc.Format);
+	m_isFloatFormat = IsFloatFormat(m_format);
+	m_componentNum  = GetFormatComponentCount(m_format);
+	m_componentNum  = desc.MipLevels;
 }
 
 SRenderTexture::SRenderTexture(int width, int height, int depth, TextureFormat format)

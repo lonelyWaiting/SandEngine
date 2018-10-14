@@ -232,17 +232,17 @@ void IBLGeneratePrefilterMap(const char* path)
 
 	sPrefilterMap = new STexture2D(image.GetWidth(), image.GetHeight(), STF_RGBAFloat, true);
 
-	unsigned int width  = image.GetWidth();
-	unsigned int height = image.GetHeight();
-	unsigned int mipNum = sPrefilterMap->GetMipMapCount();
+	int width  = image.GetWidth();
+	int height = image.GetHeight();
+	int mipNum = sPrefilterMap->GetMipMapCount();
 	unsigned int sampleNum = 1024;
 
 	for (int miplevel = 0; miplevel < mipNum; miplevel++)
 	{
 		float roughness = (float)miplevel / (float)(mipNum - 1);
 
-		unsigned int cur_width  = width >> miplevel;
-		unsigned int cur_height = height >> miplevel;
+		int cur_width  = width >> miplevel;
+		int cur_height = height >> miplevel;
 
 		SImageEncode encode(cur_width, cur_height);
 

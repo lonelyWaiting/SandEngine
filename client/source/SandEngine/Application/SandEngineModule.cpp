@@ -3,13 +3,9 @@
 #include "Callback/SCallback.h"
 #include "GUI/SGui.h"
 #include "SRenderer.h"
-#include "SandEngine/Resource/SStaticMeshManager.h"
-#include "SandEngine/Resource/Texture/STextureManager.h"
 #include "SandEngine/Resource/Shaders/SShader.h"
 
 SCallbackManager	SandEngine::Callback;
-SStaticMeshManager	SandEngine::StaticMeshManager;
-STextureManager		SandEngine::TextureManager;
 
 class SandEngineHandler : public SCallbackHandle
 {

@@ -205,7 +205,7 @@ int SVertexBuffer::GetNumOfVertices()
 }
 
 SIndexBuffer::SIndexBuffer( eMemUsage usage , int iNumOfIndices , eIndexFormat format , const void * pInitData , eBindFlag bindFlag /*= eBBF_None*/ )
-	:SBuffer( usage , ( format == eIF_Short ? sizeof( short ) : sizeof( int ) ) , iNumOfIndices , pInitData , ( usage & eBU_StructureBuffer ) ? bindFlag : ( eBindFlag )( bindFlag | eBF_Index ) )
+	:SBuffer( usage , ( format == eIF_Short ? sizeof( short ) : sizeof( unsigned int ) ) , iNumOfIndices , pInitData , ( usage & eBU_StructureBuffer ) ? bindFlag : ( eBindFlag )( bindFlag | eBF_Index ) )
 {
 	m_IndexType = format;
 	m_iNumOfIndices = iNumOfIndices;
