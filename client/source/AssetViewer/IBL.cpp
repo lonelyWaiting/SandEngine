@@ -29,14 +29,14 @@ public:
 	{
 		if (userData.pSender == &SandEngine::Callback.OnEngineInit)
 		{
-			sIBLShader.Load("../../../pub/data/shaders/debugTexture.hlsl", nullptr, "ps_main");
+			sIBLShader.Load("../data/shaders/debugTexture.hlsl", nullptr, "ps_main");
 		}
 		else if (userData.pSender == &SandEngine::Callback.OnBeginRender)
 		{
 			// debug texure on screen
-			if (sPrefilterMap)
+			if (sBRDFLutMap)
 			{
-				SRenderHelper::BindTexture(eST_Pixel, 0, sPrefilterMap);
+				SRenderHelper::BindTexture(eST_Pixel, 0, sBRDFLutMap);
 				SRenderHelper::RenderFullScreen(sIBLShader);
 			}
 		}
@@ -162,12 +162,12 @@ void IBLGenerateLutMap(const char* path)
 			SVector2f brdf  = IntegrateBRDF(roughness, NdotV);
 
 			sBRDFLutMap->SetPixel(i, height - 1 - j, brdf.x, brdf.y, 0.0f, 1.0f);
-			encoder.SetPixel(i, j, brdf.x, brdf.y, 0.0f, 1.0f);
+			encoder.SetPixel(i, height - 1 - j, brdf.x, brdf.y, 0.0f, 1.0f);
 		}
 	}
 
 	sBRDFLutMap->Apply();
-	encoder.write("../../../pub/data/textures/brdfLut.hdr");
+	encoder.write("../data/textures/brdfLut.hdr");
 }
 
 void IBLGenerateIrradianceMap(const char* path)
@@ -222,7 +222,7 @@ void IBLGenerateIrradianceMap(const char* path)
 	}
 
 	sIrradianceMap->Apply();
-	encode.write("../../../pub/data/textures/Irradiance.hdr");
+	encode.write("../data/textures/Irradiance.hdr");
 }
 
 void IBLGeneratePrefilterMap(const char* path)
@@ -285,7 +285,7 @@ void IBLGeneratePrefilterMap(const char* path)
 			}
 		}
 
-		SString path = "../../../pub/data/textures/prefilter";
+		SString path = "../data/textures/prefilter";
 		path.AppendFormat("%d.hdr", miplevel);
 		encode.write(path.AsChar());
 	}

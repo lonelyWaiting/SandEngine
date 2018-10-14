@@ -383,7 +383,7 @@ void SRenderHelper::RenderFullScreen(const SShader& shader)
 	g_ImmediateContext->IASetIndexBuffer(nullptr, (DXGI_FORMAT)0, 0);
 	g_ImmediateContext->IASetInputLayout(NULL);
 
-	const SShader& fullscreenVS = SShader::FindShader("../../../pub/data/shaders/fullscreenVS.hlsl");
+	const SShader& fullscreenVS = SShader::FindShader("../data/shaders/fullscreenVS.hlsl");
 	if (ID3D11VertexShader* vs = fullscreenVS.GetVertexShader())
 	{
 		g_ImmediateContext->VSSetShader(vs, nullptr, 0);
