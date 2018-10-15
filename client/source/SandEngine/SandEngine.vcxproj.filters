@@ -37,6 +37,12 @@
     <Filter Include="Resource\Shaders">
       <UniqueIdentifier>{713864b8-cdf3-465b-83de-80988a24db51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{2a0901f3-e83c-4ac8-8780-f6e1677df61f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sky">
+      <UniqueIdentifier>{d5e7826d-11ca-47ea-b6c0-b326351c16d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\SandEngineModule.h">
@@ -106,6 +112,12 @@
     <ClInclude Include="Resource\Shaders\SShader.h">
       <Filter>Resource\Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="Camera\Camera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Sky\Skybox.h">
+      <Filter>Sky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\SApplication.cpp">
@@ -174,6 +186,12 @@
     </ClCompile>
     <ClCompile Include="Resource\Shaders\SShader.cpp">
       <Filter>Resource\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera\Camera.cpp">
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Sky\Skybox.cpp">
+      <Filter>Sky</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

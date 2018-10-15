@@ -19,14 +19,14 @@
     <Filter Include="Object">
       <UniqueIdentifier>{3a64b9fd-1836-4257-b41f-601708337a5b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Log">
-      <UniqueIdentifier>{342b60ee-e5ef-4027-8f38-0fb863001f21}</UniqueIdentifier>
-    </Filter>
     <Filter Include="STimer">
       <UniqueIdentifier>{eaf66f15-0de8-4799-a0f5-952077c29b83}</UniqueIdentifier>
     </Filter>
     <Filter Include="IO">
       <UniqueIdentifier>{f42c9cd4-8c84-49a7-8833-24c19bffe0af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Log">
+      <UniqueIdentifier>{342b60ee-e5ef-4027-8f38-0fb863001f21}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

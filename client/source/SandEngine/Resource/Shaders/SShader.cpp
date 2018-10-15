@@ -186,6 +186,7 @@ const SShader& EnsureShaderLoaded(	const char* path,
 void SShader::InitShader()
 {
 	EnsureShaderLoaded("../data/shaders/fullscreenVS.hlsl", "vs_main", nullptr, nullptr, nullptr, nullptr, nullptr);
+	EnsureShaderLoaded("../data/shaders/skybox.hlsl", nullptr, "ps_main", nullptr, nullptr, nullptr, nullptr);
 }
 
 const SShader& SShader::FindShader(const char* path)

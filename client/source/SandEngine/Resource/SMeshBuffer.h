@@ -12,8 +12,8 @@ public:
 	void EnsureVertexBuffer( const SVertexDescription& desc , eMemUsage usage , int iNumOfVertices , const void* pVertices = nullptr , eBindFlag bindFlag = eBF_None );
 	void EnsureIndexBuffer( eMemUsage usage , int iNumOfIndices , const void* pIndices = nullptr , eIndexFormat format = eIF_Short , eBindFlag bindFlag = eBF_None );
 
-	SVertexBuffer* GetVertexBuffer();
-	SIndexBuffer*  GetIndexBuffer();
+	const SVertexBuffer* GetVertexBuffer() const;
+	const SIndexBuffer*  GetIndexBuffer() const;
 
 	int GetNumOfVertices();
 	int GetNumOfIndices();

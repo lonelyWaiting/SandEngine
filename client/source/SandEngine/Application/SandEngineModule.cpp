@@ -3,7 +3,8 @@
 #include "Callback/SCallback.h"
 #include "GUI/SGui.h"
 #include "SRenderer.h"
-#include "SandEngine/Resource/Shaders/SShader.h"
+#include "SandEngine/Pipeline/SRenderHelper.h"
+#include "SandEngine/Sky/skybox.h"
 
 SCallbackManager	SandEngine::Callback;
 
@@ -16,6 +17,8 @@ public:
 		{
 			ImGuiBeginRender();
 			GuiUpdate();
+			SRenderHelper::BeginNewFrame();
+			SkyboxRender();
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEndRender )
 		{
@@ -24,7 +27,8 @@ public:
 		else if( userData.pSender == &SandEngine::Callback.OnEngineInit )
 		{
 			ImGuiInit( userData.pUserData );
-			SShader::InitShader();
+			SRenderHelper::Init();
+			SkyboxInit("../data/textures/anniversary_lounge_1k.hdr");
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEngineDeInit )
 		{

@@ -82,7 +82,7 @@ SBuffer::SBuffer( eMemUsage usage , int stride , int count , const void* pInitDa
 	data.SysMemPitch      = 0;
 	data.SysMemSlicePitch = 0;
 	
-	SRenderHelper::g_Device->CreateBuffer( &bufDesc , &data , &m_pBuffer );
+	SRenderHelper::g_Device->CreateBuffer( &bufDesc , pInitData ? &data : nullptr, &m_pBuffer );
 
 	if( bindFlag & eBF_SRV )
 	{

@@ -145,23 +145,33 @@ void ProcessMaterial(const aiScene* scene, SArray<CustomMaterial>& materials, st
 		aiString path;
 		mat->GetTexture(aiTextureType_DIFFUSE, 0, &path);
 		std::string filename = std::string(path.C_Str());
-		filename = directory + '/' + filename;
+		filename = directory + '\\' + filename;
+		filename.replace(filename.end() - 3, filename.end(), "dds");
 		dstMat.m_DiffuseMap = STextureManager::Load2DTextureFromFile(filename.c_str());
 
 		mat->GetTexture(aiTextureType_NORMALS, 0, &path);
 		filename = std::string(path.C_Str());
-		filename = directory + '/' + filename;
+		filename = directory + '\\' + filename;
+		filename.replace(filename.end() - 3, filename.end(), "dds");
 		dstMat.m_NormalMap = STextureManager::Load2DTextureFromFile(filename.c_str());
 
 		mat->GetTexture(aiTextureType_SPECULAR, 0, &path);
 		filename = std::string(path.C_Str());
-		filename = directory + '/' + filename;
+		filename = directory + '\\' + filename;
+		filename.replace(filename.end() - 3, filename.end(), "dds");
 		dstMat.m_MetallicMap = STextureManager::Load2DTextureFromFile(filename.c_str());
-
+		
 		mat->GetTexture(aiTextureType_SHININESS, 0, &path);
 		filename = std::string(path.C_Str());
-		filename = directory + '/' + filename;
+		filename = directory + '\\' + filename;
+		filename.replace(filename.end() - 3, filename.end(), "dds");
 		dstMat.m_roughnessMap = STextureManager::Load2DTextureFromFile(filename.c_str());
+
+		mat->GetTexture(aiTextureType_AMBIENT, 0, &path);
+		filename = std::string(path.C_Str());
+		filename = directory + '\\' + filename;
+		filename.replace(filename.end() - 3, filename.end(), "dds");
+		dstMat.m_AOMap = STextureManager::Load2DTextureFromFile(filename.c_str());
 	}
 }
 
@@ -173,7 +183,7 @@ SStaticMesh* SStaticMeshMangaer::LoadStaticMesh(const char* filename)
 	if (!pScene)	return nullptr;
 
 	std::string filePath = filename;
-	std::string directory = filePath.substr(0, filePath.find_last_of('/'));;
+	std::string directory = filePath.substr(0, filePath.find_last_of('\\'));
 
 	SArray<CustomMaterial> materials;
 	ProcessMaterial(pScene, materials, directory);
@@ -192,6 +202,7 @@ SStaticMesh* SStaticMeshMangaer::LoadStaticMesh(const char* filename)
 	desc.m_iTexcoord[2] = (eVF_Float3 << 24) | (sizeof(SVector3f) * 2);
 	desc.m_iTexcoord[3] = (eVF_Float3 << 24) | (sizeof(SVector3f) * 3);
 	desc.m_iTexcoord[0] = (eVF_Float2 << 24) | (sizeof(SVector3f) * 4);
+	desc.stride         = sizeof(SVector3f) * 4 + sizeof(SVector2f);
 
 	for (unsigned int i = 0; i < meshes.GetSize(); i++)
 	{
@@ -209,12 +220,11 @@ SStaticMesh* SStaticMeshMangaer::LoadStaticMesh(const char* filename)
 	{
 		CustomSubMesh& submesh = staticMesh->AppendSubmesh();
 		submesh.iIndexNum    = meshes[i].m_indices.GetSize();
-		submesh.iVertexNum   = meshes[i].m_vertices.GetSize();
 		submesh.iIndexStart  = startIndex;
 		submesh.iVertexStart = startVertex;
 
 		startIndex  += submesh.iIndexNum;
-		startVertex += submesh.iVertexNum;
+		startVertex += meshes[i].m_vertices.GetSize();
 
 		submesh.iMatID = meshes[i].m_matIndex;
 	}

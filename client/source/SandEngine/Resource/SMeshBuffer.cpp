@@ -12,14 +12,14 @@ void SMeshBuffer::EnsureIndexBuffer( eMemUsage usage , int iNumOfIndices , const
 	m_IndexBuffer = new SIndexBuffer( usage , iNumOfIndices , format , pIndices , bindFlag );
 }
 
-SVertexBuffer* SMeshBuffer::GetVertexBuffer()
+const SVertexBuffer* SMeshBuffer::GetVertexBuffer() const
 {
-	return m_VertexBuffer;
+	return m_VertexBuffer.GetPointer();
 }
 
-SIndexBuffer* SMeshBuffer::GetIndexBuffer()
+const SIndexBuffer* SMeshBuffer::GetIndexBuffer() const
 {
-	return m_IndexBuffer;
+	return m_IndexBuffer.GetPointer();
 }
 
 int SMeshBuffer::GetNumOfVertices()

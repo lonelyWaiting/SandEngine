@@ -41,6 +41,8 @@ bool SRenderer::Init( HWND hwnd )
 	vp.TopLeftY = 0;
 	SRenderHelper::g_ImmediateContext->RSSetViewports( 1 , &vp );
 
+	m_MainCamera.InitCamera(0.1f, 1000.0f, 75.0f, clientWidth / (float)clientHeight, SVector3f(0.0f, 0.0f, -30.0f), SVector3f(0.0f, 0.0f, 1.0f));
+
 	return true;
 }
 
@@ -126,4 +128,9 @@ void SRenderer::Shutdown()
 void SRenderer::Present( suInt32 syncInterval /*= 0*/, suInt32 presentFlag /*= 0*/ )
 {
 	if(SRenderHelper::g_SwapChain)	SRenderHelper::g_SwapChain->Present( syncInterval , presentFlag );
+}
+
+Camera& SRenderer::GetMainCamera()
+{
+	return m_MainCamera;
 }

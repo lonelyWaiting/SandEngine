@@ -133,7 +133,7 @@ public:
 	SAND_API STexture2D(int width, int height, TextureFormat fomat, bool mipChain);
 	~STexture2D();
 
-	SAND_API ID3D11SamplerState* GetSampler()	
+	SAND_API ID3D11SamplerState* GetSampler()
 	{
 		return m_SamplerState;
 	}

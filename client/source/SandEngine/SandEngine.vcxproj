@@ -26,6 +26,7 @@
     <ClInclude Include="Application\SRenderer.h" />
     <ClInclude Include="Application\SWindow.h" />
     <ClInclude Include="Callback\SCallback.h" />
+    <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="GUI\SGui.h" />
     <ClInclude Include="Pipeline\SRenderHelper.h" />
     <ClInclude Include="Resource\Image\SImage.h" />
@@ -42,6 +43,7 @@
     <ClInclude Include="Resource\Texture\STextureObject.h" />
     <ClInclude Include="SandEnginePCH.h" />
     <ClInclude Include="SApiDef.h" />
+    <ClInclude Include="Sky\Skybox.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\thirdparty\imgui\imgui.cpp" />
@@ -52,6 +54,7 @@
     <ClCompile Include="Application\SRenderer.cpp" />
     <ClCompile Include="Application\SWindow.cpp" />
     <ClCompile Include="Callback\SCallback.cpp" />
+    <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="GUI\SGui.cpp" />
     <ClCompile Include="Pipeline\SRenderHelper.cpp" />
     <ClCompile Include="Resource\Image\SImage.cpp" />
@@ -70,6 +73,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Sky\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SandBase\SandBase.vcxproj">

@@ -170,7 +170,7 @@ void SArray<T>::Insert( const SArray<T>& Items , const sInt32 Index )
 template<typename T>
 void SArray<T>::InsertUninitialized( suInt32 index , suInt32 Count /* = 1 */ )
 {
-	if( index >= m_iSize )	return;
+	if( index > m_iSize )	return;
 
 	const suInt32 oldSize= m_iSize;
 	if( m_iSize + Count > m_iCapacity )

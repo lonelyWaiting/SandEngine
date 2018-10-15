@@ -13,6 +13,7 @@ public:
 	SSmartPointer<T>& operator=( T* instance );
 	T* operator->();
 	T* GetPointer();
+	const T* GetPointer() const;
 	operator T*();
 
 private:

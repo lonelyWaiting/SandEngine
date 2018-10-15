@@ -55,7 +55,7 @@ namespace SMath
 
 	static float SinDeg(float deg)
 	{
-		return ::sin(deg / PI);
+		return ::sin(deg / 180.0f * PI);
 	}
 
 	static float CosRad(float rad)
@@ -65,7 +65,16 @@ namespace SMath
 
 	static float CosDeg(float deg)
 	{
-		return ::cos(deg / PI);
+		return ::cos(deg / 180.0f * PI);
+	}
+
+	static float TanDeg(float deg)
+	{
+		return ::tanf(deg / 180.0f * PI);
+	}
+	static float TanRad(float rad)
+	{
+		return ::tanf(rad);
 	}
 
 	static float Acos(float v)

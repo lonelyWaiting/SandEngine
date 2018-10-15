@@ -8,6 +8,7 @@
 #include "SandEngine/Application/SandEngineModule.h"
 #include "SandEngine/Resource/Shaders/SShader.h"
 #include "SandEngine/Pipeline/SRenderHelper.h"
+#include "SandEngine/Resource/SStaticMeshManager.h"
 
 SVector2f CartesianToSpherical(const SVector3f& dir)
 {
@@ -21,6 +22,14 @@ static STexture2DPtr sIrradianceMap = nullptr;
 static STexture2DPtr sBRDFLutMap    = nullptr;
 static STexture2DPtr sPrefilterMap  = nullptr;
 static SShader		 sIBLShader;
+static SShader		 sPBRShader;
+
+struct Entities
+{
+	SStaticMesh*	staticMesh;
+	SVector3f		position;
+};
+Entities entities[10];
 
 class IBLHandler : public SCallbackHandle
 {
@@ -30,29 +39,41 @@ public:
 		if (userData.pSender == &SandEngine::Callback.OnEngineInit)
 		{
 			sIBLShader.Load("../data/shaders/debugTexture.hlsl", nullptr, "ps_main");
+
+			SStaticMesh* staticMesh = SStaticMeshMangaer::LoadStaticMesh("..\\asset\\models\\test.fbx");
+			for (int i = 0; i < 10; i++)
+			{
+				entities[i].staticMesh = staticMesh;
+				entities[i].position = SVector3f(0.0f, -50.0f + i * 10, 200.0f);
+			}
 		}
 		else if (userData.pSender == &SandEngine::Callback.OnBeginRender)
 		{
 			// debug texure on screen
-			if (sBRDFLutMap)
+			/*if (sBRDFLutMap)
 			{
 				SRenderHelper::BindTexture(eST_Pixel, 0, sBRDFLutMap);
 				SRenderHelper::RenderFullScreen(sIBLShader);
+			}*/
+
+			for (int i = 0; i < 10; i++)
+			{
+				//SRenderHelper::RenderStaticMesh(*(entities[i].staticMesh), D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, sPBRShader);
 			}
 		}
 	}
-}g_GuiHandler;
+}g_IBLHandler;
 
 void IBLInit()
 {
-	SandEngine::Callback.OnBeginRender  += g_GuiHandler;
-	SandEngine::Callback.OnEngineInit   += g_GuiHandler;
+	SandEngine::Callback.OnBeginRender  += g_IBLHandler;
+	SandEngine::Callback.OnEngineInit   += g_IBLHandler;
 }
 
 void IBLDeInit()
 {
-	SandEngine::Callback.OnBeginRender -= g_GuiHandler;
-	SandEngine::Callback.OnEngineInit  -= g_GuiHandler;
+	SandEngine::Callback.OnBeginRender -= g_IBLHandler;
+	SandEngine::Callback.OnEngineInit  -= g_IBLHandler;
 }
 
 float RadicalInverse_VdC(unsigned int bits)

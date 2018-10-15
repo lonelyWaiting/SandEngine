@@ -62,6 +62,12 @@ T * SSmartPointer<T>::GetPointer()
 }
 
 template<class T>
+const T * SSmartPointer<T>::GetPointer() const
+{
+	return m_instance;
+}
+
+template<class T>
 inline SSmartPointer<T>::operator T*( )
 {
 	return m_instance;

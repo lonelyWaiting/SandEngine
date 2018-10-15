@@ -124,16 +124,16 @@ public:
 	int GetVertexMask();
 	int GetNumOfVertices();
 
-	int GetPositionOffset()			{ return m_vertexDesc.m_iPos & 0xf; }
-	int GetNormalOffset()			{ return m_vertexDesc.m_iNormal & 0xf; }
-	int GetColorOffset()			{ return m_vertexDesc.m_color & 0xf; }
-	int GetTexcoordOffset(int i)	{ return m_vertexDesc.m_iTexcoord[i] & 0xf; }
-	int GetStride()					{ return m_vertexDesc.stride; }
+	int GetPositionOffset()      const { return m_vertexDesc.m_iPos & 0xf; }
+	int GetNormalOffset()        const { return m_vertexDesc.m_iNormal & 0xf; }
+	int GetColorOffset()         const { return m_vertexDesc.m_color & 0xf; }
+	int GetTexcoordOffset(int i) const { return m_vertexDesc.m_iTexcoord[i] & 0xf; }
+	int GetStride()              const { return m_vertexDesc.stride; }
 
-	eVertexFormat GetPositionFormat()		{ return (eVertexFormat)(m_vertexDesc.m_iPos & 0xfff0); }
-	eVertexFormat GetNormalFormat()			{ return (eVertexFormat)(m_vertexDesc.m_iNormal & 0xfff0); }
-	eVertexFormat GetColorFormat()			{ return (eVertexFormat)(m_vertexDesc.m_color & 0xfff0); }
-	eVertexFormat GetTexcoordFormat(int i)	{ return (eVertexFormat)(m_vertexDesc.m_iTexcoord[i] & 0xfff0); }
+	eVertexFormat GetPositionFormat()      const { return (eVertexFormat)(m_vertexDesc.m_iPos & 0xfff0); }
+	eVertexFormat GetNormalFormat()	       const { return (eVertexFormat)(m_vertexDesc.m_iNormal & 0xfff0); }
+	eVertexFormat GetColorFormat()	       const { return (eVertexFormat)(m_vertexDesc.m_color & 0xfff0); }
+	eVertexFormat GetTexcoordFormat(int i) const { return (eVertexFormat)(m_vertexDesc.m_iTexcoord[i] & 0xfff0); }
 
 	int GetVertexStride() { return m_vertexDesc.stride; }
 

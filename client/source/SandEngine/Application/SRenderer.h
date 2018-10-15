@@ -4,6 +4,7 @@ class SVector2f;
 class SVector4f;
 
 #include "SandEngine/Resource/Texture/STextureObject.h"
+#include "SandEngine/Camera/Camera.h"
 
 class SRenderer
 {
@@ -16,9 +17,12 @@ public:
 	void ClearColor( const SVector4f& color );
 	void Present( suInt32 syncInterval = 0 , suInt32 presentFlag = 0 );
 
+	Camera& GetMainCamera();
+
 private:
 	SRenderer() {}
 
 private:
 	SRenderTexturePtr m_RT;
+	Camera m_MainCamera;
 };
