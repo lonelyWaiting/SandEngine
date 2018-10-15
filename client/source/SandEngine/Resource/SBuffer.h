@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SandEngine/SandEnginePCH.h"
+#include "SandEngine/SApiDef.h"
 #include "SandBase/Object/SRefCounter.h"
 #include "SandBase/Object/SSmartPointer.h"
 
@@ -89,14 +90,14 @@ struct ID3D11Buffer;
 class SBuffer : public SRefCounter
 {
 public:
-	SBuffer( eMemUsage usage , int stride , int count , const void* pInitData = nullptr , eBindFlag bindFlag = eBF_None );
+	SAND_API SBuffer( eMemUsage usage , int stride , int count , const void* pInitData = nullptr , eBindFlag bindFlag = eBF_None );
 	~SBuffer();
 
 	void SetFilename( const char* filename );
 
 	ID3D11ShaderResourceView*  GetShaderResourceView()  const;
 	ID3D11UnorderedAccessView* GetUnorderedAccessView() const;
-	ID3D11Buffer*			   GetBuffer() const;
+	SAND_API ID3D11Buffer*			   GetBuffer() const;
 
 	void* Lock();
 	void  UnLock();
@@ -124,16 +125,16 @@ public:
 	int GetVertexMask();
 	int GetNumOfVertices();
 
-	int GetPositionOffset()      const { return m_vertexDesc.m_iPos & 0xf; }
-	int GetNormalOffset()        const { return m_vertexDesc.m_iNormal & 0xf; }
-	int GetColorOffset()         const { return m_vertexDesc.m_color & 0xf; }
-	int GetTexcoordOffset(int i) const { return m_vertexDesc.m_iTexcoord[i] & 0xf; }
+	int GetPositionOffset()      const { return m_vertexDesc.m_iPos & 0xff; }
+	int GetNormalOffset()        const { return m_vertexDesc.m_iNormal & 0xff; }
+	int GetColorOffset()         const { return m_vertexDesc.m_color & 0xff; }
+	int GetTexcoordOffset(int i) const { return m_vertexDesc.m_iTexcoord[i] & 0xff; }
 	int GetStride()              const { return m_vertexDesc.stride; }
 
-	eVertexFormat GetPositionFormat()      const { return (eVertexFormat)(m_vertexDesc.m_iPos & 0xfff0); }
-	eVertexFormat GetNormalFormat()	       const { return (eVertexFormat)(m_vertexDesc.m_iNormal & 0xfff0); }
-	eVertexFormat GetColorFormat()	       const { return (eVertexFormat)(m_vertexDesc.m_color & 0xfff0); }
-	eVertexFormat GetTexcoordFormat(int i) const { return (eVertexFormat)(m_vertexDesc.m_iTexcoord[i] & 0xfff0); }
+	eVertexFormat GetPositionFormat()      const { return (eVertexFormat)((m_vertexDesc.m_iPos & 0xffffff00) >> 8); }
+	eVertexFormat GetNormalFormat()	       const { return (eVertexFormat)((m_vertexDesc.m_iNormal & 0xffffff00) >> 8); }
+	eVertexFormat GetColorFormat()	       const { return (eVertexFormat)((m_vertexDesc.m_color & 0xffffff00) >> 8); }
+	eVertexFormat GetTexcoordFormat(int i) const { return (eVertexFormat)((m_vertexDesc.m_iTexcoord[i] & 0xffffff00) >> 8); }
 
 	int GetVertexStride() { return m_vertexDesc.stride; }
 

@@ -53,7 +53,7 @@ struct cbFrame
 	float nearPlane;
 	float farPlane;
 	float aspectRatio;
-	SVector3f padding;
+	SVector3f cameraPos;
 };
 
 static SBuffer* g_FrameCB = nullptr;
@@ -119,6 +119,7 @@ void SRenderHelper::BeginNewFrame()
 	cb.nearPlane      = camera.GetNearPlane();
 	cb.farPlane       = camera.GetFarPlane();
 	cb.aspectRatio    = camera.GetAspectRatio();
+	cb.cameraPos      = camera.GetPostion();
 	SRenderHelper::g_ImmediateContext->Unmap(g_FrameCB->GetBuffer(), 0);
 
 	ID3D11Buffer* cBuffer = g_FrameCB->GetBuffer();
@@ -162,6 +163,7 @@ void AddMeshStream( const SMeshBuffer& mesh , suInt32 mask )
 		g_InputLayout[g_InputLayoutCount].AlignedByteOffset    = mesh.GetVertexBuffer()->GetPositionOffset();
 		g_InputLayout[g_InputLayoutCount].InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA;
 		g_InputLayout[g_InputLayoutCount].InstanceDataStepRate = 0;
+		g_InputLayoutCount++;
 	}
 
 	if (mask & eVA_NORMAL)
@@ -173,6 +175,7 @@ void AddMeshStream( const SMeshBuffer& mesh , suInt32 mask )
 		g_InputLayout[g_InputLayoutCount].AlignedByteOffset    = mesh.GetVertexBuffer()->GetNormalOffset();
 		g_InputLayout[g_InputLayoutCount].InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA;
 		g_InputLayout[g_InputLayoutCount].InstanceDataStepRate = 0;
+		g_InputLayoutCount++;
 	}
 
 	if (mask & eVA_VERTEXCOLOR)
@@ -184,11 +187,12 @@ void AddMeshStream( const SMeshBuffer& mesh , suInt32 mask )
 		g_InputLayout[g_InputLayoutCount].AlignedByteOffset    = mesh.GetVertexBuffer()->GetColorOffset();
 		g_InputLayout[g_InputLayoutCount].InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA;
 		g_InputLayout[g_InputLayoutCount].InstanceDataStepRate = 0;
+		g_InputLayoutCount++;
 	}
 
 	for (int i = 0; i < 16; i++)
 	{
-		if (mask & (eVA_TEXCOORD0 >> i))
+		if (mask & (eVA_TEXCOORD0 << i))
 		{
 			g_InputLayout[g_InputLayoutCount].SemanticName         = "TEXCOORD";
 			g_InputLayout[g_InputLayoutCount].SemanticIndex        = i;
@@ -197,6 +201,7 @@ void AddMeshStream( const SMeshBuffer& mesh , suInt32 mask )
 			g_InputLayout[g_InputLayoutCount].AlignedByteOffset    = mesh.GetVertexBuffer()->GetTexcoordOffset(i);
 			g_InputLayout[g_InputLayoutCount].InputSlotClass       = D3D11_INPUT_PER_VERTEX_DATA;
 			g_InputLayout[g_InputLayoutCount].InstanceDataStepRate = 0;
+			g_InputLayoutCount++;
 		}
 	}
 
@@ -389,10 +394,10 @@ void SRenderHelper::BindTexture(eShaderStage stage, int slot, STexture2D* tex)
 	}
 }
 
-void SRenderHelper::RenderStaticMesh(SStaticMesh& mesh, D3D11_PRIMITIVE_TOPOLOGY topology, const SShader& shader, const SVector3f& world_pos)
+void SRenderHelper::RenderStaticMesh(SStaticMesh& mesh, D3D11_PRIMITIVE_TOPOLOGY topology, const SShader& shader)
 {
 	ResetStream();
-	AddMeshStream(mesh.GetMeshBuffer(), eVA_POSITION);
+	AddMeshStream(mesh.GetMeshBuffer(), eVA_POSITION | eVA_NORMAL | eVA_TEXCOORD2 | eVA_TEXCOORD0 | eVA_IndexBuffer);
 
 	g_ImmediateContext->IASetVertexBuffers(0, g_VertexBufferCount, g_VertexBuffer, g_VertexBufferStride, g_VertexBufferOffset);
 	g_ImmediateContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
@@ -429,6 +434,9 @@ void SRenderHelper::RenderStaticMesh(SStaticMesh& mesh, D3D11_PRIMITIVE_TOPOLOGY
 	}
 
 	g_ImmediateContext->IASetPrimitiveTopology(topology);
+
+	SRenderHelper::g_ImmediateContext->RSSetState(SRenderer::Get().GetRasterizerState());
+	SRenderHelper::g_ImmediateContext->OMSetDepthStencilState(SRenderer::Get().GetDepthStencilState(), 0);
 
 	for (int i = 0; i < mesh.GetSubmeshCount(); i++)
 	{

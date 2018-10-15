@@ -19,10 +19,16 @@ public:
 
 	Camera& GetMainCamera();
 
+	ID3D11RasterizerState* GetRasterizerState() { return rasterizerState; }
+	ID3D11DepthStencilState* GetDepthStencilState() { return depthStencilState; }
+
 private:
 	SRenderer() {}
 
 private:
 	SRenderTexturePtr m_RT;
 	Camera m_MainCamera;
+
+	ID3D11RasterizerState* rasterizerState = nullptr;
+	ID3D11DepthStencilState* depthStencilState = nullptr;
 };

@@ -43,6 +43,45 @@ bool SRenderer::Init( HWND hwnd )
 
 	m_MainCamera.InitCamera(0.1f, 1000.0f, 75.0f, clientWidth / (float)clientHeight, SVector3f(0.0f, 0.0f, -30.0f), SVector3f(0.0f, 0.0f, 1.0f));
 
+	// ------------------------------------------Depth/Stencil State------------------------------------------
+	//bool MSAAEnabled = s3Renderer::get().getMSAAEnabled();
+
+	D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
+	ZeroMemory(&depthStencilStateDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	depthStencilStateDesc.DepthEnable = false;
+	depthStencilStateDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilStateDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+	depthStencilStateDesc.StencilEnable = FALSE;
+
+	HRESULT hr = SRenderHelper::g_Device->CreateDepthStencilState(&depthStencilStateDesc, &depthStencilState);
+	if (FAILED(hr))
+	{
+		SLog::Error("Failed to create DepthStencil State\n");
+		return false;
+	}
+
+	// Setup rasterizer state.
+	D3D11_RASTERIZER_DESC rasterizerDesc;
+	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
+	rasterizerDesc.AntialiasedLineEnable = false;
+	rasterizerDesc.CullMode = D3D11_CULL_BACK;
+	rasterizerDesc.DepthBias = 0;
+	rasterizerDesc.DepthBiasClamp = 0.0f;
+	rasterizerDesc.DepthClipEnable = TRUE;
+	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+	rasterizerDesc.FrontCounterClockwise = FALSE;
+	rasterizerDesc.MultisampleEnable = FALSE;
+	rasterizerDesc.ScissorEnable = FALSE;
+	rasterizerDesc.SlopeScaledDepthBias = 0.0f;
+
+	// Create the rasterizer state object.
+	hr = SRenderHelper::g_Device->CreateRasterizerState(&rasterizerDesc, &rasterizerState);
+	if (FAILED(hr))
+	{
+		SLog::Error("Failed to create Rasterrizer State\n");
+		return false;
+	}
+
 	return true;
 }
 

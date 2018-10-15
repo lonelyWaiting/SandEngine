@@ -30,7 +30,7 @@ void Camera::InitCamera(float _near, float _far, float fovy, float aspect, SVect
 	m_CameraToWorld = m_View.Inverse();
 
 	m_Project = SMatrix4f(	1.0f / (m_aspect * m_tanHalfFovy), 0.0f, 0.0f, 0.0f,
-							0.0f, 1.0f / (m_aspect * m_tanHalfFovy), 0.0f, 0.0f,
+							0.0f, 1.0f / m_tanHalfFovy, 0.0f, 0.0f,
 							0.0f, 0.0f, m_far / (m_far - m_near), 1.0f,
 							0.0f, 0.0f, -m_near * m_far / (m_far - m_near), 0.0f);
 }

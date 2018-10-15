@@ -9,6 +9,8 @@
 #include "SandEngine/Resource/Shaders/SShader.h"
 #include "SandEngine/Pipeline/SRenderHelper.h"
 #include "SandEngine/Resource/SStaticMeshManager.h"
+#include "SandBase/Math/SMatrix4f.h"
+#include "SandEngine/Resource/SBuffer.h"
 
 SVector2f CartesianToSpherical(const SVector3f& dir)
 {
@@ -24,12 +26,95 @@ static STexture2DPtr sPrefilterMap  = nullptr;
 static SShader		 sIBLShader;
 static SShader		 sPBRShader;
 
+struct cbIBL
+{
+	SMatrix4f worldMatrix;
+	float roughness;
+	float metallic;
+	SVector2f padding;
+};
+
+struct PointLight
+{
+	SVector3f lightPos;
+	float padding;
+	SVector3f lightColor;
+	float padding2;
+};
+
+struct cbLight
+{
+	PointLight light[3];
+};
+
+static SBuffer* sCBIbl          = nullptr;
+static SBuffer* sDirectionLight = nullptr;
+
 struct Entities
 {
 	SStaticMesh*	staticMesh;
 	SVector3f		position;
 };
-Entities entities[10];
+Entities entities[49];
+
+void InitCB()
+{
+	sCBIbl          = new SBuffer(eBU_Dynamic, sizeof(cbIBL), 1, nullptr, eBF_Constant);
+	sDirectionLight = new SBuffer(eBU_Dynamic, sizeof(cbLight), 1, nullptr, eBF_Constant);
+}
+
+void InitPrecomputeMap()
+{
+	SImageDecode decoder;
+	decoder.Load("../data/textures/brdfLut.hdr");
+
+	sBRDFLutMap = new STexture2D(decoder.GetWidth(), decoder.GetHeight(), TextureFormat::STF_RGBAFloat, false);
+	for (int i = 0; i < decoder.GetWidth(); i++)
+	{
+		for(int j = 0; j < decoder.GetHeight(); j++)
+		{
+			sBRDFLutMap->SetPixel(i, j, decoder.GetPixel(i, j));
+		}
+	}
+	sBRDFLutMap->Apply();
+
+	decoder.Load("../data/textures/Irradiance.hdr");
+	sIrradianceMap = new STexture2D(decoder.GetWidth(), decoder.GetHeight(), TextureFormat::STF_RGBAFloat, false);
+	for (int i = 0; i < decoder.GetWidth(); i++)
+	{
+		for (int j = 0; j < decoder.GetHeight(); j++)
+		{
+			sIrradianceMap->SetPixel(i, j, decoder.GetPixel(i, j));
+		}
+	}
+	sIrradianceMap->Apply();
+
+	decoder.Load("../data/textures/prefilter0.hdr");
+	int width = decoder.GetWidth(), height = decoder.GetHeight();
+	sPrefilterMap = new STexture2D(width, height, TextureFormat::STF_RGBAFloat, true);
+
+	int mipNum = sPrefilterMap->GetMipMapCount();
+
+	for (int miplevel = 0; miplevel < mipNum; miplevel++)
+	{
+		if (miplevel != 0)
+		{
+			SString path = "../data/textures/prefilter";
+			path.AppendFormat("%d.hdr", miplevel);
+			decoder.Load(path.AsChar());
+		}
+
+		for (int i = 0; i < decoder.GetWidth(); i++)
+		{
+			for (int j = 0; j < decoder.GetHeight(); j++)
+			{
+				sPrefilterMap->SetPixel(i, j, decoder.GetPixel(i, j), miplevel);
+			}
+		}
+	}
+	sPrefilterMap->SetFilterMode(Trilinear);
+	sPrefilterMap->Apply();
+}
 
 class IBLHandler : public SCallbackHandle
 {
@@ -39,26 +124,70 @@ public:
 		if (userData.pSender == &SandEngine::Callback.OnEngineInit)
 		{
 			sIBLShader.Load("../data/shaders/debugTexture.hlsl", nullptr, "ps_main");
+			sPBRShader.Load("../data/shaders/pbrIBL.hlsl", "vs_main", "ps_main");
 
 			SStaticMesh* staticMesh = SStaticMeshMangaer::LoadStaticMesh("..\\asset\\models\\test.fbx");
-			for (int i = 0; i < 10; i++)
+			/*for (int i = 0; i < 10; i++)
 			{
 				entities[i].staticMesh = staticMesh;
-				entities[i].position = SVector3f(0.0f, -50.0f + i * 10, 200.0f);
+				entities[i].position = SVector3f(-200.0f + 40.0f * i, 0, 100.0f);
+			}*/
+
+			for (int i = 0; i < 7; i++)
+			{
+				for (int j = 0; j < 7; j++)
+				{
+					entities[j * 7 + i].staticMesh = staticMesh;
+					entities[j * 7 + i].position = SVector3f(-100.0f + 30.0f * i, -100.0f + 30.0f * j, 100.0f);
+				}
 			}
+
+			InitPrecomputeMap();
+			InitCB();
 		}
 		else if (userData.pSender == &SandEngine::Callback.OnBeginRender)
 		{
-			// debug texure on screen
-			/*if (sBRDFLutMap)
-			{
-				SRenderHelper::BindTexture(eST_Pixel, 0, sBRDFLutMap);
-				SRenderHelper::RenderFullScreen(sIBLShader);
-			}*/
+			SRenderHelper::BindTexture(eST_Pixel, 5, sBRDFLutMap);
+			SRenderHelper::BindTexture(eST_Pixel, 6, sIrradianceMap);
+			SRenderHelper::BindTexture(eST_Pixel, 7, sPrefilterMap);
 
-			for (int i = 0; i < 10; i++)
+			for (int i = 0; i < 7; i++)
 			{
-				//SRenderHelper::RenderStaticMesh(*(entities[i].staticMesh), D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, sPBRShader);
+				for (int j = 0; j < 7; j++)
+				{
+					D3D11_MAPPED_SUBRESOURCE data;
+					SRenderHelper::g_ImmediateContext->Map(sCBIbl->GetBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
+					cbIBL& ibl = *(cbIBL*)(data.pData);
+					ibl.worldMatrix.MakeIdentity();
+					ibl.worldMatrix.SetTranslate(entities[j * 7 + i].position);
+					ibl.worldMatrix.MakeTranspose();
+
+					ibl.roughness = SMath::clamp((7 - i) / 7.0f, 0.05f, 1.0f);
+					ibl.metallic = (7 - i) / 7.0f;
+
+					SRenderHelper::g_ImmediateContext->Unmap(sCBIbl->GetBuffer(), 0);
+
+					D3D11_MAPPED_SUBRESOURCE lightData;
+					SRenderHelper::g_ImmediateContext->Map(sDirectionLight->GetBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &lightData);
+					cbLight& l = *(cbLight*)lightData.pData;
+
+					l.light[0].lightPos = SVector3f(0.0f, 100.0f, 100.0f);
+					l.light[0].lightColor = SVector3f(1.0f, 1.0f, 1.0f);
+
+					l.light[1].lightPos = SVector3f(0.0f, -100.0f, -100.0f);
+					l.light[1].lightColor = SVector3f(1.0f, 0.8f, 1.0f);
+
+					l.light[2].lightPos = SVector3f(100.0f, 0.0f, 300);
+					l.light[2].lightColor = SVector3f(1.0f, 1.0f, 0.5f);
+					SRenderHelper::g_ImmediateContext->Unmap(sDirectionLight->GetBuffer(), 0);
+
+					ID3D11Buffer* vsCB = sCBIbl->GetBuffer();
+					SRenderHelper::g_ImmediateContext->VSSetConstantBuffers(1, 1, &vsCB);
+					ID3D11Buffer* psCB = sDirectionLight->GetBuffer();
+					SRenderHelper::g_ImmediateContext->PSSetConstantBuffers(2, 1, &psCB);
+
+					SRenderHelper::RenderStaticMesh(*(entities[j * 7 + i].staticMesh), D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, sPBRShader);
+				}
 			}
 		}
 	}
@@ -135,7 +264,7 @@ SVector2f IntegrateBRDF(float roughness, float NdotV)
 
 	SVector3f N = SVector3f(0, 1, 0);
 
-	unsigned int NumSamples = 50;
+	unsigned int NumSamples = 1024;
 	for (unsigned int i = 0; i < NumSamples; i++)
 	{
 		SVector2f Xi = Hammersley(i, NumSamples);
@@ -199,8 +328,8 @@ void IBLGenerateIrradianceMap(const char* path)
 	sIrradianceMap = new STexture2D(image.GetWidth(), image.GetHeight(), STF_RGBAFloat, false);
 	SImageEncode encode(image.GetWidth(), image.GetHeight());
 
-	int   phiSampleCount = 50;
-	int   thetaSampleCount = 50;
+	int   phiSampleCount = 100;
+	int   thetaSampleCount = 100;
 	float phiDelta   = SMath::TWO_PI / phiSampleCount;
 	float thetaDelta = SMath::PI_DIV_2 / thetaSampleCount;
 

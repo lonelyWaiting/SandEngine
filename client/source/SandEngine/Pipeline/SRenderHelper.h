@@ -34,5 +34,5 @@ public:
 	static void BindTexture(eShaderStage stage, int slot, STexture2D* tex);
 	static void SetRenderTarget(SRenderTexture* tex, bool useDepth);
 	static void RenderFullScreen(const SShader& shader);
-	static void RenderStaticMesh(SStaticMesh& mesh, D3D11_PRIMITIVE_TOPOLOGY topology, const SShader& shader, const SVector3f& world_pos);
+	static void RenderStaticMesh(SStaticMesh& mesh, D3D11_PRIMITIVE_TOPOLOGY topology, const SShader& shader);
 };

@@ -197,11 +197,11 @@ SStaticMesh* SStaticMeshMangaer::LoadStaticMesh(const char* filename)
 	SArray<unsigned int> indices;
 
 	SVertexDescription desc;
-	desc.m_iPos         = (eVF_Float3 << 24) | 0;
-	desc.m_iNormal      = (eVF_Float3 << 24) | sizeof(SVector3f);
-	desc.m_iTexcoord[2] = (eVF_Float3 << 24) | (sizeof(SVector3f) * 2);
-	desc.m_iTexcoord[3] = (eVF_Float3 << 24) | (sizeof(SVector3f) * 3);
-	desc.m_iTexcoord[0] = (eVF_Float2 << 24) | (sizeof(SVector3f) * 4);
+	desc.m_iPos         = (eVF_Float3 << 8) | 0;
+	desc.m_iNormal      = (eVF_Float3 << 8) | sizeof(SVector3f);
+	desc.m_iTexcoord[2] = (eVF_Float3 << 8) | (sizeof(SVector3f) * 2);
+	desc.m_iTexcoord[3] = (eVF_Float3 << 8) | (sizeof(SVector3f) * 3);
+	desc.m_iTexcoord[0] = (eVF_Float2 << 8) | (sizeof(SVector3f) * 4);
 	desc.stride         = sizeof(SVector3f) * 4 + sizeof(SVector2f);
 
 	for (unsigned int i = 0; i < meshes.GetSize(); i++)
