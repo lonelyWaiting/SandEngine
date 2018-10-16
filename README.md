@@ -8,7 +8,7 @@
 ![BRDF Lut](./pub/doc/IBL_BRDF_LUT.png)
 
 ### IBL Prefilter
-![IBL Prefilter](./pub/doc/IBL Prefilter)
+![IBL Prefilter](./pub/doc/IBL_Prefilter.png)
 
 ### 实现效果
 ![ibl color](./pub/doc/IBL_1.png)
