@@ -283,22 +283,22 @@ SMatrix4f SMatrix4f::TranslationMatrix( float fX , float fY , float fZ )
 	return ret;
 }
 
-SMatrix4f SMatrix4f::LookAtLHMatrix( SVector3f& eye , SVector3f& at , SVector3f& up )
+SMatrix4f SMatrix4f::LookAtLHMatrix( const SVector3f& eye , const SVector3f& at )
 {
 	/*
-		???????ио??
+		translate:
 		|1		0		0		0|
 		|0		1		0		0|
 		|0		0		1		0|
 		|-cam_x	-cam_y	-cam_z	1|
-		??б┴????ио??
+		rotate:
 		|right.x	up.x	look.x		0|
 		|right.y	up.y	look.y		0|
 		|right.z	up.z	look.z		0|
 		|0			0		0			1|
 
 
-		б└??????ио??
+		worldToCamera
 		|1		0		0		0|			|right.x	up.x	look.x		0|
 		|0		1		0		0|			|right.y	up.y	look.y		0|
 		|0		0		1		0|	*		|right.z	up.z	look.z		0|
@@ -314,10 +314,13 @@ SMatrix4f SMatrix4f::LookAtLHMatrix( SVector3f& eye , SVector3f& at , SVector3f&
 	SVector3f zAxis = at - eye;
 	zAxis.Normalize();
 
+	SVector3f up = zAxis.y < 0.999f ? SVector3f(0.0f, 1.0f, 0.0f) : SVector3f(0.0f, 0.0f, -1.0f);
+
 	SVector3f xAxis = SVector3f::cross( up , zAxis );
 	xAxis.Normalize();
 	
 	SVector3f yAxis = SVector3f::cross( zAxis , xAxis );
+	yAxis.Normalize();
 
 	ret.m_afEntry[0] = xAxis.x;		ret.m_afEntry[1] = yAxis.x;		ret.m_afEntry[2] = zAxis.x;		ret.m_afEntry[3] = 0.0f;
 	ret.m_afEntry[4] = xAxis.y;		ret.m_afEntry[5] = yAxis.y;		ret.m_afEntry[6] = zAxis.y;		ret.m_afEntry[7] = 0.0f;

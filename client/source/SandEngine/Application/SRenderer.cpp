@@ -41,7 +41,7 @@ bool SRenderer::Init( HWND hwnd )
 	vp.TopLeftY = 0;
 	SRenderHelper::g_ImmediateContext->RSSetViewports( 1 , &vp );
 
-	m_MainCamera.InitCamera(0.1f, 1000.0f, 75.0f, clientWidth / (float)clientHeight, SVector3f(0.0f, 0.0f, -30.0f), SVector3f(0.0f, 0.0f, 1.0f));
+	m_MainCamera.InitCamera(0.1f, 1000.0f, 45.f, 1600 / (float)900, SVector3f(0.0f, 0.0f, -25.0f), SVector3f(0.0f, 0.0f, 1.0f));
 
 	// ------------------------------------------Depth/Stencil State------------------------------------------
 	//bool MSAAEnabled = s3Renderer::get().getMSAAEnabled();

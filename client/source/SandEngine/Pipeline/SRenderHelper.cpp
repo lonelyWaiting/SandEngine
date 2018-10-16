@@ -111,15 +111,15 @@ void SRenderHelper::BeginNewFrame()
 	cb.viewMatrix     = camera.GetViewMatrix();
 	cb.projMatrix     = camera.GetProjectMatrix();
 	cb.viewProjMatrix = cb.viewMatrix * cb.projMatrix;
-	cb.viewMatrix.MakeTranspose();
-	cb.projMatrix.MakeTranspose();
-	cb.viewProjMatrix.MakeTranspose();
-	cb.tanHalfFovY    = camera.GetTanHalfFovY();
 	cb.tanHalfFovX    = camera.GetTanHalfFovX();
+	cb.tanHalfFovY    = camera.GetTanHalfFovY();
 	cb.nearPlane      = camera.GetNearPlane();
 	cb.farPlane       = camera.GetFarPlane();
 	cb.aspectRatio    = camera.GetAspectRatio();
 	cb.cameraPos      = camera.GetPostion();
+	cb.viewMatrix.MakeTranspose();
+	cb.projMatrix.MakeTranspose();
+	cb.viewProjMatrix.MakeTranspose();
 	SRenderHelper::g_ImmediateContext->Unmap(g_FrameCB->GetBuffer(), 0);
 
 	ID3D11Buffer* cBuffer = g_FrameCB->GetBuffer();

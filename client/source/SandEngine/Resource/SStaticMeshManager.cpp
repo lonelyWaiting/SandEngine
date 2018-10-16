@@ -25,7 +25,6 @@ struct CustomVertex
 	SVector3f position;
 	SVector3f Normal;
 	SVector3f Tangent;
-	SVector3f Binormal;
 	SVector2f texcoord;
 };
 
@@ -91,13 +90,12 @@ void ProcessNode(const aiNode* node, const aiScene* scene, SArray<Mesh>& meshes,
 
 			if (mesh->HasNormals())
 			{
-				vertex.Normal = SVector3f(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z);
+				vertex.Normal = SVector3f::Normalize(SVector3f(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z));				
 			}
 			
 			if (mesh->HasTangentsAndBitangents())
 			{
-				vertex.Tangent  = SVector3f(mesh->mTangents[j].x, mesh->mTangents[j].y, mesh->mTangents[j].z);
-				vertex.Binormal = SVector3f(mesh->mBitangents[j].x, mesh->mBitangents[j].y, mesh->mBitangents[j].z);
+				vertex.Tangent  = SVector3f::Normalize(SVector3f(mesh->mTangents[j].x, mesh->mTangents[j].y, mesh->mTangents[j].z));
 			}
 
 			if (mesh->mTextureCoords[0])
@@ -200,9 +198,8 @@ SStaticMesh* SStaticMeshMangaer::LoadStaticMesh(const char* filename)
 	desc.m_iPos         = (eVF_Float3 << 8) | 0;
 	desc.m_iNormal      = (eVF_Float3 << 8) | sizeof(SVector3f);
 	desc.m_iTexcoord[2] = (eVF_Float3 << 8) | (sizeof(SVector3f) * 2);
-	desc.m_iTexcoord[3] = (eVF_Float3 << 8) | (sizeof(SVector3f) * 3);
-	desc.m_iTexcoord[0] = (eVF_Float2 << 8) | (sizeof(SVector3f) * 4);
-	desc.stride         = sizeof(SVector3f) * 4 + sizeof(SVector2f);
+	desc.m_iTexcoord[0] = (eVF_Float2 << 8) | (sizeof(SVector3f) * 3);
+	desc.stride         = sizeof(CustomVertex);
 
 	for (unsigned int i = 0; i < meshes.GetSize(); i++)
 	{
@@ -228,6 +225,136 @@ SStaticMesh* SStaticMeshMangaer::LoadStaticMesh(const char* filename)
 
 		submesh.iMatID = meshes[i].m_matIndex;
 	}
+
+	return staticMesh;
+}
+
+SStaticMesh* SStaticMeshMangaer::CreateSphere(int radius, int sliceCount, int stackCount)
+{
+	// 将球从上到下切成stackCount片,每个切面都是一个圆,然后将每个圆分为sliceCount份
+	float theta_step = SMath::PI / stackCount;
+	float phi_step   = SMath::TWO_PI / sliceCount;
+
+	SArray<CustomVertex> vertices;
+	vertices.Reserve((stackCount - 1) * (sliceCount - 1) + 2);
+
+	CustomVertex topVert;
+	topVert.position = SVector3f(0.0f, (float)radius, 0.0f);
+	topVert.Normal   = SVector3f(0.0f, 1.0f, 0.0f);
+	topVert.Tangent  = SVector3f(1.0f, 0.0f, 0.0f);
+	topVert.texcoord = SVector2f(0.0f, 0.0f);
+
+	CustomVertex bottomVert;
+	bottomVert.position = SVector3f(0.0f, -(float)(radius), 0.0f);
+	bottomVert.Normal   = SVector3f(0.0f, -1.0f, 0.0f);
+	bottomVert.Tangent  = SVector3f(-1.0f, 0.0f, 0.0f);
+	bottomVert.texcoord = SVector2f(0.0f, 1.0f);
+	
+	vertices.PushBack(topVert);
+
+	for (int i = 1; i < stackCount; i++)
+	{
+		float theta = i * theta_step;	// 与竖直轴正向的夹角,这里是与Y轴正轴的夹角
+
+		for (int j = 0; j <= sliceCount; j++)
+		{
+			float phi = j * phi_step;
+
+			CustomVertex v;
+
+			v.position.x = radius * SMath::SinRad(theta) * SMath::CosRad(phi);
+			v.position.y = radius * SMath::CosRad(theta);
+			v.position.z = radius * SMath::SinRad(theta) * SMath::SinRad(phi);
+
+			/*
+				可以通过由割线无限逼近切线，并且结合极限，来进行推导曲面上的一点的切线向量
+				可参见：http://netedu.xauat.edu.cn/jpkc/netedu/jpkc/gdsx/homepage/5jxsd/51/513/5308/530806.htm
+				因此：Position对于theta的偏导数作为切线坐标
+			*/
+			v.Tangent.x = -radius * SMath::SinRad(theta) * SMath::SinRad(phi);
+			v.Tangent.y = 0.0f;
+			v.Tangent.z = radius * SMath::SinRad(theta) * SMath::CosRad(phi);
+			v.Tangent.Normalize();
+
+			// 法线即为圆心指向该点的向量，因此刚好等于点的位置坐标的值
+			v.Normal = SVector3f::Normalize(v.position);
+
+			v.texcoord.x = phi / SMath::TWO_PI;
+			v.texcoord.y = theta / SMath::PI;
+
+			vertices.PushBack(v);
+		}
+	}
+
+	vertices.PushBack(bottomVert);
+
+	SArray<int> indices;
+
+	// 处理
+	for (int i = 1; i <= sliceCount; i++)
+	{
+		indices.PushBack(0);
+		indices.PushBack(i + 1);
+		indices.PushBack(i);
+	}
+
+	// 处理内部的环
+	int baseIndex = 1, ringVertexCount = sliceCount + 1;
+
+	for (int i = 0; i < stackCount - 2; i++)
+	{
+		for (int j = 0; j < sliceCount; j++)
+		{
+			indices.PushBack(baseIndex + i * ringVertexCount + j);
+			indices.PushBack(baseIndex + i * ringVertexCount + j + 1);
+			indices.PushBack(baseIndex + (i + 1) * ringVertexCount + j);
+			
+			indices.PushBack(baseIndex + (i + 1) * ringVertexCount + j);
+			indices.PushBack(baseIndex + i * ringVertexCount + j + 1);
+			indices.PushBack(baseIndex + (i + 1) * ringVertexCount + j + 1);
+		}
+	}
+
+	// 处理底部的环
+	int southPolarIndex = vertices.GetSize() - 1;
+	baseIndex = southPolarIndex - ringVertexCount;
+
+	for(int i = 0; i < sliceCount; i++)
+	{
+		indices.PushBack(southPolarIndex);
+		indices.PushBack(baseIndex + i);
+		indices.PushBack(baseIndex + i + 1);
+	}
+
+	SArray<CustomMaterial> materials;
+	CustomMaterial mat;
+	mat.m_DiffuseMap   = STextureManager::Load2DTextureFromFile("../asset/textures/albedo.dds");
+	//mat.m_NormalMap    = STextureManager::Load2DTextureFromFile("../asset/textures/normal.dds");
+	mat.m_NormalMap = STextureManager::Load2DTexturePNG("../asset/textures/normal.png");
+	mat.m_MetallicMap  = STextureManager::Load2DTextureFromFile("../asset/textures/metallic.dds");
+	mat.m_roughnessMap = STextureManager::Load2DTextureFromFile("../asset/textures/roughness.dds");
+	mat.m_AOMap        = STextureManager::Load2DTextureFromFile("../asset/textures/ao.dds");
+	mat.m_Name         = "diffuse";
+	materials.PushBack(mat);
+
+	SVertexDescription desc;
+	desc.m_iPos         = (eVF_Float3 << 8) | 0;
+	desc.m_iNormal      = (eVF_Float3 << 8) | sizeof(SVector3f);
+	desc.m_iTexcoord[2] = (eVF_Float3 << 8) | (sizeof(SVector3f) * 2);
+	desc.m_iTexcoord[0] = (eVF_Float2 << 8) | (sizeof(SVector3f) * 3);
+	desc.stride         = sizeof(CustomVertex);
+
+	SStaticMesh* staticMesh = new SStaticMesh("", g_StaticMeshManager);
+	staticMesh->GetMeshBuffer().EnsureVertexBuffer(desc, eBU_Static, vertices.GetSize(), vertices.GetData(), eBF_Vertex);
+	staticMesh->GetMeshBuffer().EnsureIndexBuffer(eBU_Static, indices.GetSize(), indices.GetData(), eIF_Int, eBF_Index);
+
+	staticMesh->SetMaterials(materials);
+
+	CustomSubMesh& submesh = staticMesh->AppendSubmesh();
+	submesh.iIndexNum    = indices.GetSize();
+	submesh.iIndexStart  = 0;
+	submesh.iVertexStart = 0;
+	submesh.iMatID       = 0;
 
 	return staticMesh;
 }

@@ -11,35 +11,32 @@ cbuffer cbFrame : register(b0)
     float3   cameraWorldPos;
 };
 
-Texture2D albedoMap   : register(t0);
-Texture2D normalMap    : register(t1);
-Texture2D metallicMap  : register(t2);
-Texture2D roughnessMap : register(t3);
-Texture2D aoMap        : register(t4);
+Texture2D albedoMap;
+Texture2D normalMap;
+Texture2D metallicMap;
+Texture2D roughnessMap;
+Texture2D aoMap;
 
-sampler   albedoSampler   : register(s0);
-sampler   normalSampler    : register(s1);
-sampler   metallicSampler  : register(s2);
-sampler   roughnessSampler : register(s3);
-sampler   aoSampler        : register(s4);
+sampler   albedoSampler;
+sampler   normalSampler;
+sampler   metallicSampler;
+sampler   roughnessSampler;
+sampler   aoSampler;
 
 #define PI 3.141592653589793238f
 #define TWO_PI 6.283185307179586477f
 
-Texture2D BRDFLutMap    : register(t5);
+Texture2D BRDFLutMap : register(t5);
 Texture2D IrradianceMap : register(t6);
-Texture2D prefilterMap  : register(t7);
+Texture2D prefilterMap : register(t7);
 
-sampler samplerBRDFLut   : register(s5);
-sampler samplerIrradiace : register(s6);
-sampler samplerPrefilter : register(s7);
+sampler samplerBRDFLut;
+sampler samplerIrradiace;
+sampler samplerPrefilter;
 
 cbuffer cbIBL : register(b1)
 {
     float4x4 worldMatrix;
-    float customRoughness;
-    float customMetallic;
-    float2 padding;
 };
 
 struct PointLight
@@ -52,7 +49,10 @@ struct PointLight
 
 cbuffer cbLight : register(b2)
 {
-    PointLight light[3];
+    PointLight light[4];
+    float customRoughness;
+    float customMetallic;
+    float2 padding;
 };
 
 struct vs_input
@@ -76,29 +76,24 @@ vs_output vs_main(vs_input input)
 {
     vs_output output;
     output.world_pos        = mul(float4(input.position,1.0f), worldMatrix).xyz;
-    output.world_normal     = mul(float4(input.normal,1.0f), worldMatrix).xyz;
-    output.world_tangent    = mul(float4(input.tangent, 1.0f), worldMatrix).xyz;
+    output.world_normal     = normalize(mul(float4(input.normal,0.0f), worldMatrix).xyz);
+    output.world_tangent    = normalize(mul(float4(input.tangent, 0.0f), worldMatrix).xyz);
     output.pos              = mul(float4(output.world_pos, 1.0f), viewProjMatrix);
     output.uv               = input.uv;
 
     return output;
 }
 
-float3 normalMapping(float3 tangent_space_normal , float3 world_normal, float3 world_tangent)
+float3 normalMapping(float3 sampleNormal , float3 world_normal, float3 world_tangent)
 {
-    tangent_space_normal = 2 * tangent_space_normal - 1;
-	float3 N = world_normal;
-	float3 T = normalize( world_tangent - dot( world_tangent , N ) * N );
-	float3 B = cross( N , T );
+    sampleNormal = 2 * sampleNormal - 1;
 
-    /*
-        Tx Ty Tz
-        Bx By Bz
-        Nx Ny Nz
-    */
+	float3 N = world_normal;
+	float3 T = normalize(world_tangent - dot(world_tangent, N) * N);
+	float3 B = normalize(cross(N , T));
     float3x3 TBN = float3x3( T , B , N );
 
-    return normalize(mul( tangent_space_normal , TBN ));
+    return normalize(mul(sampleNormal, TBN));
 }
 
 float GGX(float NdotH, float roughness)
@@ -140,29 +135,27 @@ float4 ps_main(vs_output input) : SV_Target
     float3 N = input.world_normal;
     float3 V = normalize(cameraWorldPos - input.world_pos);
 
-    // srgb => linear
-    // float3 albedo  = albedoMap.Sample(albedoSampler, input.uv).xyz;
-    float3 albedo = float3(1.0f,1.0f,1.0f);
-    albedo         = pow(albedo, 2.2f);
-    
-    // float metallic  = metallicMap.Sample(metallicSampler, input.uv).r;
-    float metallic = customMetallic;
-    // float roughness = roughnessMap.Sample(roughnessSampler, input.uv).r;
-    float roughness = customRoughness;
-    // float AO        = aoMap.Sample(aoSampler, input.uv).r;
-    float AO = 1.0f;
-    // float3 sampleNormal = normalMap.Sample(normalSampler, input.uv).xyz;
-    float3 sampleNormal = float3(0.0f,0.0f,0.0f);
-    N               = normalMapping(sampleNormal, N, input.world_tangent);
-    float3 R        = reflect(-V, N);
+    // float3 albedo = float3(1.0f,1.0f,1.0f);
+    // float metallic = customMetallic;
+    // float roughness = customRoughness;
+    // float AO = 1.0f;
 
-    float3 F0 = float3(0.04f, 0.04,0.04f);
+    // srgb => linear
+    float3 albedo  = albedoMap.Sample(albedoSampler, input.uv).xyz;    
+    albedo         = pow(albedo, 2.2f);
+    float metallic  = metallicMap.Sample(metallicSampler, input.uv).r;
+    float roughness = roughnessMap.Sample(roughnessSampler, input.uv).r;
+    float AO        = aoMap.Sample(aoSampler, input.uv).r;
+    float3 sampleNormal = normalMap.Sample(normalSampler, input.uv).xyz;
+    N               = normalMapping(sampleNormal, N, input.world_tangent);
+
+    float3 F0 = float3(0.04f, 0.04f, 0.04f);
     F0 = lerp(F0, albedo, metallic);
 
     float NdotV = saturate(dot(N,V));
 
     float3 Lo = float3(0.0f,0.0f,0.0f);
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < 4; i++)
     {
         float3 L = normalize(light[i].lightPos - input.world_pos);
         float3 H = normalize(L + V);
@@ -180,30 +173,29 @@ float4 ps_main(vs_output input) : SV_Target
         
         // energy conversation
         float3 ks = F;
-        float3 kd = 1.0f - F;
+        float3 kd = 1.0f - ks;
         kd *= 1.0f - metallic;
         
-        Lo += light[i].lightColor * (kd * albedo / PI + D * G * F / max(4.0f * NdotL * NdotV, 0.001f)) * NdotL; 
+        Lo += radiance * (kd * albedo / PI + D * G * F / max(4.0f * NdotL * NdotV, 0.001f)) * NdotL; 
     }
 
-    float3 F = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+    float3 F = FresnelSchlickRoughness(NdotV, F0, roughness);
 
     float3 ks = F;
     float3 kd = 1.0 - ks;
-    kd *= 1.0 - metallic;	  
+    kd *= 1.0 - metallic;
     
     float3 irradiance = IrradianceMap.Sample(samplerIrradiace, CartesianToSpherical(N)).rgb;
     float3 diffuse    = irradiance * albedo;
     
+    float3 R        = reflect(-V, N);
     const float MAX_REFLECTION_LOD = 10.0;
     float3 prefilteredColor = prefilterMap.SampleLevel(samplerPrefilter, CartesianToSpherical(R), roughness * MAX_REFLECTION_LOD).rgb;
-    float2 envBRDF  = BRDFLutMap.Sample(samplerBRDFLut, float2(max(NdotV, 0.0), roughness)).rg;
+    float2 envBRDF  = BRDFLutMap.Sample(samplerBRDFLut, float2(NdotV, roughness)).rg;
     float3 specular = prefilteredColor * (F * envBRDF.x + envBRDF.y);
-    
     float3 ambient = (kd * diffuse + specular) * AO; 
 
     Lo = Lo + ambient;
-
     // tonemapping
     Lo = Lo / (Lo + 1.0f);
     // gamma correct

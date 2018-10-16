@@ -7,7 +7,7 @@ DXGI_FORMAT ConvertToDxFormat(TextureFormat format)
 	switch (format)
 	{
 	case TextureFormat::STF_R8G8B8A8:
-		return DXGI_FORMAT_B8G8R8A8_UNORM;
+		return DXGI_FORMAT_R8G8B8A8_UNORM;
 	case TextureFormat::STF_RGBAFloat:
 		return DXGI_FORMAT_R32G32B32A32_FLOAT;
 	case TextureFormat::STF_RGBAHalf:

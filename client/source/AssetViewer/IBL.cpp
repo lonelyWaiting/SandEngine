@@ -29,9 +29,6 @@ static SShader		 sPBRShader;
 struct cbIBL
 {
 	SMatrix4f worldMatrix;
-	float roughness;
-	float metallic;
-	SVector2f padding;
 };
 
 struct PointLight
@@ -44,7 +41,10 @@ struct PointLight
 
 struct cbLight
 {
-	PointLight light[3];
+	PointLight light[4];
+	float roughness;
+	float metallic;
+	SVector2f padding;
 };
 
 static SBuffer* sCBIbl          = nullptr;
@@ -126,19 +126,15 @@ public:
 			sIBLShader.Load("../data/shaders/debugTexture.hlsl", nullptr, "ps_main");
 			sPBRShader.Load("../data/shaders/pbrIBL.hlsl", "vs_main", "ps_main");
 
-			SStaticMesh* staticMesh = SStaticMeshMangaer::LoadStaticMesh("..\\asset\\models\\test.fbx");
-			/*for (int i = 0; i < 10; i++)
-			{
-				entities[i].staticMesh = staticMesh;
-				entities[i].position = SVector3f(-200.0f + 40.0f * i, 0, 100.0f);
-			}*/
+			//SStaticMesh* staticMesh = SStaticMeshMangaer::LoadStaticMesh("..\\asset\\models\\test.fbx");
+			SStaticMesh* staticMesh = SStaticMeshMangaer::CreateSphere(1, 128, 64);
 
 			for (int i = 0; i < 7; i++)
 			{
 				for (int j = 0; j < 7; j++)
 				{
-					entities[j * 7 + i].staticMesh = staticMesh;
-					entities[j * 7 + i].position = SVector3f(-100.0f + 30.0f * i, -100.0f + 30.0f * j, 100.0f);
+					entities[i * 7 + j].staticMesh = staticMesh;
+					entities[i * 7 + j].position = SVector3f((i - 7.0f / 2.0f) * 2.5f, (j - 7.0f / 2.0f) * 2.5f, 0);
 				}
 			}
 
@@ -161,24 +157,27 @@ public:
 					ibl.worldMatrix.MakeIdentity();
 					ibl.worldMatrix.SetTranslate(entities[j * 7 + i].position);
 					ibl.worldMatrix.MakeTranspose();
-
-					ibl.roughness = SMath::clamp((7 - i) / 7.0f, 0.05f, 1.0f);
-					ibl.metallic = (7 - i) / 7.0f;
-
 					SRenderHelper::g_ImmediateContext->Unmap(sCBIbl->GetBuffer(), 0);
 
 					D3D11_MAPPED_SUBRESOURCE lightData;
 					SRenderHelper::g_ImmediateContext->Map(sDirectionLight->GetBuffer(), 0, D3D11_MAP_WRITE_DISCARD, 0, &lightData);
 					cbLight& l = *(cbLight*)lightData.pData;
 
-					l.light[0].lightPos = SVector3f(0.0f, 100.0f, 100.0f);
-					l.light[0].lightColor = SVector3f(1.0f, 1.0f, 1.0f);
+					l.light[0].lightPos   = SVector3f(-10.0f, 10.0f, -10.0f);
+					l.light[0].lightColor = SVector3f(300.0f, 300.0f, 300.0f);
 
-					l.light[1].lightPos = SVector3f(0.0f, -100.0f, -100.0f);
-					l.light[1].lightColor = SVector3f(1.0f, 0.8f, 1.0f);
+					l.light[1].lightPos   = SVector3f(10.0f, 10.0f, -10.0f);
+					l.light[1].lightColor = SVector3f(300.0f, 300.0f, 300.0f);
 
-					l.light[2].lightPos = SVector3f(100.0f, 0.0f, 300);
-					l.light[2].lightColor = SVector3f(1.0f, 1.0f, 0.5f);
+					l.light[2].lightPos   = SVector3f(-10.0f, -10.0f, -10.0f);
+					l.light[2].lightColor = SVector3f(300.0f, 300.0f, 300.0f);
+
+					l.light[3].lightPos   = SVector3f(10.0f, -10.0f, -10.0f);
+					l.light[3].lightColor = SVector3f(300.0f, 300.0f, 300.0f);
+
+					l.roughness = SMath::clamp((7 - j) / 7.0f, 0.05f, 1.0f);
+					l.metallic = (7 - i) / 7.0f;
+
 					SRenderHelper::g_ImmediateContext->Unmap(sDirectionLight->GetBuffer(), 0);
 
 					ID3D11Buffer* vsCB = sCBIbl->GetBuffer();

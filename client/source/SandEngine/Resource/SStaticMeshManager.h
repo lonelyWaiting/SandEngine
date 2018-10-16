@@ -104,4 +104,5 @@ private:
 namespace SStaticMeshMangaer
 {
 	SAND_API SStaticMesh* LoadStaticMesh(const char* filename);
+	SAND_API SStaticMesh* CreateSphere(int radius, int sliceCount, int stackCount);
 };

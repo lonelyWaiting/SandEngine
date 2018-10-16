@@ -118,6 +118,9 @@
     <ClInclude Include="Sky\Skybox.h">
       <Filter>Sky</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\thirdparty\loadpng\lodepng.h">
+      <Filter>Resource\Texture</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\SApplication.cpp">
@@ -192,6 +195,9 @@
     </ClCompile>
     <ClCompile Include="Sky\Skybox.cpp">
       <Filter>Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\thirdparty\loadpng\lodepng.cpp">
+      <Filter>Resource\Texture</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -41,7 +41,7 @@ public:
 	static SMatrix4f ScaleMatrix( const SVector3f& scale );
 	static SMatrix4f ScaleMatrixXYZ( float fX , float fY , float fZ );
 	static SMatrix4f TranslationMatrix( float fX , float fY , float fZ );
-	static SMatrix4f LookAtLHMatrix( SVector3f& eye , SVector3f& at , SVector3f& up );
+	static SMatrix4f LookAtLHMatrix( const SVector3f& eye , const SVector3f& at );
 	static SMatrix4f PerspectiveFovLHMatrix( float fovy , float aspect , float zn , float zf );
 	static SMatrix4f OrthographicLHMatrix( float zn , float zf , float width , float height );
 
