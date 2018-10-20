@@ -38,4 +38,7 @@ public:
 	SCallback OnUpdateScene;
 	SCallback OnResize;
 	SCallback OnDropFile;
+	SCallback OnMouseDown;
+	SCallback OnMouseUp;
+	SCallback OnMouseMove;
 };

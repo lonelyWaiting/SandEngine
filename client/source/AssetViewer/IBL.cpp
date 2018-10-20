@@ -126,8 +126,8 @@ public:
 			sIBLShader.Load("../data/shaders/debugTexture.hlsl", nullptr, "ps_main");
 			sPBRShader.Load("../data/shaders/pbrIBL.hlsl", "vs_main", "ps_main");
 
-			//SStaticMesh* staticMesh = SStaticMeshMangaer::LoadStaticMesh("..\\asset\\models\\test.fbx");
-			SStaticMesh* staticMesh = SStaticMeshMangaer::CreateSphere(1, 128, 64);
+			SStaticMesh* staticMesh = SStaticMeshMangaer::LoadStaticMesh("..\\asset\\models\\test.fbx");
+			//SStaticMesh* staticMesh = SStaticMeshMangaer::CreateSphere(1, 128, 64);
 
 			for (int i = 0; i < 7; i++)
 			{

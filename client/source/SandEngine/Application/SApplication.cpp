@@ -58,6 +58,52 @@ LRESULT WindowProc( HWND hwnd , UINT msg , WPARAM wParam , LPARAM lParam )
 
 			return 0;
 		}
+
+		case WM_RBUTTONDOWN:
+		{
+			struct ButtonDownInfo
+			{
+				HWND	  _hwnd;
+				SVector2f _Pos;
+			};
+
+			ButtonDownInfo info;
+			info._hwnd = hwnd;
+			info._Pos = SVector2f((float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
+
+			SCallbackUserData data;
+			data.pUserData = &info;
+
+			SandEngine::Callback.OnMouseDown.Trigger(&data);
+
+			return 0;
+		}
+
+		case WM_RBUTTONUP:
+		{
+			SandEngine::Callback.OnMouseUp.Trigger();
+
+			return 0;
+		}
+
+		case WM_MOUSEMOVE:
+		{
+			struct mouseMoveInfo
+			{
+				SVector2f pos;
+				WPARAM param;
+			}info;
+
+			info.pos   = SVector2f((float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));;
+			info.param = wParam;
+
+			SCallbackUserData data;
+			data.pUserData = &info;
+
+			SandEngine::Callback.OnMouseMove.Trigger(&data);
+
+			return 0;
+		}
 	}
 
 

@@ -328,13 +328,12 @@ SStaticMesh* SStaticMeshMangaer::CreateSphere(int radius, int sliceCount, int st
 
 	SArray<CustomMaterial> materials;
 	CustomMaterial mat;
-	mat.m_DiffuseMap   = STextureManager::Load2DTextureFromFile("../asset/textures/albedo.dds");
-	//mat.m_NormalMap    = STextureManager::Load2DTextureFromFile("../asset/textures/normal.dds");
-	mat.m_NormalMap = STextureManager::Load2DTexturePNG("../asset/textures/normal.png");
-	mat.m_MetallicMap  = STextureManager::Load2DTextureFromFile("../asset/textures/metallic.dds");
-	mat.m_roughnessMap = STextureManager::Load2DTextureFromFile("../asset/textures/roughness.dds");
-	mat.m_AOMap        = STextureManager::Load2DTextureFromFile("../asset/textures/ao.dds");
-	mat.m_Name         = "diffuse";
+	mat.m_DiffuseMap   = STextureManager::GetWhiteTexture();
+	mat.m_MetallicMap  = STextureManager::GetBlackTexture();
+	mat.m_NormalMap    = STextureManager::GetFlatNormal();
+	mat.m_roughnessMap = STextureManager::GetBlackTexture();
+	mat.m_AOMap        = STextureManager::GetWhiteTexture();
+	mat.m_Name         = "defaultMaterial";
 	materials.PushBack(mat);
 
 	SVertexDescription desc;

@@ -59,3 +59,54 @@ STexture2D * STextureManager::Load2DTextureFromFile( const char * filename )
 
 	return tex2D;
 }
+
+STexture2D* STextureManager::GetBlackTexture()
+{
+	static STexture2D tex(4, 4, TextureFormat::STF_R8G8B8A8, false);
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			tex.SetPixel(j, i, SVector4f(0.0f, 0.0f, 0.0f, 0.0f), 0);
+		}
+	}
+	tex.Apply();
+
+	return &tex;
+}
+
+STexture2D* STextureManager::GetWhiteTexture()
+{
+	static STexture2D tex(4, 4, TextureFormat::STF_R8G8B8A8, false);
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			tex.SetPixel(j, i, SVector4f(1.0f, 1.0f, 1.0f, 1.0f), 0);
+		}
+	}
+	tex.Apply();
+
+	return &tex;
+}
+
+STexture2D* STextureManager::GetFlatNormal()
+{
+	static STexture2D tex(4, 4, TextureFormat::STF_R8G8B8A8, false);
+
+	SVector4f flatNormal(0.5f, 0.5f, 0.5f, 1.0f);
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			tex.SetPixel(j, i, flatNormal, 0);
+		}
+	}
+
+	tex.Apply();
+
+	return &tex;
+}

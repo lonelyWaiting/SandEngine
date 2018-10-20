@@ -4,6 +4,7 @@
 #include "GUI/SGui.h"
 #include "SRenderer.h"
 #include "SandEngine/Pipeline/SRenderHelper.h"
+#include "SandBase/Math/SVector2f.h"
 #include "SandEngine/Sky/skybox.h"
 
 SCallbackManager	SandEngine::Callback;
@@ -44,6 +45,41 @@ public:
 			SRenderer::Get().Resize(*(const SVector2f*)(userData.pUserData));
 			ImGuiEndResize();
 		}
+		else if (userData.pSender == &SandEngine::Callback.OnMouseDown)
+		{
+			struct ButtonDownInfo
+			{
+				HWND	  _hwnd;
+				SVector2f _pos;
+			};
+
+			ButtonDownInfo& info = *(ButtonDownInfo*)userData.pUserData;
+
+			SRenderer::Get().GetMainCamera().SetLastMousePressPos(info._pos);
+
+			SetCapture(info._hwnd);
+		}
+		else if (userData.pSender == &SandEngine::Callback.OnMouseUp)
+		{
+			ReleaseCapture();
+		}
+		else if (userData.pSender == &SandEngine::Callback.OnMouseMove)
+		{
+			struct mouseMoveInfo
+			{
+				SVector2f pos;
+				WPARAM param;
+			};
+
+			mouseMoveInfo& info = *(mouseMoveInfo*)userData.pUserData;
+			if ((info.param & MK_RBUTTON) != 0)
+			{
+				SVector2f lastPos = SRenderer::Get().GetMainCamera().GetLastMousePressPos();
+				SRenderer::Get().GetMainCamera().Rotate(info.pos.x - lastPos.x, info.pos.y - lastPos.y);
+			}
+
+			SRenderer::Get().GetMainCamera().SetLastMousePressPos(info.pos);
+		}
 	}
 }gSandEngineHandler;
 
@@ -56,6 +92,9 @@ void SandEngineInit()
 	SandEngine::Callback.OnEngineDeInit          += gSandEngineHandler;
 	SandEngine::Callback.OnUpdateScene           += gSandEngineHandler;
 	SandEngine::Callback.OnResize                += gSandEngineHandler;
+	SandEngine::Callback.OnMouseDown             += gSandEngineHandler;
+	SandEngine::Callback.OnMouseUp               += gSandEngineHandler;
+	SandEngine::Callback.OnMouseMove             += gSandEngineHandler;
 }
 
 void SandEngineDeInit()
@@ -66,4 +105,7 @@ void SandEngineDeInit()
 	SandEngine::Callback.OnEngineDeInit          -= gSandEngineHandler;
 	SandEngine::Callback.OnUpdateScene           -= gSandEngineHandler;
 	SandEngine::Callback.OnResize                -= gSandEngineHandler;
+	SandEngine::Callback.OnMouseDown             -= gSandEngineHandler;
+	SandEngine::Callback.OnMouseUp               -= gSandEngineHandler;
+	SandEngine::Callback.OnMouseMove             -= gSandEngineHandler;
 }
