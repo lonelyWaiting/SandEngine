@@ -31,11 +31,11 @@ void Camera::InitCamera(float _near, float _far, float fovy, float aspect, SVect
 	m_tanHalfFovy = SMath::TanDeg(fovy / 2.0f);
 	m_tanHalfFovX = m_tanHalfFovy * m_aspect;
 	m_position    = cam_pos;
-	m_target      = target;
 
 	m_theta = 90.0f;
 	m_phi   = 90.0f;
 
+	m_Front = SVector3f::Normalize(target - m_position);
 	UpdateView();
 
 	m_Project = SMatrix4f(	1.0f / (m_aspect * m_tanHalfFovy), 0.0f, 0.0f, 0.0f,
@@ -92,9 +92,9 @@ void Camera::Rotate(float x, float y)
 	
 	m_phi   = m_phi > 360.f ? m_phi - 360.f : (m_phi < 0.0f ? m_phi + 360.0f : m_phi);
 	m_phi   = SMath::clamp(m_phi, 0.f, 360.f);
-	m_theta = SMath::clamp(m_theta, 0.f, 180.f );
+	m_theta = SMath::clamp(m_theta, 1.f, 179.f );
 
-	m_target = m_position + SVector3f(SMath::SinDeg(m_theta) * SMath::CosDeg(m_phi), SMath::CosDeg(m_theta), SMath::SinDeg(m_theta) * SMath::SinDeg(m_phi));
+	m_Front = SVector3f::Normalize(SVector3f(SMath::SinDeg(m_theta) * SMath::CosDeg(m_phi), SMath::CosDeg(m_theta), SMath::SinDeg(m_theta) * SMath::SinDeg(m_phi)));
 
 	UpdateView();
 }
@@ -123,8 +123,7 @@ SVector2f Camera::GetLastMousePressPos()
 
 void Camera::UpdateView()
 {
-	m_Front = SVector3f::Normalize(m_target - m_position);
-	m_Up    = m_Front.y < 0.999f ? SVector3f(0.0f, 1.0f, 0.0f) : SVector3f(0.0f, 0.0f, -1.0f);
+	m_Up    = SVector3f(0.0f, 1.0f, 0.0f);
 	m_Right = SVector3f::Normalize(SVector3f::cross(m_Up, m_Front));
 	m_Up    = SVector3f::Normalize(SVector3f::cross(m_Front, m_Right));
 

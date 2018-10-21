@@ -35,7 +35,6 @@ protected:
 
 private:
 	SVector3f m_position;
-	SVector3f m_target;
 	float     m_near;
 	float     m_far;
 	float     m_tanHalfFovy;
