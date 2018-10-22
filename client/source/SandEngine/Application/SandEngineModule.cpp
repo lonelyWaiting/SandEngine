@@ -58,7 +58,7 @@ public:
 		else if (userData.pSender == &SandEngine::Callback.OnMouseMove)
 		{
 			MouseEventInfo& info = *(MouseEventInfo*)userData.pUserData;
-			if (info.mouseType == eMB_Left)
+			if (info.mouseType == eMB_Right)
 			{
 				SRenderer::Get().GetMainCamera().Rotate(info.offset.x, info.offset.y);
 			}

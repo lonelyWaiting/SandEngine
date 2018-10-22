@@ -22,9 +22,6 @@
     <Filter Include="Resource\Material">
       <UniqueIdentifier>{16f29858-2f64-49bc-84db-8ea4f713cb68}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource\Impoter">
-      <UniqueIdentifier>{753f6ecf-105e-4390-ad1a-10c6f28b335f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resource\Texture">
       <UniqueIdentifier>{b061744e-33ed-41b2-86a2-becfc94cd5f7}</UniqueIdentifier>
     </Filter>
