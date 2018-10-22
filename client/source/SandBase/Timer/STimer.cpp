@@ -1,6 +1,7 @@
 #include <SandBase/SandBasePCH.h>
 #include <windows.h>
 #include "STimer.h"
+#include "SandBase/Math/SMath.h"
 
 STimer::STimer() :
 	m_SecondsPerCount( 0.0f ) ,
@@ -34,22 +35,12 @@ void STimer::Reset()
 
 void STimer::Update()
 {
-	__int64 currTime;
-	QueryPerformanceCounter( ( LARGE_INTEGER* )&currTime );
-	m_CurrTime = currTime;
-
-	// 计算两帧的时间差
-	m_DeltaTime = ( m_CurrTime - m_PrevTime )*m_SecondsPerCount;
-
-	m_PrevTime = m_CurrTime;
-
+	QueryPerformanceCounter( ( LARGE_INTEGER* )&m_CurrTime);
 	// Force nonnegative.  The DXSDK's CDXUTTimer mentions that if the 
 	// processor goes into a power save mode or we get shuffled to another
 	// processor, then mDeltaTime can be negative.
-	if( m_DeltaTime < 0.0 )
-	{
-		m_DeltaTime = 0.0;
-	}
+	m_DeltaTime = SMath::Max((m_CurrTime - m_PrevTime)*m_SecondsPerCount, 0.0);
+	m_PrevTime = m_CurrTime;
 }
 
 float STimer::TotalTime() const

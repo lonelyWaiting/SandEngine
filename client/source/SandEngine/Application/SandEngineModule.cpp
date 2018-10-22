@@ -68,19 +68,19 @@ public:
 			sKeyEventInfo & info = *(sKeyEventInfo*)userData.pUserData;
 			if (info.keyCode == eKeyCode::W)
 			{
-				SRenderer::Get().GetMainCamera().MoveFront(1.0f);
+				SRenderer::Get().GetMainCamera().MoveFront(SRenderer::Get().GetTimer().DeltaTime());
 			}
 			else if (info.keyCode == eKeyCode::S)
 			{
-				SRenderer::Get().GetMainCamera().MoveFront(-1.0f);
+				SRenderer::Get().GetMainCamera().MoveFront(-1.0f * SRenderer::Get().GetTimer().DeltaTime());
 			}
 			else if (info.keyCode == eKeyCode::A)
 			{
-				SRenderer::Get().GetMainCamera().MoveRight(-1.0f);
+				SRenderer::Get().GetMainCamera().MoveRight(-1.0f * SRenderer::Get().GetTimer().DeltaTime());
 			}
 			else if (info.keyCode == eKeyCode::D)
 			{
-				SRenderer::Get().GetMainCamera().MoveRight(1.0f);
+				SRenderer::Get().GetMainCamera().MoveRight(SRenderer::Get().GetTimer().DeltaTime());
 			}
 
 		}

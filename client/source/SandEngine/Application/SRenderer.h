@@ -5,6 +5,7 @@ class SVector4f;
 
 #include "SandEngine/Resource/Texture/STextureObject.h"
 #include "SandEngine/Camera/Camera.h"
+#include "SandBase/Timer/STimer.h"
 
 class SRenderer
 {
@@ -17,7 +18,8 @@ public:
 	void ClearColor( const SVector4f& color );
 	void Present( suInt32 syncInterval = 0 , suInt32 presentFlag = 0 );
 
-	Camera& GetMainCamera();
+	Camera& GetMainCamera() { return m_MainCamera; }
+	STimer& GetTimer()		{ return m_Timer; }
 
 	ID3D11RasterizerState* GetRasterizerState() { return rasterizerState; }
 	ID3D11DepthStencilState* GetDepthStencilState() { return depthStencilState; }
@@ -31,4 +33,6 @@ private:
 
 	ID3D11RasterizerState* rasterizerState = nullptr;
 	ID3D11DepthStencilState* depthStencilState = nullptr;
+
+	STimer m_Timer;
 };
