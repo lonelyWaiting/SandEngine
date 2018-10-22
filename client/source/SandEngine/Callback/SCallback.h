@@ -41,4 +41,6 @@ public:
 	SCallback OnMouseDown;
 	SCallback OnMouseUp;
 	SCallback OnMouseMove;
+	SCallback OnKeyPressed;
+	SCallback OnKeyRelease;
 };

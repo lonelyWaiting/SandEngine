@@ -24,6 +24,7 @@
     <ClInclude Include="..\..\thirdparty\loadpng\lodepng.h" />
     <ClInclude Include="Application\SandEngineModule.h" />
     <ClInclude Include="Application\SApplication.h" />
+    <ClInclude Include="Application\sEventInfo.h" />
     <ClInclude Include="Application\SRenderer.h" />
     <ClInclude Include="Application\SWindow.h" />
     <ClInclude Include="Callback\SCallback.h" />

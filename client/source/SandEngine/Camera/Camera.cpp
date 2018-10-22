@@ -16,6 +16,8 @@ Camera::Camera()
 
 	m_View    = SMatrix4f::Identity();
 	m_Project = SMatrix4f::Identity();
+
+	m_speed = 1.0f;
 }
 
 SVector3f Camera::GetPostion() const
@@ -101,24 +103,19 @@ void Camera::Rotate(float x, float y)
 
 void Camera::MoveFront(float delta)
 {
-	m_position += m_Front * delta;
+	m_position += m_Front * delta * m_speed;
 	UpdateView();
 }
 
 void Camera::MoveRight(float delta)
 {
-	m_position += m_Right * delta;
+	m_position += m_Right * delta * m_speed;
 	UpdateView();
 }
 
-void Camera::SetLastMousePressPos(const SVector2f& pos)
+void Camera::SetMoveSpeed(float speed)
 {
-	m_LastMousePressPos = pos;
-}
-
-SVector2f Camera::GetLastMousePressPos()
-{
-	return m_LastMousePressPos;
+	m_speed = speed;
 }
 
 void Camera::UpdateView()

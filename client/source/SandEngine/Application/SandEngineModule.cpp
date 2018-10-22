@@ -6,6 +6,7 @@
 #include "SandEngine/Pipeline/SRenderHelper.h"
 #include "SandBase/Math/SVector2f.h"
 #include "SandEngine/Sky/skybox.h"
+#include "sEventInfo.h"
 
 SCallbackManager	SandEngine::Callback;
 
@@ -47,17 +48,8 @@ public:
 		}
 		else if (userData.pSender == &SandEngine::Callback.OnMouseDown)
 		{
-			struct ButtonDownInfo
-			{
-				HWND	  _hwnd;
-				SVector2f _pos;
-			};
-
-			ButtonDownInfo& info = *(ButtonDownInfo*)userData.pUserData;
-
-			SRenderer::Get().GetMainCamera().SetLastMousePressPos(info._pos);
-
-			SetCapture(info._hwnd);
+			MouseEventInfo& info = *(MouseEventInfo*)userData.pUserData;
+			SetCapture(info.hwnd);
 		}
 		else if (userData.pSender == &SandEngine::Callback.OnMouseUp)
 		{
@@ -65,20 +57,36 @@ public:
 		}
 		else if (userData.pSender == &SandEngine::Callback.OnMouseMove)
 		{
-			struct mouseMoveInfo
+			MouseEventInfo& info = *(MouseEventInfo*)userData.pUserData;
+			if (info.mouseType == eMB_Left)
 			{
-				SVector2f pos;
-				WPARAM param;
-			};
-
-			mouseMoveInfo& info = *(mouseMoveInfo*)userData.pUserData;
-			if ((info.param & MK_RBUTTON) != 0)
+				SRenderer::Get().GetMainCamera().Rotate(info.offset.x, info.offset.y);
+			}
+		}
+		else if (userData.pSender == &SandEngine::Callback.OnKeyPressed)
+		{
+			sKeyEventInfo & info = *(sKeyEventInfo*)userData.pUserData;
+			if (info.keyCode == eKeyCode::W)
 			{
-				SVector2f lastPos = SRenderer::Get().GetMainCamera().GetLastMousePressPos();
-				SRenderer::Get().GetMainCamera().Rotate(info.pos.x - lastPos.x, info.pos.y - lastPos.y);
+				SRenderer::Get().GetMainCamera().MoveFront(1.0f);
+			}
+			else if (info.keyCode == eKeyCode::S)
+			{
+				SRenderer::Get().GetMainCamera().MoveFront(-1.0f);
+			}
+			else if (info.keyCode == eKeyCode::A)
+			{
+				SRenderer::Get().GetMainCamera().MoveRight(-1.0f);
+			}
+			else if (info.keyCode == eKeyCode::D)
+			{
+				SRenderer::Get().GetMainCamera().MoveRight(1.0f);
 			}
 
-			SRenderer::Get().GetMainCamera().SetLastMousePressPos(info.pos);
+		}
+		else if (userData.pSender == &SandEngine::Callback.OnKeyRelease)
+		{
+
 		}
 	}
 }gSandEngineHandler;
@@ -95,6 +103,8 @@ void SandEngineInit()
 	SandEngine::Callback.OnMouseDown             += gSandEngineHandler;
 	SandEngine::Callback.OnMouseUp               += gSandEngineHandler;
 	SandEngine::Callback.OnMouseMove             += gSandEngineHandler;
+	SandEngine::Callback.OnKeyPressed            += gSandEngineHandler;
+	SandEngine::Callback.OnKeyRelease            += gSandEngineHandler;
 }
 
 void SandEngineDeInit()
@@ -108,4 +118,6 @@ void SandEngineDeInit()
 	SandEngine::Callback.OnMouseDown             -= gSandEngineHandler;
 	SandEngine::Callback.OnMouseUp               -= gSandEngineHandler;
 	SandEngine::Callback.OnMouseMove             -= gSandEngineHandler;
+	SandEngine::Callback.OnKeyPressed            -= gSandEngineHandler;
+	SandEngine::Callback.OnKeyRelease            -= gSandEngineHandler;
 }

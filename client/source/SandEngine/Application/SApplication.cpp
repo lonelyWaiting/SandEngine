@@ -7,6 +7,7 @@
 #include "imgui/imgui.h"
 #include "Callback/SCallback.h"
 #include "SandEngineModule.h"
+#include "sEventInfo.h"
 
 extern LRESULT ImGui_ImplWin32_WndProcHandler( HWND hWnd , UINT msg , WPARAM wParam , LPARAM lParam );
 
@@ -61,15 +62,14 @@ LRESULT WindowProc( HWND hwnd , UINT msg , WPARAM wParam , LPARAM lParam )
 
 		case WM_RBUTTONDOWN:
 		{
-			struct ButtonDownInfo
-			{
-				HWND	  _hwnd;
-				SVector2f _Pos;
-			};
+			MouseEventInfo info;
+			info.hwnd   = hwnd;
+			info.pos    = SVector2f((float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
+			info.offset = SVector2f(0.0f, 0.0f);
 
-			ButtonDownInfo info;
-			info._hwnd = hwnd;
-			info._Pos = SVector2f((float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
+			if (wParam & MK_RBUTTON)	info.mouseType = eMB_Right;
+			if (wParam & MK_LBUTTON)	info.mouseType = eMB_Left;
+			if (wParam & MK_MBUTTON)    info.mouseType = eMB_Middle;
 
 			SCallbackUserData data;
 			data.pUserData = &info;
@@ -88,19 +88,78 @@ LRESULT WindowProc( HWND hwnd , UINT msg , WPARAM wParam , LPARAM lParam )
 
 		case WM_MOUSEMOVE:
 		{
-			struct mouseMoveInfo
-			{
-				SVector2f pos;
-				WPARAM param;
-			}info;
+			static SVector2f lastPos = SVector2f(-1.0f, -1.0f);
+			static bool init = false;
 
-			info.pos   = SVector2f((float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));;
-			info.param = wParam;
+			SVector2f curPos = SVector2f((float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam));
+			if (!init) { lastPos = curPos; init = true; }
+
+			MouseEventInfo info;
+			info.offset    = curPos - lastPos;
+			info.pos       = curPos;
+			info.mouseType = eMB_None;
+
+			if (wParam & MK_RBUTTON)	info.mouseType = eMB_Right;
+			if (wParam & MK_LBUTTON)	info.mouseType = eMB_Left;
+			if (wParam & MK_MBUTTON)    info.mouseType = eMB_Middle;
 
 			SCallbackUserData data;
 			data.pUserData = &info;
 
 			SandEngine::Callback.OnMouseMove.Trigger(&data);
+
+			lastPos = curPos;
+			return 0;
+		}
+
+		case WM_KEYDOWN:
+		{
+			sKeyEventInfo info;
+			info.shift   = GetAsyncKeyState(VK_SHIFT)   > 0;
+			info.control = GetAsyncKeyState(VK_CONTROL) > 0;
+			info.alt     = GetAsyncKeyState(VK_MENU)    > 0;
+			info.keyCode = (eKeyCode)wParam;
+			info.key     = 0;
+
+			// For printable characters, the next message will be WM_CHAR.
+			// This message contains the character code we need to send the KeyPressed event.
+			MSG charMsg;
+			if (PeekMessage(&charMsg, hwnd, 0, 0, PM_NOREMOVE) && charMsg.message == WM_CHAR)
+			{
+				GetMessage(&charMsg, hwnd, 0, 0);
+				info.key = (unsigned int)charMsg.wParam;
+			}
+
+			SCallbackUserData data;
+			data.pUserData = &info;
+
+			SandEngine::Callback.OnKeyPressed.Trigger(&data);
+
+			return 0;
+		}
+
+		case WM_KEYUP:
+		{
+			sKeyEventInfo info;
+			info.shift   = GetAsyncKeyState(VK_SHIFT)   > 0;
+			info.control = GetAsyncKeyState(VK_CONTROL) > 0;
+			info.alt     = GetAsyncKeyState(VK_MENU)    > 0;
+			info.keyCode = (eKeyCode)wParam;
+			info.key     = 0;
+
+			// For printable characters, the next message will be WM_CHAR.
+			// This message contains the character code we need to send the KeyPressed event.
+			MSG charMsg;
+			if (PeekMessage(&charMsg, hwnd, 0, 0, PM_NOREMOVE) && charMsg.message == WM_CHAR)
+			{
+				GetMessage(&charMsg, hwnd, 0, 0);
+				info.key = (unsigned int)charMsg.wParam;
+			}
+
+			SCallbackUserData data;
+			data.pUserData = &info;
+
+			SandEngine::Callback.OnKeyRelease.Trigger(&data);
 
 			return 0;
 		}

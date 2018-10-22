@@ -121,6 +121,9 @@
     <ClInclude Include="..\..\thirdparty\loadpng\lodepng.h">
       <Filter>Resource\Texture</Filter>
     </ClInclude>
+    <ClInclude Include="Application\sEventInfo.h">
+      <Filter>Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\SApplication.cpp">

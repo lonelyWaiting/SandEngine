@@ -26,10 +26,9 @@ public:
 	SAND_API void Rotate(float x, float y);
 	SAND_API void MoveFront(float delta);
 	SAND_API void MoveRight(float delta);
-
-	SAND_API void SetLastMousePressPos(const SVector2f& pos);
-	SAND_API SVector2f GetLastMousePressPos();
 	
+	SAND_API void SetMoveSpeed(float speed);
+
 protected:
 	void UpdateView();
 
@@ -52,5 +51,5 @@ private:
 	SVector3f m_Up;
 	SVector3f m_Right;
 
-	SVector2f m_LastMousePressPos;
+	float m_speed;
 };
