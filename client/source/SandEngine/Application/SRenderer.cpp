@@ -119,6 +119,7 @@ void SRenderer::Resize( const SVector2f& size )
 	m_RenderTarget->SetD3DTexture(pBackBuffer);
 	m_RenderTarget->Ensureloaded();*/
 	m_RT = new SRenderTexture(pBackBuffer);
+	m_RT->Create();
 	pBackBuffer->Release();
 
 	// Perform error handling here!

@@ -7,7 +7,9 @@
 struct CustomEditorData
 {
 	char IBLEnvMapPath[1024];
-}gEditorUserData;
+};
+
+static CustomEditorData* gEditorUserData = nullptr;
 
 static void CustomEditor(void*);
 
@@ -18,11 +20,12 @@ public:
 	{
 		if( userData.pSender == &SandEngine::Callback.OnEngineInit )
 		{
-			GuiRegister(CustomEditor, &gEditorUserData);
+			if(gEditorUserData) gEditorUserData = new CustomEditorData();
+			GuiRegister(CustomEditor, gEditorUserData);
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEngineDeInit )
 		{
-			GuiUnRegister(CustomEditor, &gEditorUserData);
+			GuiUnRegister(CustomEditor, gEditorUserData);
 		}
 	}
 }g_GuiHandle;
