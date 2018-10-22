@@ -5,6 +5,7 @@
 #include "SandEngine/Pipeline/SRenderHelper.h"
 #include "SandEngine/Resource/Shaders/SShader.h"
 #include "SandEngine/Application/SRenderer.h"
+#include "SandBase/Log/SLog.h"
 
 struct skyCB
 {
@@ -28,6 +29,27 @@ Skybox::~Skybox()
 	SAFE_DELETE(m_skyCB);
 }
 
+static ID3D11DepthStencilState* pDepthStencilState = nullptr;
+
+void EnsureDepthStencilCreate()
+{
+	if (!pDepthStencilState)
+	{
+		D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
+		ZeroMemory(&depthStencilStateDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+		depthStencilStateDesc.DepthEnable    = true;
+		depthStencilStateDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+		depthStencilStateDesc.DepthFunc      = D3D11_COMPARISON_LESS_EQUAL;
+		depthStencilStateDesc.StencilEnable  = FALSE;
+
+		HRESULT hr = SRenderHelper::g_Device->CreateDepthStencilState(&depthStencilStateDesc, &pDepthStencilState);
+		if (FAILED(hr))
+		{
+			SLog::Error("Skybox Failed to create DepthStencil State\n");
+		}
+	}
+}
+
 void Skybox::LoadSkybox(const char * filename)
 {
 	SImageDecode decoder;
@@ -49,6 +71,8 @@ void Skybox::Render()
 {
 	if (m_skybox && m_skyCB)
 	{
+		EnsureDepthStencilCreate();
+
 		ID3D11Buffer* cb = m_skyCB->GetBuffer();
 		D3D11_MAPPED_SUBRESOURCE data;
 		SRenderHelper::g_ImmediateContext->Map(cb, 0, D3D11_MAP_WRITE_DISCARD, 0, &data);
@@ -59,6 +83,8 @@ void Skybox::Render()
 
 		SRenderHelper::g_ImmediateContext->PSSetConstantBuffers(1, 1, &cb);
 		SRenderHelper::BindTexture(eST_Pixel, 5, m_skybox);
+
+		SRenderHelper::g_ImmediateContext->OMSetDepthStencilState(pDepthStencilState, 0);
 
 		SRenderHelper::RenderFullScreen(SShader::FindShader("../data/shaders/skybox.hlsl"));
 	}

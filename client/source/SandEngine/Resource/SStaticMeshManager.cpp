@@ -175,6 +175,9 @@ void ProcessMaterial(const aiScene* scene, SArray<CustomMaterial>& materials, st
 
 SStaticMesh* SStaticMeshMangaer::LoadStaticMesh(const char* filename)
 {
+	if (!filename)	return nullptr;
+	if (SStaticMesh* staticMesh = (SStaticMesh*)g_StaticMeshManager.FindResourceByName(filename))	return staticMesh;
+
 	Assimp::Importer importer;
 
 	const aiScene* pScene = importer.ReadFile(filename, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded);
@@ -231,6 +234,10 @@ SStaticMesh* SStaticMeshMangaer::LoadStaticMesh(const char* filename)
 
 SStaticMesh* SStaticMeshMangaer::CreateSphere(int radius, int sliceCount, int stackCount)
 {
+	SString filename("default_sphere");
+	filename.AppendFormat("_%d_%d_%d", radius, sliceCount, stackCount);
+	if (SStaticMesh* staticMesh = (SStaticMesh*)g_StaticMeshManager.FindResourceByName(filename.AsChar()))	return staticMesh;
+
 	// 将球从上到下切成stackCount片,每个切面都是一个圆,然后将每个圆分为sliceCount份
 	float theta_step = SMath::PI / stackCount;
 	float phi_step   = SMath::TWO_PI / sliceCount;
@@ -343,7 +350,7 @@ SStaticMesh* SStaticMeshMangaer::CreateSphere(int radius, int sliceCount, int st
 	desc.m_iTexcoord[0] = (eVF_Float2 << 8) | (sizeof(SVector3f) * 3);
 	desc.stride         = sizeof(CustomVertex);
 
-	SStaticMesh* staticMesh = new SStaticMesh("", g_StaticMeshManager);
+	SStaticMesh* staticMesh = new SStaticMesh(filename.AsChar(), g_StaticMeshManager);
 	staticMesh->GetMeshBuffer().EnsureVertexBuffer(desc, eBU_Static, vertices.GetSize(), vertices.GetData(), eBF_Vertex);
 	staticMesh->GetMeshBuffer().EnsureIndexBuffer(eBU_Static, indices.GetSize(), indices.GetData(), eIF_Int, eBF_Index);
 

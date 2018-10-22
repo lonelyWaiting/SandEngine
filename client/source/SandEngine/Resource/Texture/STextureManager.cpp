@@ -8,6 +8,8 @@
 #include "loadpng/lodepng.h"
 #include "SandEngine/Resource/Image/SImage.h"
 
+static SResourceManager gTextureManager;
+
 STexture2D* STextureManager::Load2DTexturePNG(const char* filename)
 {
 	std::vector<unsigned char> pngData;

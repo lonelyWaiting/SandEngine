@@ -11,7 +11,7 @@ vs_output vs_main(uint id : SV_VERTEXID)
     // generate clip space position
     output.vertex.x = (float)(id / 2) * 4.0f - 1.0f;
     output.vertex.y = (float)(id % 2) * 4.0f - 1.0f;
-    output.vertex.z = 0.0f;
+    output.vertex.z = 1.0f;
     output.vertex.w = 1.0f;
 
     // texture coordinate
