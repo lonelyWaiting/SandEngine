@@ -1,26 +1,78 @@
 #include "SandEnginePCH.h"
 #include "Material.h"
+#include <iostream>
 
-SMatObj::SMatObj( const char* name )
+extern "C"
 {
-	m_MatName = name;
+#include "lua/lua.h"
+#include "lua/lauxlib.h"
+#include "lua/lualib.h"
 }
 
-void SMatObj::SetDoubleSurface( bool doubleFace )
+static lua_State* g_pMatLuaState = nullptr;
+
+int Print(lua_State* L)
 {
-	m_cullMode = doubleFace ? eCM_None : eCM_Back;
+	if (!lua_isstring(L, -1))
+	{
+		std::cout << "argument error, first argument isn't string" << std::endl;
+		return 0;
+	}
+
+	std::cout << lua_tostring(L, -1) << std::endl;
+
+	return 0;
 }
 
-void SMatObj::SetWireFrameState( bool enable )
+int LoadFile(lua_State* L, const char* filename)
 {
-	m_wireframe = enable ? eFM_Wireframe : eFM_Solid;
+	if (luaL_loadfile(L, filename) || lua_pcall(L, 0, 0, 0))
+	{
+		std::cout << "load file: " << filename << " failed" << std::endl;
+		return 0;
+	}
+
+	return 0;
 }
 
-void SMatObj::EnsureLoaded()
+int DoFile(lua_State* L)
 {
-	m_rasterizer.GetDesc().cullMode = m_cullMode;
-	m_rasterizer.GetDesc().fillMode = m_wireframe ? eFM_Wireframe : eFM_Solid;
-	m_rasterizer.ComputeHash();
-	m_blend.ComputeHash();
-	m_depthStencil.ComputeHash();
+	if (!lua_isstring(L, -1))
+	{
+		std::cout << "argument error, first argument isn't string" << std::endl;
+		return 0;
+	}
+
+	return LoadFile(L, lua_tostring(L, -1));
+}
+
+void sandMaterialLoad()
+{
+	// Enum Material Template File
+}
+
+void sandMaterialInit()
+{
+	sandMaterialDeInit();
+
+	g_pMatLuaState = luaL_newstate();
+
+	luaL_openlibs(g_pMatLuaState);
+
+	lua_register(g_pMatLuaState, "MATPrint", Print);
+	lua_register(g_pMatLuaState, "MATDoFile", DoFile);
+
+	LoadFile(g_pMatLuaState, "materials/runtime/material_startup.lua");
+
+	sandMaterialLoad();
+}
+
+void sandMaterialUpdate(float timeDiff)
+{
+
+}
+
+void sandMaterialDeInit()
+{
+	if (g_pMatLuaState) lua_close(g_pMatLuaState);
 }

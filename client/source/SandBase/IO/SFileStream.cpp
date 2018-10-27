@@ -4,6 +4,10 @@
 #include "SandBase/Math/SVector3f.h"
 #include "SandBase/Math/SVector4f.h"
 #include <filesystem>
+#include "SandBase/Vector/SArray.h"
+#include "SandBase/String/SString.h"
+
+static SArray<SString> searchPath;
 
 void SFileStream::BeginChunk( long pos )
 {
@@ -99,7 +103,18 @@ void SFileInStream::CloseChunk()
 bool SFileOutStream::OpenFile( const char* filename )
 {
 	ofs.open( filename , std::ios::out | std::ios::binary );
-	return ofs.is_open();
+	if (ofs.is_open())	return true;
+
+	for (int i = 0; i < searchPath.GetSize(); i++)
+	{
+		SString path = searchPath[i];
+		path.Append(filename);
+		ofs.open(path.AsChar(), std::ios::out | std::ios::binary);
+
+		if (ofs.is_open())	return true;
+	}
+
+	return false;
 }
 
 void SFileOutStream::WriteLong( const long value )
@@ -188,4 +203,9 @@ void SFileOutStream::SetCurPos( long pos )
 long SFileOutStream::GetCurPos()
 {
 	return (long)ofs.tellp();
+}
+
+void FileSystem::AddSearchPath(const char * path)
+{
+	if (!searchPath.Contains(path))	searchPath.PushBack(path);
 }

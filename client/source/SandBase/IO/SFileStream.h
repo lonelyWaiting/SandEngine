@@ -66,3 +66,8 @@ public:
 protected:
 	std::ofstream ofs;
 };
+
+namespace FileSystem
+{
+	void AddSearchPath(const char* path);
+}

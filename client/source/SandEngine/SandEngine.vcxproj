@@ -22,6 +22,32 @@
     <ClInclude Include="..\..\thirdparty\imgui\imgui.h" />
     <ClInclude Include="..\..\thirdparty\imgui\imgui_internal.h" />
     <ClInclude Include="..\..\thirdparty\loadpng\lodepng.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lapi.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lauxlib.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lcode.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lctype.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\ldebug.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\ldo.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lfunc.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lgc.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\llex.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\llimits.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lmem.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lobject.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lopcodes.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lparser.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lprefix.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lstate.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lstring.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\ltable.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\ltm.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lua.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lua.hpp" />
+    <ClInclude Include="..\..\thirdparty\Lua\luaconf.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lualib.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lundump.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lvm.h" />
+    <ClInclude Include="..\..\thirdparty\Lua\lzio.h" />
     <ClInclude Include="Application\SandEngineModule.h" />
     <ClInclude Include="Application\SApplication.h" />
     <ClInclude Include="Application\sEventInfo.h" />
@@ -52,6 +78,39 @@
     <ClCompile Include="..\..\thirdparty\imgui\imgui_demo.cpp" />
     <ClCompile Include="..\..\thirdparty\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\thirdparty\loadpng\lodepng.cpp" />
+    <ClCompile Include="..\..\thirdparty\Lua\lapi.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lauxlib.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lbaselib.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lbitlib.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lcode.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lcorolib.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lctype.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\ldblib.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\ldebug.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\ldo.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\ldump.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lfunc.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lgc.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\linit.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\liolib.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\llex.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lmathlib.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lmem.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\loadlib.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lobject.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lopcodes.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\loslib.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lparser.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lstate.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lstring.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lstrlib.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\ltable.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\ltablib.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\ltm.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lundump.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lutf8lib.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lvm.c" />
+    <ClCompile Include="..\..\thirdparty\Lua\lzio.c" />
     <ClCompile Include="Application\SandEngineModule.cpp" />
     <ClCompile Include="Application\SApplication.cpp" />
     <ClCompile Include="Application\SRenderer.cpp" />
@@ -82,6 +141,9 @@
     <ProjectReference Include="..\SandBase\SandBase.vcxproj">
       <Project>{43cc06e6-9863-40d8-9162-52df7378de6b}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\thirdparty\Lua\Makefile" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
