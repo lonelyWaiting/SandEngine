@@ -21,7 +21,18 @@ long SFileStream::EndChunk()
 
 bool SFileInStream::OpenFile( const char* szFilename )
 {
-	ifs.open( szFilename , std::ios::in | std::ios::binary );
+	ifs.open(szFilename, std::ios::in | std::ios::binary);
+	if (ifs.is_open())	return true;
+
+	for (int i = 0; i < (int)searchPath.GetSize(); i++)
+	{
+		SString path = searchPath[i];
+		path.AppendFormat("\\%s", szFilename);
+		ifs.open(path.AsChar(), std::ios::out | std::ios::binary);
+
+		if (ifs.is_open())	return true;
+	}
+
 	return ifs.is_open();
 }
 
@@ -105,10 +116,10 @@ bool SFileOutStream::OpenFile( const char* filename )
 	ofs.open( filename , std::ios::out | std::ios::binary );
 	if (ofs.is_open())	return true;
 
-	for (int i = 0; i < searchPath.GetSize(); i++)
+	for (int i = 0; i < (int)searchPath.GetSize(); i++)
 	{
 		SString path = searchPath[i];
-		path.Append(filename);
+		path.AppendFormat("\\%s", filename);
 		ofs.open(path.AsChar(), std::ios::out | std::ios::binary);
 
 		if (ofs.is_open())	return true;
@@ -208,4 +219,41 @@ long SFileOutStream::GetCurPos()
 void FileSystem::AddSearchPath(const char * path)
 {
 	if (!searchPath.Contains(path))	searchPath.PushBack(path);
+}
+
+#include <windows.h>
+
+// https://docs.microsoft.com/en-us/windows/desktop/fileio/listing-the-files-in-a-directory
+void FileSystem::EnumFile(const char* folder, const char* pattern, EnumCallback cb, void* userData)
+{
+	SString szSearchDir = folder;
+	SString matchStr    = szSearchDir;
+	matchStr.AppendFormat("\\%s", pattern);
+
+	WIN32_FIND_DATA ffd;
+	HANDLE hFind = FindFirstFile(matchStr.AsChar(), &ffd);
+
+	if (hFind == INVALID_HANDLE_VALUE)
+	{
+		for (unsigned int i = 0; i < searchPath.GetSize(); i++)
+		{
+			szSearchDir = searchPath[i];
+			szSearchDir.AppendFormat("\\%s", folder);
+			matchStr = szSearchDir;
+			matchStr.AppendFormat("\\%s", pattern);
+			hFind = FindFirstFile(matchStr.AsChar(), &ffd);
+
+			if (hFind != INVALID_HANDLE_VALUE)	break;
+		}
+
+		if (hFind == INVALID_HANDLE_VALUE)	return;
+	}
+
+	cb(szSearchDir.AsChar(), ffd.cFileName, userData);
+	while (FindNextFile(hFind, &ffd) != 0)
+	{
+		cb(szSearchDir.AsChar(), ffd.cFileName, userData);
+	}
+
+	FindClose(hFind);
 }

@@ -12,6 +12,9 @@ public:
 	SString& operator=( const char* src );
 	SString& operator=( const SString& str );
 
+	bool operator==(const SString& str) const;
+	bool operator==(const char* str) const;
+
 	void Append( const char* str );
 	void AppendFormat( const char* format , ... );
 	

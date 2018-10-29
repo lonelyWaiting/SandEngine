@@ -39,6 +39,49 @@ function CreateShader(createInfo)
     shaderInfo.depth_stencil_state.backFace.stencilDepthFailOp  = createInfo.backFace_stencilDepthFailOp or MATStencilOperator.Keep
     shaderInfo.depth_stencil_state.backFace.stencilPassOp       = createInfo.backFace_stencilPassOp or MATStencilOperator.Keep
     shaderInfo.depth_stencil_state.backFace.stencilFunc         = createInfo.backFace_stencilFunc or MATComparisonFunc.Always
+end
+
+function ExtractTexture2D(str)
+    local texture_map = {}
+
+    for k,v in string.gmatch(str, "Texture2D (%w+)<(.-)>") do
+        local desc = {}
+        print("k:" .. k .. "v:" .. v)
+        for _k,_v in string.gmatch(v, "(%w+)%s*=%s*(.-);") do
+            desc[_k] = _v
+        end
+        texture_map[k] = desc
+    end
+
+    str = string.gsub(str,"(<.->)",";")
+
+    return texture_map, str
+end
+
+function ParseShaderBody(str)
+    local texture_map, str = ExtractTexture2D(str)
+end
+
+function ParsePipelineState(str)
+    local pass_list = {}
+    i = 1
+    str:gsub('Pass\r\n%b{}', 
+    function(w) 
+        pass_list[i] = w 
+        i = i + 1
+    end )
     
-    
+    print("pass_list element count:" .. #pass_list)
+    for i,v in ipairs(pass_list) do
+        print("Pass " .. i .. ':\r\n' .. pass_list[i])
+    end
+end
+
+function GenerateShader(str)
+    print("Begin Parse")
+    for k,v in string.gmatch(str, "(.-)(Pass\r\n{.*})") do
+        ParseShaderBody(k)
+        ParsePipelineState(v)
+    end
+    print('End Parse')
 end

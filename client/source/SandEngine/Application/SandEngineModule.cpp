@@ -8,6 +8,7 @@
 #include "SandEngine/Sky/skybox.h"
 #include "sEventInfo.h"
 #include "SandBase/IO/SFileStream.h"
+#include "SandEngine/Resource/Material/Material.h"
 
 SCallbackManager	SandEngine::Callback;
 
@@ -22,8 +23,6 @@ public:
 			GuiUpdate();
 			SRenderHelper::BeginNewFrame();
 			SkyboxRender();
-			FileSystem::AddSearchPath("../data");
-			FileSystem::AddSearchPath("../asset");
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEndRender )
 		{
@@ -33,7 +32,10 @@ public:
 		{
 			ImGuiInit( userData.pUserData );
 			SRenderHelper::Init();
+			FileSystem::AddSearchPath("../data");
+			FileSystem::AddSearchPath("../asset");
 			SkyboxInit("../data/textures/anniversary_lounge_1k.hdr");
+			sandMaterialInit();
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEngineDeInit )
 		{
