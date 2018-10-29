@@ -1,4 +1,6 @@
-function CreateShader(createInfo)
+g_shader_map = {}
+
+function create_shader(createInfo)
     local shaderInfo = {}
 
     shaderInfo.blend_state = {}
@@ -41,7 +43,7 @@ function CreateShader(createInfo)
     shaderInfo.depth_stencil_state.backFace.stencilFunc         = createInfo.backFace_stencilFunc or MATComparisonFunc.Always
 end
 
-function ExtractTexture2D(str)
+function extract_texture_2d(str)
     local texture_map = {}
 
     for k,v in string.gmatch(str, "Texture2D (%w+)<(.-)>") do
@@ -58,30 +60,82 @@ function ExtractTexture2D(str)
     return texture_map, str
 end
 
-function ParseShaderBody(str)
-    local texture_map, str = ExtractTexture2D(str)
+function parse_shader_body(str,shader_metaInfo)
+    local texture_map, str = extract_texture_2d(str)
+
+    shader_metaInfo["texture_sampler"] = texture_map
+    shader_metaInfo["shader_content"]  = str
 end
 
-function ParsePipelineState(str)
-    local pass_list = {}
-    i = 1
-    str:gsub('Pass\r\n%b{}', 
-    function(w) 
-        pass_list[i] = w 
-        i = i + 1
-    end )
-    
-    print("pass_list element count:" .. #pass_list)
-    for i,v in ipairs(pass_list) do
-        print("Pass " .. i .. ':\r\n' .. pass_list[i])
+function dump_table(t,level)
+    for k,v in pairs(t) do
+        if type(v) == "table" then
+            print(level .. k .. ": ")
+            dump_table(v,level .. "     ")
+        else
+            if type(v) == "boolean" then
+                if v == true then
+                    print(level .. k .. " : " .. "true")
+                else
+                    print(level .. k .. " : " .. "false")
+                end
+            else
+                print(level .. k .. ": " .. v)
+            end
+        end
     end
 end
 
-function GenerateShader(str)
+function create_state(create_info,state_name,shader_info)
+    shader_info[state_name] = create_info
+end
+
+function parse_pass(str)
+    shader_info = {}
+    shader_info["vs_entry"] = string.match(str, "#pragma%s*vert%s*(%w+)")
+    shader_info["ps_entry"] = string.match(str, "#pragma%s*fragment%s*(%w+)")
+
+    local blend_state           = string.match(str, "(local%s*blend_state%s*=%s*\r\n%s*{%s*\r\n.-}%s*\r\n)")
+    local rasterizer_state      = string.match(str, "(local%s*rasterizer_state%s*=%s*\r\n%s*{%s*\r\n.-}%s*\r\n)")
+    local depth_stencil_state   = string.match(str, "(local%s*depth_stencil_state%s*=%s*\r\n%s*{%s*\r\n.-}%s*\r\n)")
+
+    if blend_state ~= nil then
+        MATDoString(blend_state .. "\r\ncreate_state(blend_state,'blend_state',shader_info)")
+    end
+
+    if rasterizer_state ~= nil then
+        MATDoString(rasterizer_state .. "\r\ncreate_state(rasterizer_state,'rasterizer_state',shader_info)")
+    end
+
+    if depth_stencil_state ~= nil then
+        MATDoString(depth_stencil_state .. "\r\ncreate_state(depth_stencil_state,'depth_stencil_state',shader_info)")
+    end
+
+    return shader_info
+end
+
+function parse_pipeline_state(str,shader_metaInfo)
+    local pass_list = {}
+    local i = 1
+    str:gsub('Pass\r\n%b{}', function(w) pass_list[i] = w; i = i + 1 end )
+
+    shader_metaInfo["pass_list"] = {}
+    for i,v in ipairs(pass_list) do
+        local pass_info = parse_pass(v)
+        shader_metaInfo["pass_list"][i] = pass_info
+    end
+end
+
+function generate_shader(str,filename)
     print("Begin Parse")
+    local shader_metaInfo = {}
     for k,v in string.gmatch(str, "(.-)(Pass\r\n{.*})") do
-        ParseShaderBody(k)
-        ParsePipelineState(v)
+        parse_shader_body(k,shader_metaInfo)
+        parse_pipeline_state(v,shader_metaInfo)
     end
     print('End Parse')
+
+    g_shader_map[filename] = shader_metaInfo
+
+    dump_table(g_shader_map,"")
 end

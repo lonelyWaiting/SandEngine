@@ -1,4 +1,5 @@
 #include "commonConst.hlsl"
+#include "fullscreenVS.hlsl"
 
 cbuffer skyCB
 {
@@ -37,31 +38,26 @@ Pass
     local blend_state = 
     {
         -- blend state
-        blendEnable           = true
-        srcBlend              = MATBlendFactor.SrcAlpha
-        destBlend             = MATBlendFactor.InvSrcAlpha
-        blendOp               = MATBlendOperator.Add
-        srcBlendAlpha         = MATBlendFactor.One
-        destBlendAlpha        = MATBlendFactor.Zero
-        blendOpAlpha          = MATBlendOperator.Add
-        renderTargetWriteMask = 0xff
+        blendEnable           = true,
+        srcBlend              = MATBlendFactor.SrcAlpha,
+        destBlend             = MATBlendFactor.InvSrcAlpha,
+        blendOp               = MATBlendOperator.Add,
+        srcBlendAlpha         = MATBlendFactor.One,
+        destBlendAlpha        = MATBlendFactor.Zero,
+        blendOpAlpha          = MATBlendOperator.Add,
+        renderTargetWriteMask = 0xff,
     }
 
     local rasterizer_state =
     {
         -- rasterzier state
-        fullMode = MATFullMode.Solid
-        cullMode = MATFullMode.Back
+        fullMode = MATFullMode.Solid,
+        cullMode = MATCullMode.Back,
     }
 
     local depth_stencil_state = 
     {
-        cullMode = "point"
-        depthTest = true
+        cullMode = "point",
+        depthTest = true,
     }
-}
-
-Pass
-{
-
 }

@@ -12,7 +12,7 @@ extern "C"
 
 static lua_State* g_pMatLuaState = nullptr;
 
-int Print(lua_State* L)
+static int Print(lua_State* L)
 {
 	if (!lua_isstring(L, -1))
 	{
@@ -25,7 +25,7 @@ int Print(lua_State* L)
 	return 0;
 }
 
-int LoadFile(lua_State* L, const char* filename)
+static int LoadFile(lua_State* L, const char* filename)
 {
 	SArray<char> data;
 	SFileInStream fi;
@@ -46,7 +46,7 @@ int LoadFile(lua_State* L, const char* filename)
 	return 0;
 }
 
-int DoFile(lua_State* L)
+static int DoFile(lua_State* L)
 {
 	if (!lua_isstring(L, -1))
 	{
@@ -68,7 +68,7 @@ void sandMaterialLoad()
 		SFileInStream fi;
 		if (fi.OpenFile(path.AsChar()))
 		{
-			lua_getglobal(g_pMatLuaState, "GenerateShader");
+			lua_getglobal(g_pMatLuaState, "generate_shader");
 
 			int size = fi.GetFileSize();
 			luaL_Buffer filecontent;
@@ -77,13 +77,28 @@ void sandMaterialLoad()
 			fi.Close();
 			luaL_pushresultsize(&filecontent, size);
 
-			int result = lua_pcall(g_pMatLuaState, 1, 0, 0);
+			lua_pushstring(g_pMatLuaState, filename);
+
+			int result = lua_pcall(g_pMatLuaState, 2, 0, 0);
 			if (result)
 			{
 				std::cout << "execute GenerateShader failed" << std::endl;
 			}
 		}
 	}, nullptr);
+}
+
+static int DoString(lua_State* L)
+{
+	const char* data = lua_tostring(L, -1);
+
+	if (luaL_dostring(L, data))
+	{
+		std::cout << "do string failed" << std::endl << data << std::endl;
+		return 0;
+	}
+
+	return 0;
 }
 
 void sandMaterialInit()
@@ -96,6 +111,7 @@ void sandMaterialInit()
 
 	lua_register(g_pMatLuaState, "MATPrint", Print);
 	lua_register(g_pMatLuaState, "MATDoFile", DoFile);
+	lua_register(g_pMatLuaState, "MATDoString", DoString);
 
 	LoadFile(g_pMatLuaState, "materials/runtime/material_startup.lua");
 
