@@ -8,16 +8,16 @@ cbuffer cbFrame : register(b0)
     float    near;
     float    far;
     float    aspectRatio;
-    float3   padding;
+    float3   cameraWorldPos;
 };
 
-Texture2D diffuseMap   : register(t0);
+Texture2D albedoMap    : register(t0);
 Texture2D normalMap    : register(t1);
 Texture2D metallicMap  : register(t2);
 Texture2D roughnessMap : register(t3);
 Texture2D aoMap        : register(t4);
 
-sampler   diffuseSampler   : register(s0);
+sampler   albedoSampler   : register(s0);
 sampler   normalSampler    : register(s1);
 sampler   metallicSampler  : register(s2);
 sampler   roughnessSampler : register(s3);

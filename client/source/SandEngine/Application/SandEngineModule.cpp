@@ -7,6 +7,8 @@
 #include "SandBase/Math/SVector2f.h"
 #include "SandEngine/Sky/skybox.h"
 #include "sEventInfo.h"
+#include "SandBase/IO/SFileStream.h"
+#include "SandEngine/Resource/Material/Material.h"
 
 SCallbackManager	SandEngine::Callback;
 
@@ -30,7 +32,10 @@ public:
 		{
 			ImGuiInit( userData.pUserData );
 			SRenderHelper::Init();
+			FileSystem::AddSearchPath("../data");
+			FileSystem::AddSearchPath("../asset");
 			SkyboxInit("../data/textures/anniversary_lounge_1k.hdr");
+			sandMaterialInit();
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEngineDeInit )
 		{
@@ -68,19 +73,19 @@ public:
 			sKeyEventInfo & info = *(sKeyEventInfo*)userData.pUserData;
 			if (info.keyCode == eKeyCode::W)
 			{
-				SRenderer::Get().GetMainCamera().MoveFront(1.0f);
+				SRenderer::Get().GetMainCamera().MoveFront(SRenderer::Get().GetTimer().DeltaTime());
 			}
 			else if (info.keyCode == eKeyCode::S)
 			{
-				SRenderer::Get().GetMainCamera().MoveFront(-1.0f);
+				SRenderer::Get().GetMainCamera().MoveFront(-1.0f * SRenderer::Get().GetTimer().DeltaTime());
 			}
 			else if (info.keyCode == eKeyCode::A)
 			{
-				SRenderer::Get().GetMainCamera().MoveRight(-1.0f);
+				SRenderer::Get().GetMainCamera().MoveRight(-1.0f * SRenderer::Get().GetTimer().DeltaTime());
 			}
 			else if (info.keyCode == eKeyCode::D)
 			{
-				SRenderer::Get().GetMainCamera().MoveRight(1.0f);
+				SRenderer::Get().GetMainCamera().MoveRight(SRenderer::Get().GetTimer().DeltaTime());
 			}
 
 		}

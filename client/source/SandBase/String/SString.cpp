@@ -365,3 +365,13 @@ bool SString::IsEqual( const char* str ) const
 
 	return result;
 }
+
+bool SString::operator==(const char* str) const
+{
+	return IsEqual(str);
+}
+
+bool SString::operator==(const SString& str) const
+{
+	return IsEqual(str.AsChar());
+}

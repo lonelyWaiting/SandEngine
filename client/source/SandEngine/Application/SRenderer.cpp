@@ -41,17 +41,16 @@ bool SRenderer::Init( HWND hwnd )
 	vp.TopLeftY = 0;
 	SRenderHelper::g_ImmediateContext->RSSetViewports( 1 , &vp );
 
-	m_MainCamera.InitCamera(0.1f, 1000.0f, 45.f, 1600 / (float)900, SVector3f(0.0f, 0.0f, -25.0f), SVector3f(0.0f, 0.0f, 1.0f));
+	m_MainCamera.InitCamera(0.1f, 1000.0f, 45.f, clientWidth / (float)clientHeight, SVector3f(0.0f, 0.0f, -25.0f), SVector3f(0.0f, 0.0f, 1.0f));
+	m_MainCamera.SetMoveSpeed(150.0f);
 
 	// ------------------------------------------Depth/Stencil State------------------------------------------
-	//bool MSAAEnabled = s3Renderer::get().getMSAAEnabled();
-
 	D3D11_DEPTH_STENCIL_DESC depthStencilStateDesc;
 	ZeroMemory(&depthStencilStateDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
-	depthStencilStateDesc.DepthEnable = false;
+	depthStencilStateDesc.DepthEnable    = true;
 	depthStencilStateDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depthStencilStateDesc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
-	depthStencilStateDesc.StencilEnable = FALSE;
+	depthStencilStateDesc.DepthFunc      = D3D11_COMPARISON_LESS_EQUAL;
+	depthStencilStateDesc.StencilEnable  = FALSE;
 
 	HRESULT hr = SRenderHelper::g_Device->CreateDepthStencilState(&depthStencilStateDesc, &depthStencilState);
 	if (FAILED(hr))
@@ -64,15 +63,15 @@ bool SRenderer::Init( HWND hwnd )
 	D3D11_RASTERIZER_DESC rasterizerDesc;
 	ZeroMemory(&rasterizerDesc, sizeof(D3D11_RASTERIZER_DESC));
 	rasterizerDesc.AntialiasedLineEnable = false;
-	rasterizerDesc.CullMode = D3D11_CULL_BACK;
-	rasterizerDesc.DepthBias = 0;
-	rasterizerDesc.DepthBiasClamp = 0.0f;
-	rasterizerDesc.DepthClipEnable = TRUE;
-	rasterizerDesc.FillMode = D3D11_FILL_SOLID;
+	rasterizerDesc.CullMode              = D3D11_CULL_BACK;
+	rasterizerDesc.DepthBias             = 0;
+	rasterizerDesc.DepthBiasClamp        = 0.0f;
+	rasterizerDesc.DepthClipEnable       = TRUE;
+	rasterizerDesc.FillMode              = D3D11_FILL_SOLID;
 	rasterizerDesc.FrontCounterClockwise = FALSE;
-	rasterizerDesc.MultisampleEnable = FALSE;
-	rasterizerDesc.ScissorEnable = FALSE;
-	rasterizerDesc.SlopeScaledDepthBias = 0.0f;
+	rasterizerDesc.MultisampleEnable     = FALSE;
+	rasterizerDesc.ScissorEnable         = FALSE;
+	rasterizerDesc.SlopeScaledDepthBias  = 0.0f;
 
 	// Create the rasterizer state object.
 	hr = SRenderHelper::g_Device->CreateRasterizerState(&rasterizerDesc, &rasterizerState);
@@ -119,6 +118,7 @@ void SRenderer::Resize( const SVector2f& size )
 	m_RenderTarget->SetD3DTexture(pBackBuffer);
 	m_RenderTarget->Ensureloaded();*/
 	m_RT = new SRenderTexture(pBackBuffer);
+	m_RT->Create();
 	pBackBuffer->Release();
 
 	// Perform error handling here!
@@ -167,9 +167,4 @@ void SRenderer::Shutdown()
 void SRenderer::Present( suInt32 syncInterval /*= 0*/, suInt32 presentFlag /*= 0*/ )
 {
 	if(SRenderHelper::g_SwapChain)	SRenderHelper::g_SwapChain->Present( syncInterval , presentFlag );
-}
-
-Camera& SRenderer::GetMainCamera()
-{
-	return m_MainCamera;
 }

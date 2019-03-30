@@ -125,7 +125,8 @@
       <AdditionalLibraryDirectories>$(SolutionDir)pub\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(SolutionDir)client\thirdparty\fbxsdk\lib\x64\$(Configuration)\libfbxsdk.dll $(SolutionDir)pub\$(Configuration)\ /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -182,7 +183,8 @@
       <AdditionalLibraryDirectories>$(SolutionDir)pub\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy $(SolutionDir)client\thirdparty\fbxsdk\lib\x64\$(Configuration)\libfbxsdk.dll $(SolutionDir)pub\$(Configuration)\ /y</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

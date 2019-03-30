@@ -66,3 +66,10 @@ public:
 protected:
 	std::ofstream ofs;
 };
+
+typedef void (*EnumCallback)(const char* szDir, const char* filename, void* userData);
+namespace FileSystem
+{
+	void AddSearchPath(const char* path);
+	void EnumFile(const char* folder, const char* pattern, EnumCallback callback, void* userData);
+}

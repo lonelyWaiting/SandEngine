@@ -196,6 +196,8 @@ void SApplication::Shutdown()
 
 void SApplication::Render()
 {
+	SRenderer::Get().GetTimer().Update();
+
 	SandEngine::Callback.OnUpdateScene.Trigger();
 
 	SRenderer::Get().ClearColor( SVector4f( 75.f , 75.f , 75.f , 75.f ) );
