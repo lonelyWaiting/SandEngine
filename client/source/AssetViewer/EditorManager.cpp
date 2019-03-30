@@ -20,7 +20,7 @@ public:
 	{
 		if( userData.pSender == &SandEngine::Callback.OnEngineInit )
 		{
-			if(gEditorUserData) gEditorUserData = new CustomEditorData();
+			if(gEditorUserData == nullptr) gEditorUserData = new CustomEditorData();
 			GuiRegister(CustomEditor, gEditorUserData);
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEngineDeInit )
