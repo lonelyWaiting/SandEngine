@@ -1,241 +1,82 @@
-#include "SandEnginePCH.h"
 #include "SShader.h"
-#include "SandBase/IO/SFileStream.h"
-#include "SandBase/Log/SLog.h"
-#include "SandEngine/Pipeline/SRenderHelper.h"
+#include "fake_unity_shader/src/shader.h"
 #include "SandBase/String/SString.h"
-#include "SandBase/Vector/SArray.h"
+#include "SandBase/Log/SLog.h"
+#include <map>
 
-class SShaderInclude : public ID3DInclude
+class SShaderManager
 {
 public:
-	HRESULT _stdcall Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID *ppData, UINT *pBytes)
+	static SShaderManager& Get()
 	{
-		SString str;
-		for (unsigned int i = 0; i < searchPath.GetSize(); i++)
-		{
-			str = searchPath[i];
-			str.Append(pFileName);
+		static SShaderManager manager;
+		return manager;
+	}
 
-			SFileInStream fi;
-			if (fi.OpenFile(str.AsChar()))
-			{
-				size = fi.GetFileSize();
-				pData = new char[size];
-				fi.Read(pData, size);
-				break;
-			}
+	void Add(const char* filename, SShader* shader)
+	{
+		if (filename == nullptr)
+		{
+			SLog::Error("Shader Filename must be exist");
+			return;
 		}
 
-		if (pData) { *ppData = pData; *pBytes = size; }
-		return S_OK;
+		if (shader == nullptr)
+		{
+			SLog::Error("Shader must exist");
+			return;
+		}
+
+		shaderMap[filename] = shader;
 	}
 
-	HRESULT _stdcall Close(LPCVOID pData)
+	SShader* Find(const char* filename)
 	{
-		SAFE_DELETE_ARRAY(pData);
-		size = 0;
-		return S_OK;
+		if (!filename)	return false;
+		auto iter = shaderMap.find(filename);
+		return iter != shaderMap.end() ? iter->second : nullptr;
 	}
-public:
-	SArray<SString> searchPath;
-	char*			pData = nullptr;
-	unsigned int	size  = 0;
+
+private:
+	SShaderManager() {}
+
+private:
+	std::map<SString , SShader*> shaderMap;
 };
 
-bool SShader::Load(const char* path, const char* vs_main, const char* ps_main, const char* gs_main /*= nullptr*/, const char* hs_main /*= nullptr*/, const char* ds_main /*= nullptr*/, const char* cs_main /*= nullptr*/)
+void SShader::Init(ID3D11Device* device , const char* shader_parser_search_path = nullptr)
 {
-	char* data = nullptr;
-	int   size = 0;
-
-	SFileInStream fi;
-	if (fi.OpenFile(path))
-	{
-		size = fi.GetFileSize();
-		data = new char[size];
-		fi.Read(data, size);
-		fi.Close();
-	}
-
-	if (!data)	return false;
-
-	ID3DBlob* errorBlob = nullptr;
-
-	SShaderInclude includeHandler;
-	includeHandler.searchPath.PushBack("../data/shaders/");
-
-	if (vs_main != nullptr)
-	{
-		HRESULT hr = D3DCompile(data,
-								size,
-								path,
-								nullptr,
-								&includeHandler,
-								vs_main,
-								"vs_5_0",
-								0,
-								0,
-								&mVertexBlob,
-								&errorBlob);
-
-		if (FAILED(hr) && errorBlob)
-		{
-			SLog::Error("vertex shader compile failed: %s", (char*)errorBlob->GetBufferPointer());
-			return false;
-		}
-
-		SRenderHelper::g_Device->CreateVertexShader(mVertexBlob->GetBufferPointer(), mVertexBlob->GetBufferSize(), nullptr, &mVertexShader);
-	}
-
-	if (ps_main != nullptr)
-	{
-		HRESULT hr = D3DCompile(data,
-								size,
-								path,
-								nullptr,
-								&includeHandler,
-								ps_main,
-								"ps_5_0",
-								0,
-								0,
-								&mPixelBlob,
-								&errorBlob);
-
-		if (FAILED(hr) && errorBlob)
-		{
-			SLog::Error("pixel shader compile failed: %s", (char*)errorBlob->GetBufferPointer());
-			return false;
-		}
-
-		SRenderHelper::g_Device->CreatePixelShader(mPixelBlob->GetBufferPointer(), mPixelBlob->GetBufferSize(), nullptr, &mPixelShader);
-	}
-
-	if (gs_main != nullptr)
-	{
-		HRESULT hr = D3DCompile(data,
-								size,
-								path,
-								nullptr,
-								&includeHandler,
-								gs_main,
-								"gs_5_0",
-								0,
-								0,
-								&mGeometryBlob,
-								&errorBlob);
-
-		if (FAILED(hr) && errorBlob)
-		{
-			SLog::Error("geometry shader compile failed: %s", (char*)errorBlob->GetBufferPointer());
-			return false;
-		}
-
-		SRenderHelper::g_Device->CreateGeometryShader(mGeometryBlob->GetBufferPointer(), mGeometryBlob->GetBufferSize(), nullptr, &mGeometryShader);
-	}
-
-	if (hs_main != nullptr)
-	{
-		HRESULT hr = D3DCompile(data,
-								size,
-								path,
-								nullptr,
-								&includeHandler,
-								hs_main,
-								"hs_5_0",
-								0,
-								0,
-								&mHullBlob,
-								&errorBlob);
-
-		if (FAILED(hr) && errorBlob)
-		{
-			SLog::Error("hull shader compile failed: %s", (char*)errorBlob->GetBufferPointer());
-			return false;
-		}
-
-		SRenderHelper::g_Device->CreateHullShader(mHullBlob->GetBufferPointer(), mHullBlob->GetBufferSize(), nullptr, &mHullShader);
-	}
-
-	if (ds_main != nullptr)
-	{
-		HRESULT hr = D3DCompile(data,
-								size,
-								path,
-								nullptr,
-								&includeHandler,
-								ds_main,
-								"ds_5_0",
-								0,
-								0,
-								&mDomainBlob,
-								&errorBlob);
-
-		if (FAILED(hr) && errorBlob)
-		{
-			SLog::Error("domain shader compile failed: %s", (char*)errorBlob->GetBufferPointer());
-			return false;
-		}
-
-		SRenderHelper::g_Device->CreateDomainShader(mDomainBlob->GetBufferPointer(), mDomainBlob->GetBufferSize(), nullptr, &mDomainShader);
-	}
-
-	if (cs_main != nullptr)
-	{
-		HRESULT hr = D3DCompile(data,
-								size,
-								path,
-								nullptr,
-								&includeHandler,
-								cs_main,
-								"cs_5_0",
-								0,
-								0,
-								&mComputeBlob,
-								&errorBlob);
-
-		if (FAILED(hr) && errorBlob)
-		{
-			SLog::Error("compute shader compile failed: %s", (char*)errorBlob->GetBufferPointer());
-			return false;
-		}
-
-		SRenderHelper::g_Device->CreateComputeShader(mComputeBlob->GetBufferPointer(), mComputeBlob->GetBufferSize(), nullptr, &mComputeShader);
-	}
-
-	SAFE_DELETE_ARRAY(data);
-
-	return true;
+	shader_init(device , shader_parser_search_path);
 }
 
-#include <map>
-#include "SandBase/String/SString.h"
-
-static std::map<std::string, SShader> g_shaderManager;
-
-const SShader& EnsureShaderLoaded(	const char* path, 
-									const char* vs_main, 
-									const char* ps_main, 
-									const char* gs_main /*= nullptr*/,
-									const char* hs_main /*= nullptr*/, 
-									const char* ds_main /*= nullptr*/, 
-									const char* cs_main /*= nullptr*/)
+void SShader::Cleanup()
 {
-	SShader& shader = g_shaderManager[path];
-	shader.Load(path, vs_main, ps_main, gs_main, hs_main, ds_main, cs_main);
+	shader_cleanup();
+}
+
+SShader* SShader::FindOrAdd(const char* filename)
+{
+	SShader* shader = SShaderManager::Get().Find(filename);
+	if (!shader) shader = new SShader(filename);
 	return shader;
 }
 
-void SShader::InitShader()
+SShader::SShader(const char* filename)
 {
-	EnsureShaderLoaded("../data/shaders/fullscreenVS.hlsl", "vs_main", nullptr, nullptr, nullptr, nullptr, nullptr);
-	EnsureShaderLoaded("../data/shaders/skybox.hlsl", nullptr, "ps_main", nullptr, nullptr, nullptr, nullptr);
+	bool success = shader_load(filename);
+	if (success)
+	{
+		SShaderManager::Get().Add(filename , this);
+	}
 }
 
-const SShader& SShader::FindShader(const char* path)
+const shaderPassInfo & SShader::GetPass(int index) const
 {
-	auto iter = g_shaderManager.find(path);
-	if (iter != g_shaderManager.end())	return g_shaderManager[path];
+	if (index < 0 || index >= info.pass_list.size())
+	{
+		SLog::Warning("shader pass index invalidate");
+		return;
+	}
 
-	static SShader temp;
-	return temp;
+	return info.pass_list[index];
 }

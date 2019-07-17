@@ -5,3 +5,4 @@ class SConstantBuffer : public SBuffer
 public:
 	SConstantBuffer( bool dynamic , int stride , const void* pInitData = nullptr );
 };
+typedef SSmartPointer<SConstantBuffer> SConstantBufferPtr;

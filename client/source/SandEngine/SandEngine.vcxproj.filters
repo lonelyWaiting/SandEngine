@@ -40,9 +40,6 @@
     <Filter Include="Sky">
       <UniqueIdentifier>{d5e7826d-11ca-47ea-b6c0-b326351c16d3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="lua">
-      <UniqueIdentifier>{38abf6d6-4e17-466a-8f0c-8bdca48afc59}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\SandEngineModule.h">
@@ -109,9 +106,6 @@
     <ClInclude Include="Resource\Image\SImage.h">
       <Filter>Resource\Image</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\Shaders\SShader.h">
-      <Filter>Resource\Shaders</Filter>
-    </ClInclude>
     <ClInclude Include="Camera\Camera.h">
       <Filter>Camera</Filter>
     </ClInclude>
@@ -124,83 +118,8 @@
     <ClInclude Include="Application\sEventInfo.h">
       <Filter>Application</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lapi.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lauxlib.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lcode.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lctype.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\ldebug.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\ldo.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lfunc.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lgc.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\llex.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\llimits.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lmem.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lobject.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lopcodes.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lparser.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lprefix.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lstate.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lstring.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\ltable.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\ltm.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lua.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lua.hpp">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\luaconf.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lualib.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lundump.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lvm.h">
-      <Filter>lua</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\thirdparty\Lua\lzio.h">
-      <Filter>lua</Filter>
+    <ClInclude Include="Resource\Shaders\SShader.h">
+      <Filter>Resource\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -268,9 +187,6 @@
     <ClCompile Include="Resource\Image\SImage.cpp">
       <Filter>Resource\Image</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\Shaders\SShader.cpp">
-      <Filter>Resource\Shaders</Filter>
-    </ClCompile>
     <ClCompile Include="Camera\Camera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
@@ -280,109 +196,8 @@
     <ClCompile Include="..\..\thirdparty\loadpng\lodepng.cpp">
       <Filter>Resource\Texture</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lapi.c">
-      <Filter>lua</Filter>
+    <ClCompile Include="Resource\Shaders\SShader.cpp">
+      <Filter>Resource\Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lauxlib.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lbaselib.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lbitlib.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lcode.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lcorolib.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lctype.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\ldblib.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\ldebug.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\ldo.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\ldump.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lfunc.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lgc.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\linit.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\liolib.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\llex.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lmathlib.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lmem.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\loadlib.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lobject.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lopcodes.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\loslib.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lparser.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lstate.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lstring.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lstrlib.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\ltable.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\ltablib.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\ltm.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lundump.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lutf8lib.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lvm.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\thirdparty\Lua\lzio.c">
-      <Filter>lua</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\thirdparty\Lua\Makefile">
-      <Filter>lua</Filter>
-    </None>
   </ItemGroup>
 </Project>

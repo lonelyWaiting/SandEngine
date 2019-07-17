@@ -15,6 +15,9 @@ public:
 	bool operator==(const SString& str) const;
 	bool operator==(const char* str) const;
 
+	bool operator != (const SString& str) const;
+	bool operator != (const char* str) const;
+
 	void Append( const char* str );
 	void AppendFormat( const char* format , ... );
 	
@@ -36,6 +39,9 @@ public:
 	
 	const char* AsChar() const;
 	bool IsEqual( const char* str ) const;
+
+	bool operator < (const SString& str) const;
+	bool operator < (const char* str) const;
 
 private:
 	bool StartWith_Internal( const char* str , bool( *cmp_function )( const char , const char ) );

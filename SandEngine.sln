@@ -13,6 +13,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SandEngine", "client\source
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssetViewer", "client\source\AssetViewer\AssetViewer.vcxproj", "{FBD6E386-2E61-409C-BF24-929AA3D27BA1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fake_unity_shader", "client\source\fake_unity_shader\fake_unity_shader.vcxproj", "{59869EB0-F06B-42FE-8665-4237B43B9FC9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Lua", "client\thirdparty\Lua\Lua.vcxproj", "{B3F0FC20-5206-41A7-B726-968AED2456EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -55,6 +59,18 @@ Global
 		{FBD6E386-2E61-409C-BF24-929AA3D27BA1}.Release|x64.Build.0 = Release|x64
 		{FBD6E386-2E61-409C-BF24-929AA3D27BA1}.Release|x86.ActiveCfg = Release|Win32
 		{FBD6E386-2E61-409C-BF24-929AA3D27BA1}.Release|x86.Build.0 = Release|Win32
+		{59869EB0-F06B-42FE-8665-4237B43B9FC9}.Debug|x64.ActiveCfg = Debug|x64
+		{59869EB0-F06B-42FE-8665-4237B43B9FC9}.Debug|x64.Build.0 = Debug|x64
+		{59869EB0-F06B-42FE-8665-4237B43B9FC9}.Debug|x86.ActiveCfg = Debug|x64
+		{59869EB0-F06B-42FE-8665-4237B43B9FC9}.Release|x64.ActiveCfg = Release|x64
+		{59869EB0-F06B-42FE-8665-4237B43B9FC9}.Release|x64.Build.0 = Release|x64
+		{59869EB0-F06B-42FE-8665-4237B43B9FC9}.Release|x86.ActiveCfg = Release|x64
+		{B3F0FC20-5206-41A7-B726-968AED2456EA}.Debug|x64.ActiveCfg = Debug|x64
+		{B3F0FC20-5206-41A7-B726-968AED2456EA}.Debug|x64.Build.0 = Debug|x64
+		{B3F0FC20-5206-41A7-B726-968AED2456EA}.Debug|x86.ActiveCfg = Debug|x64
+		{B3F0FC20-5206-41A7-B726-968AED2456EA}.Release|x64.ActiveCfg = Release|x64
+		{B3F0FC20-5206-41A7-B726-968AED2456EA}.Release|x64.Build.0 = Release|x64
+		{B3F0FC20-5206-41A7-B726-968AED2456EA}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

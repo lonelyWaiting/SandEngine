@@ -12,23 +12,24 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{43CC06E6-9863-40D8-9162-52DF7378DE6B}</ProjectGuid>
-    <RootNamespace>SandBase</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <ProjectGuid>{59869EB0-F06B-42FE-8665-4237B43B9FC9}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>fakeunityshader</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -43,96 +44,78 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)client\source;$(IncludePath)</IncludePath>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)d.x64</TargetName>
+    <TargetExt>.lib</TargetExt>
     <OutDir>$(SolutionDir)pub\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)pub\$(Configuration)\$(ProjectName)\</IntDir>
+    <IncludePath>$(SolutionDir)client\thirdparty\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(SolutionDir)client\source;$(IncludePath)</IncludePath>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName).x64</TargetName>
+    <TargetExt>.lib</TargetExt>
     <OutDir>$(SolutionDir)pub\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)pub\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>SandBase/SandBasePCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)Lua;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <TreatWarningAsError>true</TreatWarningAsError>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>SandBase/SandBasePCH.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)Lua;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3dcompiler.lib;d3d11.lib;dxgi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="IO\SFileStream.h" />
-    <ClInclude Include="Log\SLog.h" />
-    <ClInclude Include="Math\SMath.h" />
-    <ClInclude Include="Math\SMatrix3f.h" />
-    <ClInclude Include="Math\SMatrix4f.h" />
-    <ClInclude Include="Math\SQuaternion.h" />
-    <ClInclude Include="Math\SVector2f.h" />
-    <ClInclude Include="Math\SVector3f.h" />
-    <ClInclude Include="Math\SVector4f.h" />
-    <ClInclude Include="Object\SRefCounter.h" />
-    <ClInclude Include="Object\SSmartPointer.h" />
-    <ClInclude Include="SandBasePCH.h" />
-    <ClInclude Include="Sort\Sort.h" />
-    <ClInclude Include="String\SString.h" />
-    <ClInclude Include="Template\AndOrNot.h" />
-    <ClInclude Include="Template\IsPODType.h" />
-    <ClInclude Include="Template\IsTriviallyDestructible.h" />
-    <ClInclude Include="Template\RemoveReference.h" />
-    <ClInclude Include="Template\TemplateBase.h" />
-    <ClInclude Include="Template\TEnableIf.h" />
-    <ClInclude Include="Template\TIsArithmetic.h" />
-    <ClInclude Include="Template\TIsPointer.h" />
-    <ClInclude Include="Template\TIsTriviallyCopyConstructible.h" />
-    <ClInclude Include="Template\utils.h" />
-    <ClInclude Include="Timer\STimer.h" />
-    <ClInclude Include="Vector\SArray.h" />
+    <ClInclude Include="src\shader.h" />
+    <ClInclude Include="src\shader_parser.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="IO\SFileStream.cpp" />
-    <ClCompile Include="Log\SLog.cpp" />
-    <ClCompile Include="Math\SMath.cpp" />
-    <ClCompile Include="Math\SMatrix3f.cpp" />
-    <ClCompile Include="Math\SMatrix4f.cpp" />
-    <ClCompile Include="Math\SQuaternion.cpp" />
-    <ClCompile Include="Math\SVector2f.cpp" />
-    <ClCompile Include="Math\SVector3f.cpp" />
-    <ClCompile Include="Math\SVector4f.cpp" />
-    <ClCompile Include="Object\SRefCounter.cpp" />
-    <None Include="Object\SSmartPointer.inl">
-      <FileType>Document</FileType>
-    </None>
-    <ClCompile Include="SandBasePCH.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    <ClCompile Include="src\shader_parser.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="String\SString.cpp" />
-    <ClCompile Include="Timer\STimer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Vector\SArray.inl" />
+    <ProjectReference Include="..\..\thirdparty\Lua\Lua.vcxproj">
+      <Project>{b3f0fc20-5206-41a7-b726-968aed2456ea}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

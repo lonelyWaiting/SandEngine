@@ -99,7 +99,7 @@ void SRenderHelper::Init()
 		g_FrameCB = new SBuffer(eBU_Dynamic, sizeof(cbFrame), 1, nullptr, eBF_Constant );
 	}
 
-	SShader::InitShader();
+	SShader::Init(g_Device, );
 }
 
 void SRenderHelper::BeginNewFrame()

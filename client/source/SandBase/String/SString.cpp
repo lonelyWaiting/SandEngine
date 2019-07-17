@@ -375,3 +375,57 @@ bool SString::operator==(const SString& str) const
 {
 	return IsEqual(str.AsChar());
 }
+
+bool SString::operator!=(const SString& str) const
+{
+	return !IsEqual(str.AsChar());
+}
+
+bool SString::operator!=(const char* str) const
+{
+	return !IsEqual(str);
+}
+
+bool SString::operator < (const SString& str) const
+{
+	int srcSize = str.GetLength();
+	int dstSize = GetLength();
+
+	int size = SMath::Min(srcSize, dstSize);
+
+	for (int i = 0; i < size; i++)
+	{
+		if (AsChar()[i] < str.AsChar()[i])
+		{
+			return true;
+		}
+		else if (AsChar()[i] > str.AsChar()[i])
+		{
+			return false;
+		}
+	}
+
+	return srcSize < dstSize ? true : false;
+}
+
+bool SString::operator<(const char * str) const
+{
+	int srcSize = strlen(str);
+	int dstSize = GetLength();
+
+	int size = SMath::Min(srcSize, dstSize);
+
+	for (int i = 0; i < size; i++)
+	{
+		if (AsChar()[i] < str[i])
+		{
+			return true;
+		}
+		else if (AsChar()[i] > str[i])
+		{
+			return false;
+		}
+	}
+
+	return srcSize < dstSize ? true : false;
+}
