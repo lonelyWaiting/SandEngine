@@ -1,16 +1,35 @@
 function read_file(file_path)
-    local f = assert(io.open(file_path, "rb"))
+    local f = assert(io.open(file_path, "rb"), "invalid file path" .. file_path)
     local content = f:read("*all")
     f:close()
     return content
+end
+
+function check_type(value)
+    if type(value) == "number" then
+        print("number")
+    elseif type(value) == "string" then
+        print("string")
+    elseif type(value) == "function" then
+        print("function")
+    elseif type(value) == "boolean" then
+        print("boolean")
+    elseif type(value) == "nil" then
+        print("nil")
+    elseif type(value) == "table" then
+        print("table")
+    end
 end
 
 function read_properties(str)
     local prop_list = {}
 
     local properties = string.match(str, "Properties\r\n%s*(%b{})")
-    local prop = string.match(properties, "{(.*)}")
+    if properties == nil then
+        return prop_list
+    end
 
+    local prop = string.match(properties, "{(.*)}")
     for name, display_name, type, default_value in string.gmatch(prop, "%s*(.-)%(\"(.-)\", (.-)%)%s*=%s*\"(.-)\"") do
         local t = {}
         t["display_name"] = display_name
@@ -21,6 +40,7 @@ function read_properties(str)
     return prop_list
 end
 
+-- split pass's content into parts and append different parts into one hlsl content
 function read_single_pass(str, filename, pass_id)
     local pass_info = {}
     local pass = string.match(str, "HLSLPROGRAM(.-)ENDHLSL")
@@ -75,6 +95,7 @@ function read_single_pass(str, filename, pass_id)
 
     local shader_text = ""
 
+    -- #define 
     local define_count = 0
     for define_exp in string.gmatch(pass, "(#define%s+.-%s+.-\r\n)") do
         shader_text = shader_text .. define_exp
@@ -84,6 +105,7 @@ function read_single_pass(str, filename, pass_id)
         tmp_str = tmp_str:gsub("(#define%s+(.-)%s+(.-)\r\n)", "")
     end
 
+    -- texture and sampler
     for _, name in pairs(tex2D) do
         shader_text = shader_text .. "\r\n" .. "Texture2D " .. name .. ";"
     end
@@ -92,6 +114,7 @@ function read_single_pass(str, filename, pass_id)
         shader_text = shader_text .. "\r\n" .. "sampler " .. name .. ";"
     end
     
+    -- custom struct
     local struct_count = 0
     for struct_str in string.gmatch(pass, "(struct.-%b{};)\r\n") do
         shader_text = shader_text .. "\r\n" .. struct_str
@@ -102,6 +125,7 @@ function read_single_pass(str, filename, pass_id)
         tmp_str = tmp_str:gsub("(struct.-%b{};\r\n)", "")
     end
 
+    -- custom function
     local function_count = 0
     for function_str in string.gmatch(pass, "([^%s]+%s+[^%s]+%s*%b()%s*%b{})") do
         shader_text = shader_text .. "\r\n" .. function_str
@@ -123,8 +147,9 @@ function read_single_pass(str, filename, pass_id)
         tmp_str = tmp_str:gsub("([^%s]+%s+[^%s]+%s*%b()%s*:%s*.+%b{})", "")
     end
 
+    --  constant buffer
     if tmp_str ~= "" then
-        shader_text = "cbuffer cb_" .. filename .. "_" .. pass_id .. "\r\n{" .. tmp_str .. "};\r\n" .. shader_text
+        shader_text = "cbuffer cb_" .. filename .. "_" .. pass_id .. "\r\n{" .. tmp_str .. "}\r\n" .. shader_text
     end
 
     pass_info["shader_text"] = shader_text
@@ -155,6 +180,7 @@ function parse_shader(filename)
     local shader = {}
     shader["Properties"] = read_properties(shader_content)
     shader["Pass"]       = read_pass(shader_content, get_filename(filename))
+
     shader_info[shader_name] = shader
 
     for k, v in pairs(shader["Pass"]) do
@@ -178,7 +204,8 @@ function parse_shader(filename)
         local geometry_entry = v["geometry_entry"]
         if geometry_entry == nil then geometry_entry = "" end
 
-        local keyword_list = {"TEST", "DEBUG"}
+        -- todo
+        local keyword_list = {}
 
         compile(shader_name, 
                 pass_name, 
@@ -191,6 +218,10 @@ function parse_shader(filename)
                 geometry_entry,
                 keyword_list)
     end
+    
+	finishCompile(shader_name)
+
+    return shader_name
 end
 
 -- parse_shader("../shaders/skybox.shader")
@@ -207,7 +238,7 @@ function parse_sampler(str)
         sampler_info["follow_texture"] = true
         sampler_info["texture_name"] = split_list[2]
     else
-        sampler_info["follow_texture"] = false
+        sampler_info["follow_texture"] = true
         sampler_info["filter"]  = 0
         sampler_info["address"] = 0
         sampler_info["comparison"] = 0
@@ -226,9 +257,4 @@ function parse_sampler(str)
     end
 
     return sampler_info
-end
-
-function parse_shader_name(filename)
-    local file_content = read_file(filename)
-    return shader_name = string.match(file_content, "Shader%s+\"(.-)\"\r\n{.*}")
 end
