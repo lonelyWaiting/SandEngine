@@ -19,3 +19,4 @@ x64
 imgui.ini
 pub/Debug
 pub/Release
+!client/thirdparty/assimp
