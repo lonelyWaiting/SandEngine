@@ -1,11 +1,8 @@
 #pragma once
 
-#include "RenderState.h"
-#include "SandBase/String/SString.h"
-#include "Resource/SConstantBuffer.h"
-#include "Resource/Shaders/SShader.h"
+#include "SandEngine/SApidef.h"
 
-class SMaterial
+class SAND_API SMaterial
 {
 public:
 	SMaterial(const char* filename);
@@ -28,34 +25,5 @@ public:
 	void DisableKeyword(const char* keyword);
 
 private:
-	int ValidateParam();
-
-private:
-	const SShader* shader = nullptr;
-	int curPass = -1;
-	SArray<SString> keywordList;
-
-	union paramValue
-	{
-		float	  vf;
-		SVector2f vf2;
-		SVector3f vf3;
-		SVector4f vf4;
-		int		  vi;
-		SMatrix4f vm;
-		bool	  vb;
-	};
-
-	struct sTextureInfo
-	{
-		STexture2DPtr texture;
-		SVector2f scale;
-		SVector2f offset;
-
-		sTextureInfo() { texture = nullptr; scale = SVector2f(1.0f, 1.0f); offset = SVector2f(0.0f, 0.0f); }
-	};
-
-	std::map<shaderParameter, paramValue>	  paramList;
-	std::map<const char*, sTextureInfo>       textureList;
-	std::map<const char*, SConstantBufferPtr> cbList;
+	class SMaterialImp* MatImp;
 };

@@ -35,7 +35,7 @@ public:
 			FileSystem::AddSearchPath("../data");
 			FileSystem::AddSearchPath("../asset");
 			SkyboxInit("../data/textures/anniversary_lounge_1k.hdr");
-			sandMaterialInit();
+			//sandMaterialInit();
 		}
 		else if( userData.pSender == &SandEngine::Callback.OnEngineDeInit )
 		{

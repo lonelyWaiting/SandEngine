@@ -4,18 +4,77 @@
 #include "SandBase/Math/SVector3f.h"
 #include "SandBase/Math/SVector4f.h"
 #include "SandBase/Math/SMatrix4f.h"
+#include "SandBase/String/SString.h"
+#include "SandBase/Log/SLog.h"
 #include "Resource/Texture/STextureObject.h"
 #include "Resource/Shaders/SShader.h"
-#include "SandBase/Log/SLog.h"
-#include "Pipeline/SRenderHelper.h"
 #include "Resource/Texture/STextureManager.h"
+#include "Resource/SConstantBuffer.h"
+#include "Pipeline/SRenderHelper.h"
+#include "RenderState.h"
 
-SMaterial::SMaterial(const char* filename)
+class SMaterialImp
+{
+public:
+	SMaterialImp(const char* filename);
+
+public:
+	void SetFloat(const char* name , float v);
+	void SetFloat2(const char* name , class SVector2f v);
+	void SetFloat3(const char* name , class SVector3f v);
+	void SetFloat4(const char* name , class SVector4f v);
+	void SetInt(const char* name , int v);
+	void SetBool(const char* name , bool v);
+	void SetMatrix(const char* name , class SMatrix4f matrix);
+	void SetTexture(const char* name , class STexture2D* tex);
+	void SetTextureOffset(const char* name , SVector2f offset);
+	void SetTextureScale(const char* name , SVector2f scale);
+	void SetPass(int pass);
+	void Apply();
+
+	void EnableKeyword(const char* keyword);
+	void DisableKeyword(const char* keyword);
+
+private:
+	int ValidateParam();
+
+private:
+	const class SShader* shader = nullptr;
+	int curPass = -1;
+	SArray<SString> keywordList;
+
+	union paramValue
+	{
+		paramValue() { vf = 0; }
+		float	  vf;
+		SVector2f vf2;
+		SVector3f vf3;
+		SVector4f vf4;
+		int		  vi;
+		SMatrix4f vm;
+		bool	  vb;
+	};
+
+	struct sTextureInfo
+	{
+		STexture2DPtr texture;
+		SVector2f scale;
+		SVector2f offset;
+
+		sTextureInfo() { texture = nullptr; scale = SVector2f(1.0f , 1.0f); offset = SVector2f(0.0f , 0.0f); }
+	};
+
+	std::map<shaderParameter , paramValue>	  paramList;
+	std::map<const char* , sTextureInfo>       textureList;
+	std::map<const char* , class SConstantBuffer*> cbList;
+};
+	
+SMaterialImp::SMaterialImp(const char* filename)
 {
 	shader = SShader::FindOrAdd(filename);
 }
 
-void SMaterial::SetFloat(const char * name, float v)
+void SMaterialImp::SetFloat(const char * name, float v)
 {
 	shaderParameter param;
 	param.name = name;
@@ -23,7 +82,7 @@ void SMaterial::SetFloat(const char * name, float v)
 	paramList[param].vf = v;
 }
 
-void SMaterial::SetFloat2(const char * name, SVector2f v)
+void SMaterialImp::SetFloat2(const char * name, SVector2f v)
 {
 	shaderParameter param;
 	param.name = name;
@@ -31,7 +90,7 @@ void SMaterial::SetFloat2(const char * name, SVector2f v)
 	paramList[param].vf2 = v;
 }
 
-void SMaterial::SetFloat3(const char * name, SVector3f v)
+void SMaterialImp::SetFloat3(const char * name, SVector3f v)
 {
 	shaderParameter param;
 	param.name = name;
@@ -39,7 +98,7 @@ void SMaterial::SetFloat3(const char * name, SVector3f v)
 	paramList[param].vf3 = v;
 }
 
-void SMaterial::SetFloat4(const char * name, SVector4f v)
+void SMaterialImp::SetFloat4(const char * name, SVector4f v)
 {
 	shaderParameter param;
 	param.name = name;
@@ -47,7 +106,7 @@ void SMaterial::SetFloat4(const char * name, SVector4f v)
 	paramList[param].vf4 = v;
 }
 
-void SMaterial::SetInt(const char * name, int v)
+void SMaterialImp::SetInt(const char * name, int v)
 {
 	shaderParameter param;
 	param.name = name;
@@ -55,7 +114,7 @@ void SMaterial::SetInt(const char * name, int v)
 	paramList[param].vi = v;
 }
 
-void SMaterial::SetBool(const char * name, bool v)
+void SMaterialImp::SetBool(const char * name, bool v)
 {
 	shaderParameter param;
 	param.name = name;
@@ -63,7 +122,7 @@ void SMaterial::SetBool(const char * name, bool v)
 	paramList[param].vb = v;
 }
 
-void SMaterial::SetMatrix(const char * name, SMatrix4f v)
+void SMaterialImp::SetMatrix(const char * name, SMatrix4f v)
 {
 	shaderParameter param;
 	param.name = name;
@@ -71,22 +130,22 @@ void SMaterial::SetMatrix(const char * name, SMatrix4f v)
 	paramList[param].vm = v;
 }
 
-void SMaterial::SetTexture(const char * name, STexture2D* tex)
+void SMaterialImp::SetTexture(const char * name, STexture2D* tex)
 {
 	textureList[name].texture = tex;
 }
 
-void SMaterial::SetTextureOffset(const char * name, SVector2f offset)
+void SMaterialImp::SetTextureOffset(const char * name, SVector2f offset)
 {
 	textureList[name].offset = offset;
 }
 
-void SMaterial::SetTextureScale(const char * name, SVector2f scale)
+void SMaterialImp::SetTextureScale(const char * name, SVector2f scale)
 {
 	textureList[name].scale = scale;
 }
 
-void SMaterial::SetPass(int pass)
+void SMaterialImp::SetPass(int pass)
 {
 	if (pass < 0 || pass >= shader->GetPassCount())
 	{
@@ -96,7 +155,7 @@ void SMaterial::SetPass(int pass)
 	curPass = pass;
 }
 
-void SMaterial::Apply()
+void SMaterialImp::Apply()
 {
 	int permutationIndex = ValidateParam();
 	if (permutationIndex == -1)	return;
@@ -213,7 +272,7 @@ void SMaterial::Apply()
 	if (permutation.domainShader   != nullptr)	SRenderHelper::g_ImmediateContext->DSSetShader(permutation.domainShader  , nullptr, 0);
 }
 
-void SMaterial::EnableKeyword(const char * keyword)
+void SMaterialImp::EnableKeyword(const char * keyword)
 {
 	int index = keywordList.Find(keyword);
 	if (index == -1)
@@ -223,19 +282,19 @@ void SMaterial::EnableKeyword(const char * keyword)
 	}
 }
 
-void SMaterial::DisableKeyword(const char * keyword)
+void SMaterialImp::DisableKeyword(const char * keyword)
 {
 	keywordList.RemoveValue(keyword);
 }
 
-int SMaterial::ValidateParam()
+int SMaterialImp::ValidateParam()
 {
 	if (curPass < 0 || curPass >= shader->GetPassCount())	return -1;
 
 	const shaderPassInfo& passInfo = shader->GetPass(curPass);
 	
 	int permutationIndex = -1;
-	for (int i = 0 , count = passInfo.permutation_list.size(); i < count; i++)
+	for (int i = 0 , count = (int)passInfo.permutation_list.size(); i < count; i++)
 	{
 		const auto& srcKeywordList = passInfo.permutation_list[i].keyword_list;
 		if (srcKeywordList.size() == keywordList.GetSize())
@@ -275,4 +334,79 @@ int SMaterial::ValidateParam()
 	}
 
 	return permutationIndex;
+}
+
+SMaterial::SMaterial(const char* filename)
+{
+	MatImp = new SMaterialImp(filename);
+}
+
+void SMaterial::SetFloat(const char * name , float v)
+{
+	MatImp->SetFloat(name , v);
+}
+
+void SMaterial::SetFloat2(const char * name , SVector2f v)
+{
+	MatImp->SetFloat2(name , v);
+}
+
+void SMaterial::SetFloat3(const char * name , SVector3f v)
+{
+	MatImp->SetFloat3(name , v);
+}
+
+void SMaterial::SetFloat4(const char * name , SVector4f v)
+{
+	MatImp->SetFloat4(name , v);
+}
+
+void SMaterial::SetInt(const char * name , int v)
+{
+	MatImp->SetInt(name , v);
+}
+
+void SMaterial::SetBool(const char * name , bool v)
+{
+	MatImp->SetBool(name , v);
+}
+
+void SMaterial::SetMatrix(const char * name , SMatrix4f matrix)
+{
+	MatImp->SetMatrix(name , matrix);
+}
+
+void SMaterial::SetTexture(const char * name , STexture2D * tex)
+{
+	MatImp->SetTexture(name , tex);
+}
+
+void SMaterial::SetTextureOffset(const char * name , SVector2f offset)
+{
+	MatImp->SetTextureOffset(name , offset);
+}
+
+void SMaterial::SetTextureScale(const char * name , SVector2f scale)
+{
+	MatImp->SetTextureScale(name , scale);
+}
+
+void SMaterial::SetPass(int pass)
+{
+	MatImp->SetPass(pass);
+}
+
+void SMaterial::Apply()
+{
+	MatImp->Apply();
+}
+
+void SMaterial::EnableKeyword(const char * keyword)
+{
+	MatImp->EnableKeyword(keyword);
+}
+
+void SMaterial::DisableKeyword(const char * keyword)
+{
+	MatImp->DisableKeyword(keyword);
 }

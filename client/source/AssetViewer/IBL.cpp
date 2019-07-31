@@ -11,6 +11,7 @@
 #include "SandEngine/Resource/SStaticMeshManager.h"
 #include "SandBase/Math/SMatrix4f.h"
 #include "SandEngine/Resource/SBuffer.h"
+#include "SandEngine/Resource/Material/Material.h"
 
 SVector2f CartesianToSpherical(const SVector3f& dir)
 {
@@ -23,8 +24,8 @@ SVector2f CartesianToSpherical(const SVector3f& dir)
 static STexture2DPtr sIrradianceMap = nullptr;
 static STexture2DPtr sBRDFLutMap    = nullptr;
 static STexture2DPtr sPrefilterMap  = nullptr;
-static SShader		 sIBLShader;
-static SShader		 sPBRShader;
+static SMaterial sIBLMat("../data/shaders/debugTexture.shader");
+static SMaterial sPBSMat("../data/shaders/pbrIBL.shader");
 
 struct cbIBL
 {
@@ -123,11 +124,7 @@ public:
 	{
 		if (userData.pSender == &SandEngine::Callback.OnEngineInit)
 		{
-			sIBLShader.Load("../data/shaders/debugTexture.hlsl", nullptr, "ps_main");
-			sPBRShader.Load("../data/shaders/pbrIBL.hlsl", "vs_main", "ps_main");
-
 			SStaticMesh* staticMesh = SStaticMeshMangaer::LoadStaticMesh("..\\asset\\models\\test.fbx");
-			//SStaticMesh* staticMesh = SStaticMeshMangaer::CreateSphere(1, 128, 64);
 
 			for (int i = 0; i < 7; i++)
 			{
@@ -185,7 +182,7 @@ public:
 					ID3D11Buffer* psCB = sDirectionLight->GetBuffer();
 					SRenderHelper::g_ImmediateContext->PSSetConstantBuffers(2, 1, &psCB);
 
-					SRenderHelper::RenderStaticMesh(*(entities[j * 7 + i].staticMesh), D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST, sPBRShader);
+					SRenderHelper::RenderStaticMesh(*(entities[j * 7 + i].staticMesh) , D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST , &sPBSMat);
 				}
 			}
 		}

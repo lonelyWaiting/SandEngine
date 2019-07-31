@@ -99,7 +99,7 @@ void SRenderHelper::Init()
 		g_FrameCB = new SBuffer(eBU_Dynamic, sizeof(cbFrame), 1, nullptr, eBF_Constant );
 	}
 
-	SShader::Init(g_Device, );
+	SShader::Init(g_Device , "../data/materials/runtime/");
 }
 
 void SRenderHelper::BeginNewFrame()
@@ -394,45 +394,13 @@ void SRenderHelper::BindTexture(eShaderStage stage, int slot, STexture2D* tex)
 	}
 }
 
-void SRenderHelper::RenderStaticMesh(SStaticMesh& mesh, D3D11_PRIMITIVE_TOPOLOGY topology, const SShader& shader)
+void SRenderHelper::RenderStaticMesh(SStaticMesh& mesh , D3D11_PRIMITIVE_TOPOLOGY topology , SMaterial* Material)
 {
 	ResetStream();
 	AddMeshStream(mesh.GetMeshBuffer(), eVA_POSITION | eVA_NORMAL | eVA_TEXCOORD2 | eVA_TEXCOORD0 | eVA_IndexBuffer);
 
 	g_ImmediateContext->IASetVertexBuffers(0, g_VertexBufferCount, g_VertexBuffer, g_VertexBufferStride, g_VertexBufferOffset);
 	g_ImmediateContext->IASetIndexBuffer(g_IndexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
-	if (ID3D11VertexShader* vs = shader.GetVertexShader())
-	{
-		g_ImmediateContext->VSSetShader(vs, nullptr, 0);
-		g_ImmediateContext->IASetInputLayout(FindInputLayer(shader.GetVertexBlob()));
-	}
-
-	if (ID3D11PixelShader* ps = shader.GetPixelShader())
-	{
-		g_ImmediateContext->PSSetShader(ps, nullptr, 0);
-	}
-
-	if (ID3D11HullShader* hs = shader.GetHullShader())
-	{
-		g_ImmediateContext->HSSetShader(hs, nullptr, 0);
-	}
-
-	if (ID3D11DomainShader* ds = shader.GetDomainShader())
-	{
-		g_ImmediateContext->DSSetShader(ds, nullptr, 0);
-	}
-
-	if (ID3D11GeometryShader* gs = shader.GetGeometryShader())
-	{
-		g_ImmediateContext->GSSetShader(gs, nullptr, 0);
-	}
-
-	if (ID3D11ComputeShader* cs = shader.GetComputeShader())
-	{
-		g_ImmediateContext->CSSetShader(cs, nullptr, 0);
-	}
-
 	g_ImmediateContext->IASetPrimitiveTopology(topology);
 
 	SRenderHelper::g_ImmediateContext->RSSetState(SRenderer::Get().GetRasterizerState());
@@ -440,35 +408,23 @@ void SRenderHelper::RenderStaticMesh(SStaticMesh& mesh, D3D11_PRIMITIVE_TOPOLOGY
 
 	for (int i = 0; i < mesh.GetSubmeshCount(); i++)
 	{
-		BindTexture(eST_Pixel, 0, mesh.GetDiffuseMap(i));
-		BindTexture(eST_Pixel, 1, mesh.GetNormalMap(i));
-		BindTexture(eST_Pixel, 2, mesh.GetMetallicMap(i));
-		BindTexture(eST_Pixel, 3, mesh.GetRoughnessMap(i));
-		BindTexture(eST_Pixel, 4, mesh.GetAOMap(i));
-
+		Material->SetTexture("DiffuseMap" , mesh.GetDiffuseMap(i));
+		Material->SetTexture("NormalMap" , mesh.GetNormalMap(i));;
+		Material->SetTexture("MetallicMap" , mesh.GetMetallicMap(i));;
+		Material->SetTexture("RoughnessMap" , mesh.GetRoughnessMap(i));;
+		Material->SetTexture("AOMap" , mesh.GetAOMap(i));;
+		Material->Apply();
 		g_ImmediateContext->DrawIndexed(mesh.GetSubmeshIndexCount(i), mesh.GetSubmeshStartIndex(i), mesh.GetSubmeshVertexOffset(i));
 	}
 }
 
-void SRenderHelper::RenderFullScreen(const SShader& shader)
+void SRenderHelper::RenderFullScreen(SMaterial* Material)
 {
 	g_ImmediateContext->IASetVertexBuffers(0, 0, nullptr, nullptr, nullptr);
 	g_ImmediateContext->IASetIndexBuffer(nullptr, (DXGI_FORMAT)0, 0);
 	g_ImmediateContext->IASetInputLayout(NULL);
-
-	const SShader& fullscreenVS = SShader::FindShader("../data/shaders/fullscreenVS.hlsl");
-	if (ID3D11VertexShader* vs = fullscreenVS.GetVertexShader())
-	{
-		g_ImmediateContext->VSSetShader(vs, nullptr, 0);
-	}
-	
-	if (ID3D11PixelShader* ps = shader.GetPixelShader())
-	{
-		g_ImmediateContext->PSSetShader(ps, nullptr, 0);
-	}
-
 	g_ImmediateContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
+	Material->Apply();
 	g_ImmediateContext->Draw(3, 0);
 }
 

@@ -110,9 +110,9 @@ SBuffer::SBuffer( eMemUsage usage , int stride , int count , const void* pInitDa
 
 SBuffer::~SBuffer()
 {
-	if( m_pSRV )	SAFE_RELEASE( m_pSRV );
-	if( m_pUAV )	SAFE_RELEASE( m_pUAV );
-	if( m_pBuffer )	SAFE_RELEASE( m_pBuffer );
+	SAFE_RELEASE( m_pSRV );
+	SAFE_RELEASE( m_pUAV );
+	SAFE_RELEASE( m_pBuffer );
 }
 
 ID3D11ShaderResourceView * SBuffer::GetShaderResourceView() const

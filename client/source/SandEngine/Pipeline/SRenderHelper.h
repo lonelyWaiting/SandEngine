@@ -33,6 +33,6 @@ public:
 	static void ReportDetailDebug();
 	static void BindTexture(eShaderStage stage, int slot, STexture2D* tex);
 	static void SetRenderTarget(SRenderTexture* tex, bool useDepth);
-	static void RenderFullScreen(const SShader& shader);
-	static void RenderStaticMesh(SStaticMesh& mesh, D3D11_PRIMITIVE_TOPOLOGY topology, const SShader& shader);
+	static void RenderFullScreen(class SMaterial* Material);
+	static void RenderStaticMesh(SStaticMesh& mesh, D3D11_PRIMITIVE_TOPOLOGY topology, class SMaterial* Material);
 };

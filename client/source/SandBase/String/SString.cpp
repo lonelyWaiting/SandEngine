@@ -410,7 +410,7 @@ bool SString::operator < (const SString& str) const
 
 bool SString::operator<(const char * str) const
 {
-	int srcSize = strlen(str);
+	int srcSize = (int)strlen(str);
 	int dstSize = GetLength();
 
 	int size = SMath::Min(srcSize, dstSize);

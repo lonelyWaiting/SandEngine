@@ -1,3 +1,4 @@
+#include "SandEnginePCH.h"
 #include "SShader.h"
 #include "fake_unity_shader/src/shader.h"
 #include "SandBase/String/SString.h"
@@ -44,7 +45,7 @@ private:
 	std::map<SString , SShader*> shaderMap;
 };
 
-void SShader::Init(ID3D11Device* device , const char* shader_parser_search_path = nullptr)
+void SShader::Init(ID3D11Device* device , const char* shader_parser_search_path /*= nullptr*/)
 {
 	shader_init(device , shader_parser_search_path);
 }
@@ -72,10 +73,11 @@ SShader::SShader(const char* filename)
 
 const shaderPassInfo & SShader::GetPass(int index) const
 {
+	static shaderPassInfo dummpPassInfo("");
 	if (index < 0 || index >= info.pass_list.size())
 	{
 		SLog::Warning("shader pass index invalidate");
-		return;
+		return dummpPassInfo;
 	}
 
 	return info.pass_list[index];

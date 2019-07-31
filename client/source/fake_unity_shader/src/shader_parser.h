@@ -71,6 +71,11 @@ struct shaderParameter
 {
 	std::string name;
 	variableType type;
+
+	bool operator < (const shaderParameter& parameter) const
+	{
+		return (name < parameter.name) || (type < parameter.type);
+	}
 };
 
 struct constantBufferItem

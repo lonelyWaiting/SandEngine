@@ -24,7 +24,7 @@ shaderPassPermutationInfo& shader_permutation_create(const char* shader_name, co
 
 	// add one if it didn't existed or return the one finded
 	int index = -1;
-	for (int pass_index = 0; pass_index < cur_shader.pass_list.size(); pass_index++)
+	for (int pass_index = 0; pass_index < (int)cur_shader.pass_list.size(); pass_index++)
 	{
 		if (strcmp(pass_name, cur_shader.pass_list[pass_index].name.c_str()) == 0)
 		{
@@ -43,7 +43,7 @@ shaderPassPermutationInfo& shader_permutation_create(const char* shader_name, co
 	auto& pass      = cur_shader.pass_list[index];
 	auto& permutation_list = pass.permutation_list;
 	auto pass_index = -1;
-	for (int i = 0; i < permutation_list.size(); i++)
+	for (int i = 0; i < (int)permutation_list.size(); i++)
 	{
 		if (permutation_list[i].name == pass_name)
 		{
@@ -96,7 +96,7 @@ public:
 	HRESULT _stdcall Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes)
 	{
 		std::string str;
-		for (unsigned int i = 0; i < searchPath.size(); i++)
+		for (unsigned int i = 0; i < (unsigned int)searchPath.size(); i++)
 		{
 			str = searchPath[i];
 			str += pFileName;

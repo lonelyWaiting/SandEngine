@@ -6,6 +6,9 @@
 #include "SandEngine/Resource/Shaders/SShader.h"
 #include "SandEngine/Application/SRenderer.h"
 #include "SandBase/Log/SLog.h"
+#include "Resource/Material/Material.h"
+
+static SMaterial SkyboxMaterial("../data/shaders/skybox.shader");
 
 struct skyCB
 {
@@ -22,6 +25,7 @@ public:
 public:
 	STexture2DPtr m_skybox;
 	SBuffer*	  m_skyCB;
+	SMaterial*    m_Material;
 };
 
 Skybox::~Skybox()
@@ -86,7 +90,7 @@ void Skybox::Render()
 
 		SRenderHelper::g_ImmediateContext->OMSetDepthStencilState(pDepthStencilState, 0);
 
-		SRenderHelper::RenderFullScreen(SShader::FindShader("../data/shaders/skybox.hlsl"));
+		SRenderHelper::RenderFullScreen(&SkyboxMaterial);
 	}
 }
 
