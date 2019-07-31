@@ -8,7 +8,7 @@
 #include "SandBase/Log/SLog.h"
 #include "Resource/Material/Material.h"
 
-static SMaterial SkyboxMaterial("../data/shaders/skybox.shader");
+//static SMaterial SkyboxMaterial("../data/shaders/skybox.shader");
 
 struct skyCB
 {
@@ -56,6 +56,8 @@ void EnsureDepthStencilCreate()
 
 void Skybox::LoadSkybox(const char * filename)
 {
+	if (!m_Material)	m_Material = new SMaterial("../data/shaders/skybox.shader");
+
 	SImageDecode decoder;
 	decoder.Load(filename);
 
@@ -90,7 +92,7 @@ void Skybox::Render()
 
 		SRenderHelper::g_ImmediateContext->OMSetDepthStencilState(pDepthStencilState, 0);
 
-		SRenderHelper::RenderFullScreen(&SkyboxMaterial);
+		SRenderHelper::RenderFullScreen(m_Material);
 	}
 }
 

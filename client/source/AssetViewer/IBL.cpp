@@ -24,8 +24,26 @@ SVector2f CartesianToSpherical(const SVector3f& dir)
 static STexture2DPtr sIrradianceMap = nullptr;
 static STexture2DPtr sBRDFLutMap    = nullptr;
 static STexture2DPtr sPrefilterMap  = nullptr;
-static SMaterial sIBLMat("../data/shaders/debugTexture.shader");
-static SMaterial sPBSMat("../data/shaders/pbrIBL.shader");
+
+static SMaterial* GetIBLMaterial()
+{
+	static SMaterial* sIBLMat = nullptr;
+	if (!sIBLMat)
+	{
+		sIBLMat = new SMaterial("../data/shaders/debugTexture.shader");
+	}
+	return sIBLMat;
+}
+
+static SMaterial* GetPBSMaterial()
+{
+	static SMaterial* sPBSMat = nullptr;
+	if (!sPBSMat)
+	{
+		sPBSMat = new SMaterial("../data/shaders/pbrIBL.shader");
+	}
+	return sPBSMat;
+}
 
 struct cbIBL
 {
@@ -182,7 +200,7 @@ public:
 					ID3D11Buffer* psCB = sDirectionLight->GetBuffer();
 					SRenderHelper::g_ImmediateContext->PSSetConstantBuffers(2, 1, &psCB);
 
-					SRenderHelper::RenderStaticMesh(*(entities[j * 7 + i].staticMesh) , D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST , &sPBSMat);
+					SRenderHelper::RenderStaticMesh(*(entities[j * 7 + i].staticMesh) , D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST , GetPBSMaterial());
 				}
 			}
 		}
