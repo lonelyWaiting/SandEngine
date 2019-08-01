@@ -736,7 +736,7 @@ bool shader_load(const char* filename)
     lua_pushstring(g_pMatLuaState, filename);
 	if (lua_pcall(g_pMatLuaState, 1, 1, 0) != LUA_OK)
 	{
-		std::cout << "execute read_shader_file failed" << std::endl;
+		std::cout << "parse shader " << filename << " failed"  << std::endl;
 		return false;
 	}
 

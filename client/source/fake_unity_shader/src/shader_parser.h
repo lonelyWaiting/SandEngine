@@ -20,7 +20,7 @@ enum shaderStage
 
 enum variableType
 {
-	eVT_Unknow,
+	eVT_Unknow = -1,
 	eVT_FLOAT,
 	eVT_FLOAT2,
 	eVT_FLOAT3,
@@ -74,7 +74,7 @@ struct shaderParameter
 
 	bool operator < (const shaderParameter& parameter) const
 	{
-		return (name < parameter.name) || (type < parameter.type);
+		return (name < parameter.name) && (type < parameter.type);
 	}
 };
 
