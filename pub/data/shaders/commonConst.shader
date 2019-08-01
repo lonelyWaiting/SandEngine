@@ -1,3 +1,6 @@
+#ifndef _COMMON_CONST_
+#define _COMMON_CONST_
+
 float4x4 viewMatrix;
 float4x4 projMatrix;
 float4x4 viewProjMatrix;
@@ -20,5 +23,12 @@ sampler   metallicSampler;
 sampler   roughnessSampler;
 sampler   aoSampler;
 
+#ifndef PI
 #define PI 3.141592653589793238f
+#endif
+
+#ifndef TWO_PI
 #define TWO_PI 6.283185307179586477f
+#endif
+
+#endif
