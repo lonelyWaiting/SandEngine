@@ -15,6 +15,63 @@ extern "C"
 
 std::map<std::string, shaderInfo> g_shaderMap;
 
+class SShaderInclude : public ID3DInclude
+{
+public:
+	SShaderInclude(const char* InShaderDir, const char* InSystemDir)
+	{
+		shaderDir = InShaderDir;
+		systemDir = InSystemDir;
+	}
+
+	HRESULT Open(D3D_INCLUDE_TYPE IncludeType ,
+				 LPCSTR           pFileName ,
+				 LPCVOID          pParentData ,
+				 LPCVOID          *ppData ,
+				 UINT             *pBytes)
+	{
+		std::string finalPath;
+		switch (IncludeType)
+		{
+		case D3D_INCLUDE_LOCAL:
+			finalPath = shaderDir + "\\" + pFileName;
+			break;
+
+		case D3D_INCLUDE_SYSTEM:
+			finalPath = systemDir + "\\" + pFileName;
+			break;
+		}
+
+		// open file
+		std::ifstream includeFile(finalPath.c_str() , std::ios::in | std::ios::binary | std::ios::ate);
+
+		if (includeFile.is_open())
+		{
+			long long fileSize = includeFile.tellg();
+			char* buf = new char[fileSize];
+			includeFile.seekg(0 , std::ios::beg);
+			includeFile.read(buf , fileSize);
+			includeFile.close();
+			*ppData = buf;
+			*pBytes = fileSize;
+		}
+	}
+
+	HRESULT Close(LPCVOID pData)
+	{
+		char* buf = (char*)pData;
+		delete[] buf;
+		buf = nullptr;
+		return S_OK;
+	}
+
+public:
+	std::string shaderDir;
+	std::string systemDir;
+};
+
+static SShaderInclude* IncludeHandler = nullptr;
+
 shaderPassPermutationInfo& shader_permutation_create(const char* shader_name, const char* pass_name, const std::vector<std::string>& keyword_list)
 {
 	auto iter = g_shaderMap.find(shader_name);
@@ -90,49 +147,49 @@ variableType shader_map_variable_type(const char* type_name)
 	return iter->second;
 }
 
-class SShaderInclude : public ID3DInclude
-{
-public:
-	HRESULT _stdcall Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes)
-	{
-		std::string str;
-		for (unsigned int i = 0; i < (unsigned int)searchPath.size(); i++)
-		{
-			str = searchPath[i];
-			str += pFileName;
-
-			std::ifstream fi;
-			fi.open(str.c_str(), std::ios::in | std::ios::binary);
-			if (!fi.is_open())	continue;
-
-			int curPos = (int)fi.tellg();
-			fi.seekg(0, std::ios::end);
-			size = (int)fi.tellg();
-			fi.seekg(curPos);
-
-			pData = new char[size];
-			fi.read(pData, size);
-
-			fi.close();
-
-			break;
-		}
-
-		if (pData) { *ppData = pData; *pBytes = size; }
-		return S_OK;
-	}
-
-	HRESULT _stdcall Close(LPCVOID pData)
-	{
-		if (pData != nullptr) { delete[] pData; pData = nullptr; }
-		size = 0;
-		return S_OK;
-	}
-public:
-	std::vector<std::string> searchPath;
-	char* pData = nullptr;
-	unsigned int size = 0;
-}include_handler;
+//class SShaderInclude : public ID3DInclude
+//{
+//public:
+//	HRESULT _stdcall Open(D3D_INCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID* ppData, UINT* pBytes)
+//	{
+//		std::string str;
+//		for (unsigned int i = 0; i < (unsigned int)searchPath.size(); i++)
+//		{
+//			str = searchPath[i];
+//			str += pFileName;
+//
+//			std::ifstream fi;
+//			fi.open(str.c_str(), std::ios::in | std::ios::binary);
+//			if (!fi.is_open())	continue;
+//
+//			int curPos = (int)fi.tellg();
+//			fi.seekg(0, std::ios::end);
+//			size = (int)fi.tellg();
+//			fi.seekg(curPos);
+//
+//			pData = new char[size];
+//			fi.read(pData, size);
+//
+//			fi.close();
+//
+//			break;
+//		}
+//
+//		if (pData) { *ppData = pData; *pBytes = size; }
+//		return S_OK;
+//	}
+//
+//	HRESULT _stdcall Close(LPCVOID pData)
+//	{
+//		if (pData != nullptr) { delete[] pData; pData = nullptr; }
+//		size = 0;
+//		return S_OK;
+//	}
+//public:
+//	std::vector<std::string> searchPath;
+//	char* pData = nullptr;
+//	unsigned int size = 0;
+//}include_handler;
 
 static lua_State*	 g_pMatLuaState = nullptr;
 static ID3D11Device* g_pDevice      = nullptr;
@@ -536,16 +593,16 @@ static int shader_compile(lua_State* L)
     ID3DBlob* vertexBlob = nullptr;
 	if (strcmp(vertex_entry, "") != 0)
 	{
-		HRESULT result = D3DCompile(shader_source_text,
-									strlen(shader_source_text),
-									debug_name,
-									nullptr,
-									&include_handler,
-									vertex_entry,
-									"vs_5_0",
-									0,
-									0,
-									&vertexBlob,
+		HRESULT result = D3DCompile(shader_source_text ,
+									strlen(shader_source_text) ,
+									debug_name ,
+									nullptr ,
+									IncludeHandler ,
+									vertex_entry ,
+									"vs_5_0" ,
+									0 ,
+									0 ,
+									&vertexBlob ,
 									&errorBlob);
 		if (FAILED(result))
 		{
@@ -565,7 +622,7 @@ static int shader_compile(lua_State* L)
 									strlen(shader_source_text),
 									debug_name,
 									nullptr,
-									&include_handler,
+									IncludeHandler ,
 									fragment_entry,
 									"ps_5_0",
 									0,
@@ -590,7 +647,7 @@ static int shader_compile(lua_State* L)
 									strlen(shader_source_text),
 									debug_name,
 									nullptr,
-									&include_handler,
+									IncludeHandler ,
 									hull_entry,
 									"hs_5_0",
 									0,
@@ -615,7 +672,7 @@ static int shader_compile(lua_State* L)
 									strlen(shader_source_text),
 									debug_name,
 									nullptr,
-									&include_handler,
+									IncludeHandler ,
 									domain_entry,
 									"ds_5_0",
 									0,
@@ -641,7 +698,7 @@ static int shader_compile(lua_State* L)
 									strlen(shader_source_text),
 									debug_name,
 									nullptr,
-									&include_handler,
+									IncludeHandler ,
 									geometry_entry,
 									"gs_5_0",
 									0,
@@ -728,6 +785,8 @@ void shader_init(ID3D11Device* device, const char* shader_parser_search_path)
 	std::string shader_generator_path = std::string(shader_parser_search_path) + "shader_generator.lua";
 	LoadFile(g_pMatLuaState , shader_generator_path.c_str());
 	LoadFile(g_pMatLuaState , shader_define_path.c_str());
+
+	IncludeHandler = new SShaderInclude("" , "");
 }
 
 bool shader_load(const char* filename)
@@ -745,5 +804,5 @@ bool shader_load(const char* filename)
 
 void shader_add_search_path(const char* path)
 {
-	include_handler.searchPath.push_back(path);
+	//include_handler.searchPath.push_back(path);
 }
